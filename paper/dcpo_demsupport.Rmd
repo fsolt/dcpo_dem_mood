@@ -5,7 +5,7 @@ output:
     keep_tex: true
     fig_caption: true
     latex_engine: pdflatex
-    template: svm-latex-ms2.tex
+    template: https://raw.githubusercontent.com/junkpolisci/website/master/working_content/svm-latex-ms2.tex
 title: "[dcpo_demsupport]"
 thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
@@ -20,8 +20,9 @@ keywords: ""
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
 spacing: double
-bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$"))`}
-biblio-style: apsr
+bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
+# biblio-style: apsr
 citecolor: black
 linkcolor: black
 endnote: no
@@ -41,18 +42,28 @@ nocite: |
   @Solt2020a
 ---
 
-```{r, include=FALSE}
-options(tinytex.verbose = TRUE)
-```
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(tinytex.verbose = TRUE)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300)
+
+# If you haven't install `DCPOtools`
+# remotes::install_github("fsolt/DCPOtools")
+
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+
 # load all the packages you will use below 
-library(huxtable)
-library(kableExtra)
-library(DCPOtools)
-library(tidyverse)
-library(latex2exp)
+p_load(
+  dataverse, # data scraping
+  DCPOtools, # analysis
+  huxtable, kableExtra, # tabulation
+  latex2exp, # visualization
+  purrr, broom, tidyverse
+) # data wrangling # data wrangling
+
+# Functions preload
+set.seed(313)
 ```
 
 <!-- The following text is all cribbed from `fsolt/dcpo_article` and obviously needs heavy revision -->
@@ -63,6 +74,130 @@ This means not simply employing the point estimates, that is, the means of the p
 Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
+```{r replication-model5, eval = FALSE}
+# Before running the following lines, one should set their personal token and server in their system environment first: 
+# Sys.setenv("DATAVERSE_KEY" = "exampleToken")
+# Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
+
+supdem <- get_file("Support for democracy.tab", "doi:10.7910/DVN/A47LUM") %>% 
+  read_csv
+
+# Required by the replication file
+p_load(
+  countrycode,
+  MASS,
+  psych,
+  arm,
+  loo,
+  rstanarm,
+  RColorBrewer,
+  devtools,
+  dgo
+)
+
+sddem1 = gather(data=supdem, key="Item", value="Response", 6:33, na.rm=TRUE) 
+sddem1$Sample = 0
+sddem1[sddem1$Project=="AfB", "Sample"] = sddem1[sddem1$Project=="AfB", "AfB_sample"]
+sddem1[sddem1$Project=="ArB", "Sample"] = sddem1[sddem1$Project=="ArB", "ArB_sample"]
+sddem1[sddem1$Project=="AsB", "Sample"] = sddem1[sddem1$Project=="AsB", "AsB_sample"]
+sddem1[sddem1$Project=="AsnB", "Sample"] = sddem1[sddem1$Project=="AsnB", "AsnB_sample"]
+sddem1[sddem1$Project=="ESS", "Sample"] = sddem1[sddem1$Project=="ESS", "ESS_sample"]
+sddem1[sddem1$Project=="LAPOP", "Sample"] = sddem1[sddem1$Project=="LAPOP", "LAPOP_sample"]
+sddem1[sddem1$Project=="LB", "Sample"] = sddem1[sddem1$Project=="LB", "LB_sample"]
+sddem1[sddem1$Project=="NDB", "Sample"] = sddem1[sddem1$Project=="NDB", "NDB_sample"]
+sddem1[sddem1$Project=="Pew", "Sample"] = sddem1[sddem1$Project=="Pew", "Pew_sample"]
+sddem1[sddem1$Project=="WVS", "Sample"] = sddem1[sddem1$Project=="WVS", "WVS_sample"]
+sddem1[sddem1$Project=="CSES", "Sample"] = sddem1[sddem1$Project=="CSES", "CSES_sample"]
+
+# trim stacked dataset
+sddem1 = sddem1[, -c(6:16)]
+sddem1$Response = ifelse(sddem1$Response==0, NA, sddem1$Response)
+sddem1 = sddem1[!is.na(sddem1$Response), ] 
+
+# create item by project indicators
+sddem1 = unite(sddem1, ItemProj, c(Project, Item), sep = "_", remove = FALSE)
+sddem1$ItemProj = as.factor(sddem1$ItemProj)
+
+# create year by country indicators
+year0 = 1990
+sddem1 = sddem1[sddem1$Year > year0,]
+sddem1 = unite(sddem1, YearCountry, c(Year, Country), sep = "_", remove = FALSE)
+sddem1$YearCountry = as.factor(sddem1$YearCountry)
+
+# create item by project by country indicators
+sddem1 = unite(sddem1, ItemProjCnt, c(ItemProj, Country), sep = "_", remove = FALSE)
+sddem1$ItemProjCnt = as.factor(sddem1$ItemProjCnt)
+
+# create item by country indicators
+sddem1 = unite(sddem1, ItemCnt, c(Item, Country), sep = "_", remove = FALSE)
+sddem1$ItemCnt = as.factor(sddem1$ItemCnt)
+
+# create year by project indicators
+sddem1 = unite(sddem1, YrProj, c(Year, Project), sep = "_", remove = FALSE)
+sddem1$YrProj = as.factor(sddem1$YrProj)
+
+# create year by project by country indicators
+sddem1 = unite(sddem1, YrProjCnt, c(YrProj, Country), sep = "_", remove = FALSE)
+sddem1$YrProjCnt = as.factor(sddem1$YrProjCnt)
+
+# factorise
+sddem1$Country = as.factor(as.character(sddem1$Country))
+sddem1$Item = as.factor(as.character(sddem1$Item))
+sddem1$ItemProj = as.factor(as.character(sddem1$ItemProj))
+sddem1$ItemCnt = as.factor(as.character(sddem1$ItemCnt))
+sddem1$ItemProjCnt = as.factor(as.character(sddem1$ItemProjCnt))
+sddem1$Project = as.factor(as.character(sddem1$Project))
+sddem1$YrProj = as.factor(as.character(sddem1$YrProj))
+sddem1$YrProjCnt = as.factor(as.character(sddem1$YrProjCnt))
+sddem1$Year = as.factor(sddem1$Year-year0)
+
+# drop countries with less than 2 years of data
+cnt.obs.years = rowSums(table(sddem1$Country, sddem1$Year) > 0)
+sddem2 = sddem1[sddem1$Country %in% levels(sddem1$Country)[cnt.obs.years > 1], ]
+
+## Stan estimation
+
+# prepare data for stan
+
+n.items = length(unique(sddem2$Item))
+n.cntrys = length(unique(sddem2$Country))
+n.yrs = 2015-year0
+n.proj = length(unique(sddem2$Project))
+n.resp = dim(sddem2)[1]
+n.itm.prj = length(unique(sddem2$ItemProj))
+n.itm.cnt = length(unique(sddem2$ItemCnt))
+n.cntry.yrs = n.cntrys * n.yrs
+n.itm.prj.cnt = length(unique(sddem2$ItemProjCnt))
+n.yr.proj.cnt = length(unique(sddem2$YrProjCnt))
+cntrys = as.numeric(factor(sddem2$Country))
+cnt.names = sort(unique(sddem2$Country))
+cnt.ccode = sddem2[match(cnt.names, sddem2$Country), "COWCode"]
+items = as.numeric(factor(sddem2$Item))
+yrs = as.numeric(sddem2$Year)
+projs = as.numeric(factor(sddem2$Project))
+itm.prjs = as.numeric(factor(sddem2$ItemProj))
+itm.prj.cnts = as.numeric(factor(sddem2$ItemProjCnt))
+itm.cnts = as.numeric(factor(sddem2$ItemCnt))
+cntry.yrs = as.numeric(sddem2$YearCountry)
+
+# specify data for stan
+dat.2 = list(N=n.resp, K=n.itm.prj, T=n.yrs, J=n.cntrys, P=n.itm.prj.cnt, jj=cntrys, tt=yrs, 
+             pp=itm.prj.cnts, kk=itm.prjs, x=sddem2$Response, samp=sddem2$Sample)
+
+# pars
+pars.5 = c("mu_lambda","sigma_lambda","sigma_delta","sigma_theta","phi","lambda","delta","theta","x_pred","log_lik")
+
+# set pars for final run (time-consuming; reduce iterations for trial run)
+n.iter = 1000
+n.warm = 500
+n.chn = 4
+n.thin = 2
+
+## supdem.stan.mod5.stan obtained from dataverse replication files
+stan.mod.5 <- stan(file = "supdem.stan.mod5.stan", data=dat.2, pars=pars.5, 
+                   iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
+                   control=list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
+```
 
 
 # A Better Measure of Democratic Support
