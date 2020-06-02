@@ -14,9 +14,12 @@
 dev/*
 framed.sty
 data/church*.rda
-paper/cache/*
+paper/*cache/
 paper/figures/old/
 paper/lit/
 paper/cda/
 data/claassen*
 data/kfold/fold*
+reference/
+
+
