@@ -64,11 +64,11 @@ arabb1,evdemoc_arabb,q2451,c(4:1),"c(97,98,99)"
 ,,,,
 arabb1,democsuit_arabb,q243,c(1:10),"c(97,98,99)"
 ,,,,
-arabb2,church_arabb,q5164,c(4:1),"c(8,9?"
+arabb2,church_arabb,q5164,c(4:1),"c(8,9)"
 ,,,,
-arabb2,strong_arabb_1,q5172,c(1:4),"c(8,9?"
+arabb2,strong_arabb_1,q5172,c(1:4),"c(8,9)"
 ,,,,
-arabb2,evdemoc_arabb,q5171,c(4:1),"c(8,9?"
+arabb2,evdemoc_arabb,q5171,c(4:1),"c(8,9)"
 ,,,,
 arabb2,democsuit_arabb,q512,c(1:10),"c(96,98,99)"
 ,,,,
@@ -172,15 +172,15 @@ asianb4,democextent_asianb,q96,c(1:10),c(97:99)
 ,,,,
 cses2,church_cses,B3015,c(4:1),c(7:8)
 ,,,,
-ess6,impdemoc_ess,implvdm,c(0:10),NA
+ess6,impdemoc_ess,implvdm,c(0:10),
 ,,,,
-amb_combo,threestate_amb,dem2,"c(3,1,2)",NA
+amb_combo,threestate_amb,dem2,"c(3,1,2)",
 ,,,,
-amb_combo,church_amb,ing4 ,c(1:7),NA
+amb_combo,church_amb,ing4 ,c(1:7),
 ,,,,
-amb_combo,strong_amb_1,aut1 ,c(1:2),NA
+amb_combo,strong_amb_1,aut1 ,c(1:2),
 ,,,,
-amb_combo_2004,strong_amb_2,aut1 ,c(1:2),NA
+amb_combo_2004,strong_amb_2,aut1 ,c(1:2),
 ,,,,
 lb1995,threestate_lb,p20,"c(2,3,1)",c(-1:-2)
 ,,,,
@@ -318,11 +318,11 @@ wvs_combo,evdemoc_wvs,E117,c(4:1),"c(-1,-2)"
 ,,,,
 wvs_combo,impdemoc_wvs,E235,c(1:10),"c(-1,-2)"
 ,,,,
-eurob1715,threestate_eb,v122,"c(2,3,1)",NA
+eurob1715,threestate_eb,v122,"c(2,3,1)",
 ,,,,
-eurob2936,threestate_eb,v313,"c(2,3,1)",NA
+eurob2936,threestate_eb,v313,"c(2,3,1)",
 ,,,,
-eurob2141,threestate_eb,v27,"c(2,3,1)",NA
+eurob2141,threestate_eb,v27,"c(2,3,1)",
 ,,,,
 evs_combo,church_evs,E123,c(4:1),"c(-1,-2)"
 ,,,,
