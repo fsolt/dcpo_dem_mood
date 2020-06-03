@@ -180,8 +180,6 @@ amb_combo,church_amb,ing4 ,c(1:7),
 ,,,,
 amb_combo,strong_amb_1,aut1 ,c(1:2),
 ,,,,
-amb_combo_2004,strong_amb_2,aut1 ,c(1:2),
-,,,,
 lb1995,threestate_lb,p20,"c(2,3,1)",c(-1:-2)
 ,,,,
 lb1996,threestate_lb,p19,"c(2,3,1)",c(-1:-2)
@@ -318,11 +316,11 @@ wvs_combo,evdemoc_wvs,E117,c(4:1),"c(-1,-2)"
 ,,,,
 wvs_combo,impdemoc_wvs,E235,c(1:10),"c(-1,-2)"
 ,,,,
-eurob1715,threestate_eb,v122,"c(2,3,1)",
+eb30,threestate_eb,v122,"c(2,3,1)",
 ,,,,
-eurob2936,threestate_eb,v313,"c(2,3,1)",
+eb471,threestate_eb,v313,"c(2,3,1)",
 ,,,,
-eurob2141,threestate_eb,v27,"c(2,3,1)",
+eb370,threestate_eb,v27,"c(2,3,1)",
 ,,,,
 evs_combo,church_evs,E123,c(4:1),"c(-1,-2)"
 ,,,,
@@ -332,11 +330,11 @@ evs_combo,army_evs,E116,c(1:4),"c(-1,-2)"
 ,,,,
 evs_combo,evdemoc_evs,E117,c(4:1),"c(-1,-2)"
 ,,,,
-evs17,strong_evs,v145,c(1:4),"c(-1,-2)"
+evs2017,strong_evs,v145,c(1:4),"c(-1,-2)"
 ,,,,
-evs17,army_evs,v147,c(1:4),"c(-1,-2)"
+evs2017,army_evs,v147,c(1:4),"c(-1,-2)"
 ,,,,
-evs17,evdemoc_evs,v148,c(4:1),"c(-1,-2)"
+evs2017,evdemoc_evs,v148,c(4:1),"c(-1,-2)"
 ,,,,
 sasianb1,threestate_sasianb,c23,"c(2,3,1)","c(0,8)"
 ,,,,
