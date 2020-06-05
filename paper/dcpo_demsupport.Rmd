@@ -5,7 +5,7 @@ output:
     keep_tex: true
     fig_caption: true
     latex_engine: pdflatex
-    template: https://raw.githubusercontent.com/junkpolisci/website/master/working_content/svm-latex-ms2.tex
+    template: svm-latex-ms2.tex
 title: "[dcpo_demsupport]"
 thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
@@ -21,8 +21,8 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
 spacing: double
 bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
-csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
-# biblio-style: apsr
+# csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
+biblio-style: apsr
 citecolor: black
 linkcolor: black
 endnote: no
