@@ -85,10 +85,10 @@ asianb4,party_asianb,q131,c(1:4),c(7:9)
 asianb4,democsuit_asianb,q97,c(1:10),c(97:99)
 asianb4,democextent_asianb,q96,c(1:10),c(97:99)
 cses2,church_cses,b3015,c(4:1),c(7:8)
-ess6,impdemoc_ess,implvdm,c(0:10),NA
-amb_combo,threestate_amb,dem2,"c(3,1,2)",NA
-amb_combo,church_amb,ing4,c(1:7),NA
-amb_combo,strong_amb_1,aut1,c(1:2),NA
+ess6,impdemoc_ess,implvdm,c(0:10),
+amb_combo,threestate_amb,dem2,"c(3,1,2)",
+amb_combo,church_amb,ing4,c(1:7),
+amb_combo,strong_amb_1,aut1,c(1:2),
 lb1995,threestate_lb,p20,"c(2,3,1)",c(-1:-2)
 lb1996,threestate_lb,p19,"c(2,3,1)",c(-1:-2)
 lb1997,threestate_lb,sp31,"c(2,3,1)",c(-1:-2)
@@ -157,9 +157,9 @@ wvs_combo,strong_wvs,e114,c(1:4),"c(-1,-2)"
 wvs_combo,army_wvs,e116,c(1:4),"c(-1,-2)"
 wvs_combo,evdemoc_wvs,e117,c(4:1),"c(-1,-2)"
 wvs_combo,impdemoc_wvs,e235,c(1:10),"c(-1,-2)"
-eb30,threestate_eb,v122,"c(2,3,1)",NA
-eb471,threestate_eb,v313,"c(2,3,1)",NA
-eb370,threestate_eb,v27,"c(2,3,1)",NA
+eb30,threestate_eb,v122,"c(2,3,1)",
+eb471,threestate_eb,v313,"c(2,3,1)",
+eb370,threestate_eb,v27,"c(2,3,1)",
 evs_combo,church_evs,e123,c(4:1),"c(-1,-2)"
 evs_combo,strong_evs,e114,c(1:4),"c(-1,-2)"
 evs_combo,army_evs,e116,c(1:4),"c(-1,-2)"
