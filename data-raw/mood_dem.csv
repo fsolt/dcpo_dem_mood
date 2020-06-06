@@ -41,7 +41,7 @@ arabb3,evdemoc_arabb,q5171,c(4:1),"c(8,9)"
 arabb3,democsuit_arabb,q512,c(0:10),"c(96,98,99)"
 arabb4,threestate_arabb,q516a,"c(2,3,1)","c(98,99)"
 arabb5,threestate_arabb,q516a,"c(2,3,1)","c(98,99)"
-arabb5,church_arabb,q5164,c(4:1),"c(98,99)"
+arabb5,church_arabb,q516_4,c(4:1),"c(98,99)"
 arabb5,democsuit_arabb,q512,c(0:10),"c(96,98,99)"
 asiab2003,strong_asiab,q27_a,c(1:3),c(9)
 asiab2003,army_asiab,q27_c,c(1:3),c(9)
