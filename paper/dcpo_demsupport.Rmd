@@ -74,7 +74,11 @@ This means not simply employing the point estimates, that is, the means of the p
 Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
+```{r replication-data-prep, eval=FALSE}
+dem_mood <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
+                                       file = "data/claassen_input.csv")
 
+```
 
 
 ```{r replication-model5, eval = FALSE}
