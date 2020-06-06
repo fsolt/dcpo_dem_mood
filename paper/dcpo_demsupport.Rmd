@@ -75,8 +75,20 @@ Instead, researchers should follow the recommendations of work using other laten
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
 ```{r replication-data-prep, eval=FALSE}
-dem_mood <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
-                                       file = "data/claassen_input.csv")
+claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
+                                       file = "data/claassen_input_raw.csv")
+
+claassen_input <- format_claassen(claassen_input_raw)
+
+claassen_m5 <- stan(file = 'R/supdem.stan.mod5.stan',
+                       data = claassen_input,
+                    iter = 2000,
+                    chains= 4,
+                    cores = 4,
+                    thin = 2,
+                    pars = c("mu_lambda", "sigma_lambda", "sigma_delta", "sigma_theta", "phi", "lambda", "delta", "theta", "x_pred","log_lik"),
+                    control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
+
 
 ```
 
