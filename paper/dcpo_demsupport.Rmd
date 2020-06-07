@@ -59,6 +59,7 @@ p_load(
   DCPOtools, # analysis
   huxtable, kableExtra, modelsummary, # tabulation
   latex2exp, # visualization
+  rstan, # Bayesian estimation
   tidyverse # data wrangling
 ) 
 
@@ -75,21 +76,38 @@ Instead, researchers should follow the recommendations of work using other laten
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
 ```{r replication-data-prep, eval=FALSE}
-claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
-                                       file = "data/claassen_input_raw.csv")
+# claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
+#                                        file = "data/claassen_input_raw.csv")
 
-claassen_input <- format_claassen(claassen_input_raw)
+claassen_input_raw <- read_csv("data/claassen_input_raw.csv") %>% 
+  filter(!(str_detect(item, "army") & # WVS obs identified as problematic by Claassen 
+    ((country=="Albania" & year==1998) |
+         (country=="Indonesia" & (year==2001 | year==2006)) |
+         (country=="Iran" & year==2000) |
+         (country=="Pakistan" & (year==1996 | year==2001)) |
+         (country=="Vietnam" & year==2001)) |
+    (str_detect(item, "strong") &
+         ((country=="Egypt" & year==2012) |
+              (country=="Iran" & (year==2000 | year==2005)) |
+              (country=="India") |
+              (country=="Pakistan" & (year==1996 | year==2001)) |
+              (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+              (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+              (country=="Vietnam" & year==2001)))))
 
-claassen_m5 <- stan(file = 'R/supdem.stan.mod5.stan',
-                       data = claassen_input,
-                    iter = 2000,
-                    chains= 4,
-                    cores = 4,
-                    thin = 2,
-                    pars = c("mu_lambda", "sigma_lambda", "sigma_delta", "sigma_theta", "phi", "lambda", "delta", "theta", "x_pred","log_lik"),
-                    control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
+claassen_input <- DCPOtools::format_claassen(claassen_input_raw)
 
+claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.stan',
+                           data = claassen_input,
+                           iter = 2000,
+                           warmup = 1000,
+                           chains = 4,
+                           cores = 4,
+                           thin = 2,
+                           pars = c("mu_lambda", "sigma_lambda", "sigma_delta", "sigma_theta", "phi", "lambda", "delta", "theta", "x_pred","log_lik"),
+                           control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=15))
 
+save(claassen_m5, file = "data/claassen_m5.RData")
 ```
 
 
