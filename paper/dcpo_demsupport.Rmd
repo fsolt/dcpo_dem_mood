@@ -75,11 +75,13 @@ This means not simply employing the point estimates, that is, the means of the p
 Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
-```{r replication-data-prep, eval=FALSE}
-# claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
-#                                        file = "data/claassen_input_raw.csv")
+```{r claassen_input_raw}
+claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
+                                       file = "data/claassen_input_raw.csv")
+```
 
-claassen_input_raw <- read_csv("data/claassen_input_raw.csv") %>% 
+```{r claassen_input}
+claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv") %>% 
   filter(!(str_detect(item, "army") & # WVS obs identified as problematic by Claassen 
     ((country=="Albania" & year==1998) |
          (country=="Indonesia" & (year==2001 | year==2006)) |
@@ -93,10 +95,14 @@ claassen_input_raw <- read_csv("data/claassen_input_raw.csv") %>%
               (country=="Pakistan" & (year==1996 | year==2001)) |
               (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
               (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-              (country=="Vietnam" & year==2001)))))
-
+              (country=="Vietnam" & year==2001))))) %>% 
+  filter(!(survey=="evs2017" | survey == "arabb5" | survey == "eb47")) %>%  # surveys unused by Claassen
+  mutate(item = if_else(item == "strong_amb_1" & year == 2004, "strong_amb_2", item)) # items conflated in amb_combo file
+  
 claassen_input <- DCPOtools::format_claassen(claassen_input_raw)
+```
 
+```{r claassen_m5, eval=FALSE}
 claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.stan',
                            data = claassen_input,
                            iter = 2000,
@@ -116,8 +122,11 @@ save(claassen_m5, file = "data/claassen_m5.RData")
 # Sys.setenv("DATAVERSE_KEY" = "exampleToken")
 # Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
 
-supdem <- get_file("Support for democracy.tab", "doi:10.7910/DVN/A47LUM") %>% 
-  read_csv
+supdem <- get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
+  read_csv(col_types = cols(.default = col_double(), 
+                            Country = col_character(),
+                            CAbb = col_character(),
+                            Project = col_character()))
 
 # Required by the replication file
 p_load(
