@@ -82,7 +82,7 @@ claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_
 
 ```{r claassen_input}
 claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv") %>% 
-  filter(!(str_detect(item, "army") & # WVS obs identified as problematic by Claassen 
+  filter(!(str_detect(item, "army") & # WVS obs identified as problematic by Claassen (note: these are his years right now)
     ((country=="Albania" & year==1998) |
          (country=="Indonesia" & (year==2001 | year==2006)) |
          (country=="Iran" & year==2000) |
@@ -96,7 +96,7 @@ claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv") %>%
               (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
               (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
               (country=="Vietnam" & year==2001))))) %>% 
-  filter(!(survey=="evs2017" | survey == "arabb5" | survey == "eb47")) %>%  # surveys unused by Claassen
+  filter(!(survey=="evs2017" | survey == "arabb5" | survey == "eb471")) %>%  # surveys unused by Claassen
   mutate(item = if_else(item == "strong_amb_1" & year == 2004, "strong_amb_2", item)) # items conflated in amb_combo file
   
 claassen_input <- DCPOtools::format_claassen(claassen_input_raw)
@@ -123,10 +123,7 @@ save(claassen_m5, file = "data/claassen_m5.RData")
 # Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
 
 supdem <- get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
-  read_csv(col_types = cols(.default = col_double(), 
-                            Country = col_character(),
-                            CAbb = col_character(),
-                            Project = col_character()))
+  read_csv(col_types = "cdcddcdc")
 
 # Required by the replication file
 p_load(
@@ -141,108 +138,126 @@ p_load(
   dgo
 )
 
-sddem1 = gather(data=supdem, key="Item", value="Response", 6:33, na.rm=TRUE) 
-sddem1$Sample = 0
-sddem1[sddem1$Project=="AfB", "Sample"] = sddem1[sddem1$Project=="AfB", "AfB_sample"]
-sddem1[sddem1$Project=="ArB", "Sample"] = sddem1[sddem1$Project=="ArB", "ArB_sample"]
-sddem1[sddem1$Project=="AsB", "Sample"] = sddem1[sddem1$Project=="AsB", "AsB_sample"]
-sddem1[sddem1$Project=="AsnB", "Sample"] = sddem1[sddem1$Project=="AsnB", "AsnB_sample"]
-sddem1[sddem1$Project=="ESS", "Sample"] = sddem1[sddem1$Project=="ESS", "ESS_sample"]
-sddem1[sddem1$Project=="LAPOP", "Sample"] = sddem1[sddem1$Project=="LAPOP", "LAPOP_sample"]
-sddem1[sddem1$Project=="LB", "Sample"] = sddem1[sddem1$Project=="LB", "LB_sample"]
-sddem1[sddem1$Project=="NDB", "Sample"] = sddem1[sddem1$Project=="NDB", "NDB_sample"]
-sddem1[sddem1$Project=="Pew", "Sample"] = sddem1[sddem1$Project=="Pew", "Pew_sample"]
-sddem1[sddem1$Project=="WVS", "Sample"] = sddem1[sddem1$Project=="WVS", "WVS_sample"]
-sddem1[sddem1$Project=="CSES", "Sample"] = sddem1[sddem1$Project=="CSES", "CSES_sample"]
+library(MASS)
+library(arm)
+library(dplyr)
+library(tidyr)
+library(rstan)
+library(loo)
+library(ggplot2)
+library(RColorBrewer)
 
-# trim stacked dataset
-sddem1 = sddem1[, -c(6:16)]
-sddem1$Response = ifelse(sddem1$Response==0, NA, sddem1$Response)
-sddem1 = sddem1[!is.na(sddem1$Response), ] 
+# options
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
-# create item by project indicators
-sddem1 = unite(sddem1, ItemProj, c(Project, Item), sep = "_", remove = FALSE)
-sddem1$ItemProj = as.factor(sddem1$ItemProj)
+# working directory
+WD = getwd()
+setwd(WD)
+
+# read support for dem data
+sddem1 = read.csv("supdem raw survey marginals.csv")
+
+# remove NAs
+sddem1 = sddem1[!sddem1$Response==0, ]
 
 # create year by country indicators
-year0 = 1990
+year0 = 1987
 sddem1 = sddem1[sddem1$Year > year0,]
 sddem1 = unite(sddem1, YearCountry, c(Year, Country), sep = "_", remove = FALSE)
-sddem1$YearCountry = as.factor(sddem1$YearCountry)
-
-# create item by project by country indicators
-sddem1 = unite(sddem1, ItemProjCnt, c(ItemProj, Country), sep = "_", remove = FALSE)
-sddem1$ItemProjCnt = as.factor(sddem1$ItemProjCnt)
 
 # create item by country indicators
 sddem1 = unite(sddem1, ItemCnt, c(Item, Country), sep = "_", remove = FALSE)
-sddem1$ItemCnt = as.factor(sddem1$ItemCnt)
 
 # create year by project indicators
 sddem1 = unite(sddem1, YrProj, c(Year, Project), sep = "_", remove = FALSE)
-sddem1$YrProj = as.factor(sddem1$YrProj)
 
 # create year by project by country indicators
 sddem1 = unite(sddem1, YrProjCnt, c(YrProj, Country), sep = "_", remove = FALSE)
-sddem1$YrProjCnt = as.factor(sddem1$YrProjCnt)
 
 # factorise
 sddem1$Country = as.factor(as.character(sddem1$Country))
 sddem1$Item = as.factor(as.character(sddem1$Item))
-sddem1$ItemProj = as.factor(as.character(sddem1$ItemProj))
 sddem1$ItemCnt = as.factor(as.character(sddem1$ItemCnt))
-sddem1$ItemProjCnt = as.factor(as.character(sddem1$ItemProjCnt))
 sddem1$Project = as.factor(as.character(sddem1$Project))
 sddem1$YrProj = as.factor(as.character(sddem1$YrProj))
 sddem1$YrProjCnt = as.factor(as.character(sddem1$YrProjCnt))
-sddem1$Year = as.factor(sddem1$Year-year0)
+sddem1$Year = sddem1$Year-year0
+
+# count data
+dim(sddem1)[1]                   # 3765 national responses
+length(unique(sddem1$Country))   # 150 countries
+length(unique(sddem1$Project))   # 14 projects
+length(unique(sddem1$Item))      # 52 items
+length(unique(sddem1$ItemCnt))   # 1453 item-country
+length(unique(sddem1$YrProjCnt)) # 1390 national surveys
+length(unique(sddem1$Year))      # 27 unique years (out of 30)
+sum(sddem1$Sample) / dim(sddem1)[1] * length(unique(sddem1$YrProjCnt))   # 1,804,450 respondents              
 
 # drop countries with less than 2 years of data
 cnt.obs.years = rowSums(table(sddem1$Country, sddem1$Year) > 0)
+sort(cnt.obs.years)
 sddem2 = sddem1[sddem1$Country %in% levels(sddem1$Country)[cnt.obs.years > 1], ]
+length(unique(sddem2$Country))   # 137 countries with 2+ years of data
 
-## Stan estimation
+
+
+#### Stan estimation
+
 
 # prepare data for stan
-
 n.items = length(unique(sddem2$Item))
 n.cntrys = length(unique(sddem2$Country))
-n.yrs = 2015-year0
+n.yrs = 2017-year0
 n.proj = length(unique(sddem2$Project))
 n.resp = dim(sddem2)[1]
-n.itm.prj = length(unique(sddem2$ItemProj))
 n.itm.cnt = length(unique(sddem2$ItemCnt))
 n.cntry.yrs = n.cntrys * n.yrs
-n.itm.prj.cnt = length(unique(sddem2$ItemProjCnt))
 n.yr.proj.cnt = length(unique(sddem2$YrProjCnt))
 cntrys = as.numeric(factor(sddem2$Country))
-cnt.names = sort(unique(sddem2$Country))
-cnt.ccode = sddem2[match(cnt.names, sddem2$Country), "COWCode"]
+cnt.names = as.character(sort(unique(sddem2$Country)))
+cnt.code = as.character(sddem2[match(cnt.names, sddem2$Country), "CAbb"])
+cnt.code[83] = "MNE"
+cnt.code[106] = "SRB"
 items = as.numeric(factor(sddem2$Item))
-yrs = as.numeric(sddem2$Year)
+yrs = sddem2$Year
 projs = as.numeric(factor(sddem2$Project))
-itm.prjs = as.numeric(factor(sddem2$ItemProj))
-itm.prj.cnts = as.numeric(factor(sddem2$ItemProjCnt))
 itm.cnts = as.numeric(factor(sddem2$ItemCnt))
-cntry.yrs = as.numeric(sddem2$YearCountry)
 
 # specify data for stan
-dat.2 = list(N=n.resp, K=n.itm.prj, T=n.yrs, J=n.cntrys, P=n.itm.prj.cnt, jj=cntrys, tt=yrs, 
-             pp=itm.prj.cnts, kk=itm.prjs, x=sddem2$Response, samp=sddem2$Sample)
+dat.1 = list(N=n.resp, K=n.items, T=n.yrs, J=n.cntrys, jj=cntrys, tt=yrs, kk=items, 
+             x=sddem2$Response, samp=sddem2$Sample)
+dat.2 = list(N=n.resp, K=n.items, T=n.yrs, J=n.cntrys, P=n.itm.cnt, jj=cntrys, tt=yrs, 
+             pp=itm.cnts, kk=items, x=sddem2$Response, samp=sddem2$Sample)
+sapply(dat.2, summary)
 
 # pars
-pars.5 = c("mu_lambda","sigma_lambda","sigma_delta","sigma_theta","phi","lambda","delta","theta","x_pred","log_lik")
+pars.4 = c("mu_lambda","sigma_lambda","sigma_theta","phi","lambda","theta","x_pred","log_lik")
+pars.5 = c("mu_lambda","sigma_lambda","sigma_delta","sigma_theta","phi","lambda","delta","theta",
+            "x_pred","log_lik")
+pars.6 = c("Sigma","Omega","sigma_delta","sigma_theta","phi","lambda","gamm","delta","theta",
+           "x_pred","log_lik")
 
-# set pars for final run (time-consuming; reduce iterations for trial run)
-n.iter = 1000
-n.warm = 500
+# iterations
+n.iter = 500
+n.warm = 250
 n.chn = 4
-n.thin = 2
+n.thin = 1
 
-## supdem.stan.mod5.stan obtained from dataverse replication files
-stan.mod.5 <- stan(file = "supdem.stan.mod5.stan", data=dat.2, pars=pars.5, 
+# best model from PA article (model 5)
+stan.mod.5 = stan(file='supdem.stan.mod5.stan', data=dat.2, pars=pars.5, 
                    iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
                    control=list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
+
+# model 5 with different priors
+stan.mod.5.2 = stan(file='supdem.stan.mod5.2.stan', data=dat.2, pars=pars.5, 
+                  iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
+                  control=list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
+
+# model 5 with item slopes
+stan.mod.6 = stan(file='supdem.stan.mod6.2.stan', data=dat.2, pars=pars.6, 
+                   iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
+                   control=list(adapt_delta=0.99, stepsize=0.01, max_treedepth=13))
 ```
 
 
