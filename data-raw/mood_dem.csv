@@ -129,6 +129,7 @@ lb2017,church_lb,p22st,c(4:1),c(-1)
 pew2002,strong_pew,q47,c(2:1),"c(3,4)"
 pew2002,impdemoc_pew,q41b,c(4:1),"c(5,6)"
 pew2005_6,strong_pew,q33,c(2:1),"c(8,9)"
+pew2005_11,strong_pew,q29,c(2:1),"c(8,9)"
 pew2006,strong_pew,q5b_leader_dem,c(2:1),"c(8,9)"
 pew2007,strong_pew,q55,c(2:1),"c(8,9)"
 pew2007,impdemoc_pew,q51b,c(4:1),"c(8,9)"
