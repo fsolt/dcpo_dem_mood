@@ -89,6 +89,9 @@ ess6,impdemoc_ess,implvdm,c(0:10),99
 amb_combo,threestate_amb,dem2,"c(3,1,2)",99
 amb_combo,church_amb,ing4,c(1:7),99
 amb_combo,strong_amb_1,aut1,c(1:2),99
+amb_argentina2010,threestate_amb,dem2,"c(3,1,2)",99
+amb_argentina2010,church_amb,ing4,c(1:7),99
+amb_argentina2010,strong_amb_1,aut1,c(1:2),99
 lb1995,threestate_lb,p20,"c(2,3,1)",c(-1:-2)
 lb1996,threestate_lb,p19,"c(2,3,1)",c(-1:-2)
 lb1997,threestate_lb,sp31,"c(2,3,1)",c(-1:-2)
