@@ -33,5 +33,22 @@ needed <- anti_join(supdem_cy, claassen_input_cy)                   # 131 obs
 
 available <- anti_join(claassen_input_cy, supdem_cy)                # 245 obs
 
-try <- left_join(needed, available, by = c("country", "project"))
+year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 90 obs
+    mutate(diff = year.x - year.y) %>% 
+    group_by(country, project, year.x) %>% 
+    mutate(closest_to_claassen = min(abs(diff))) %>% 
+    ungroup() %>% 
+    group_by(country, project, year.y) %>% 
+    mutate(closest_to_dcpo = min(abs(diff))) %>% 
+    ungroup() %>% 
+    filter(closest_to_claassen == abs(diff) & closest_to_dcpo == abs(diff) & abs(diff) <= 3) %>% 
+    filter(!(country == "Egypt" & year.x == 2014 & survey == "afrob5")) # double match (it's really afrob6)
+
+cys_crosswalk <- year_fixes %>% 
+    select(country, y_dcpo, y_claassen = year.x, survey)
+
+save(cys_crosswalk,
+     file = "data/cys_crosswalk.RData")
+
+still_needed <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 41 obs; listed in issue #5 
 
