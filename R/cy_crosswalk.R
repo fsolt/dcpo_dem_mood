@@ -47,8 +47,10 @@ year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 9
 cys_crosswalk <- year_fixes %>% 
     select(country, y_dcpo, y_claassen = year.x, survey)
 
-save(cys_crosswalk,
-     file = "data/cys_crosswalk.RData")
-
 still_needed <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 41 obs; listed in issue #5 
 
+cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% 
+    select(-y_dcpo)
+
+save(cys_crosswalk, cys_to_drop,
+     file = "data/cys_crosswalk.RData")
