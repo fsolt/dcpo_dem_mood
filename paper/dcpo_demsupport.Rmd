@@ -76,7 +76,8 @@ Instead, researchers should follow the recommendations of work using other laten
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
 ```{r claassen_input_raw}
-claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv"),
+claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv",
+                                                                 col_types = "ccccc"),
                                        file = "data/claassen_input_raw.csv")
 ```
 
