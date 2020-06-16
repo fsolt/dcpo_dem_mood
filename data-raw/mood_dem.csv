@@ -84,7 +84,7 @@ asianb4,army_asianb,q132,c(1:4),c(7:9)
 asianb4,party_asianb,q131,c(1:4),c(7:9)
 asianb4,democsuit_asianb,q97,c(1:10),c(97:99)
 asianb4,democextent_asianb,q96,c(1:10),c(97:99)
-cses2,church_cses,b3015,c(4:1),c(7:8)
+cses_combo,church_cses,b3015,c(4:1),c(7:8)
 ess6,impdemoc_ess,implvdm,c(0:10),99
 amb_combo,threestate_amb,dem2,"c(3,1,2)",99
 amb_combo,church_amb,ing4,c(1:7),99
