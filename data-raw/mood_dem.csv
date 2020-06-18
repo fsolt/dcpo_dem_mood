@@ -270,3 +270,7 @@ sasianb2,army_sasianb,gbc35b,c(1:4),"c(7,8,9)"
 neb_combo,threestate_neb,a7,"c(2,3,1)",c(98)
 neb_combo,strong_neb,a3c,c(1:4),c(98)
 neb_combo,army_neb,a3b,c(1:4),c(98)
+wvs4_swe,church_wvs,v172,c(4:1),"c(-1,-2)"
+wvs4_swe,strong_wvs,v164,c(1:4),"c(-1,-2)"
+wvs4_swe,army_wvs,v166,c(1:4),"c(-1,-2)"
+wvs4_swe,evdemoc_wvs,v167,c(4:1),"c(-1,-2)"
