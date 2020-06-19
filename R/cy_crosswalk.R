@@ -7,7 +7,7 @@ supdem <- dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DV
 supdem_cy <- supdem %>%                                             # 1390 obs
     janitor::clean_names() %>% 
     mutate(old_country = country,
-           country = countrycode::countryname(old_country)) %>%
+           country = countrycode::countrycode(old_country, "country.name", "country.name")) %>%
     dplyr::select(country, year, project) %>% 
     unique()
 
@@ -22,9 +22,7 @@ claassen_input_cy <- read_csv("data/claassen_input_raw.csv",
                                p_dcpo == "neb" ~ "ndb",
                                p_dcpo == "sasianb" ~ "sab",
                                TRUE ~ p_dcpo),
-           y_dcpo = year,
-           old_country = country,
-           country = countrycode::countryname(old_country)) %>%
+           y_dcpo = year) %>%
     dplyr::select(country, year, y_dcpo, survey, project) %>% 
     unique()
 
