@@ -104,7 +104,7 @@ claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcd
   mutate(year = if_else(!is.na(y_claassen), y_claassen, year)) %>% # use Claassen's year codings
   mutate(item = if_else(item == "strong_amb_1" & year == 2004, "strong_amb_2", item)) # items conflated in amb_combo file
   
-claassen_input <- DCPOtools::format_claassen(claassen_input_raw)
+claassen_input <- DCPOtools::format_claassen(claassen_input_raw1)
 ```
 
 ```{r claassen_m5, eval=FALSE}
