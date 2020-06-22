@@ -1,16 +1,19 @@
-remotes::install_github("fsolt/DCPOtools")
-remotes::install_github("stan-dev/rstantools")
-remotes::install_github("fsolt/DCPO")
+# remotes::install_github("fsolt/DCPOtools")
+# remotes::install_github("stan-dev/rstantools")
+# remotes::install_github("fsolt/DCPO")
 
 library(tidyverse)
 library(DCPOtools)
 library(rstan)
 
-demsup <- read_csv("https://github.com/fsolt/DCPOtools/raw/master/inst/extdata/all_data_demsupport.csv")
+rstan_options(auto_write = TRUE)
+
+demsup <-
+    read_csv("data/claassen_replication.csv", col_types = "dcdcddcdd")
 
 demsup_claassen <- format_claassen(demsup)
 
-claassen_m5 <- stan(file = 'R/supdem.stan.mod5.stan',
+claassen_m5 <- stan(file = "R/argon/dcpo_demsupport/R/supdem.stan.mod5.stan",
                        data = demsup_claassen,
                        iter = 2000,
                        chains= 4,
