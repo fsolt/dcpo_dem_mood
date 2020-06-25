@@ -82,6 +82,11 @@ claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_
 ```
 
 ```{r claassen_input}
+# Note that before running `dataverse::get_file()` below, one should set their personal token and server in their system environment first: 
+# Sys.setenv("DATAVERSE_KEY" = "exampleToken")
+# Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
+# These values can be set to persist across R sessions using `usethis::edit_r_environ()`
+
 supdem <- dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
     read_csv(col_types = "cdcddcdc")
 
@@ -160,151 +165,23 @@ save(claassen_input, file = "data/claassen_input.Rda")
 claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.stan',
                            data = claassen_input,
                            iter = 2000,
-                           warmup = 1000,
                            chains = 4,
                            cores = 4,
                            thin = 2,
                            pars = c("mu_lambda", "sigma_lambda", "sigma_delta", "sigma_theta", "phi", "lambda", "delta", "theta", "x_pred","log_lik"),
                            control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
 
-save(claassen_m5, file = "data/claassen_m5.RData")
+save(claassen_m5, file = "data/claassen_m5.rda")
+
+claassen_m5_x_pred <- rstan::extract(claassen_m5, pars = "x_pred")
+
+save(claassen_input, claassen_m5_x_pred, file = "data/claassen_m5_x_pred.rda")
 ```
 
-
-```{r replication-model5, eval = FALSE}
-# Before running the following lines, one should set their personal token and server in their system environment first: 
-# Sys.setenv("DATAVERSE_KEY" = "exampleToken")
-# Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
-
-supdem <- get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
-  read_csv(col_types = cols(.default = col_double(), 
-                            Country = col_character(),
-                            CAbb = col_character(),
-                            Project = col_character()))
-
-# Required by the replication file
-library(MASS)
-library(arm)
-library(dplyr)
-library(tidyr)
-library(rstan)
-library(loo)
-library(ggplot2)
-library(RColorBrewer)
-
-# options
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
-
-# working directory
-WD = getwd()
-setwd(WD)
-
-# read support for dem data
-sddem1 = read.csv("supdem raw survey marginals.csv")
-
-# remove NAs
-sddem1 = sddem1[!sddem1$Response==0, ]
-
-# create year by country indicators
-year0 = 1987
-sddem1 = sddem1[sddem1$Year > year0,]
-sddem1 = unite(sddem1, YearCountry, c(Year, Country), sep = "_", remove = FALSE)
-
-# create item by country indicators
-sddem1 = unite(sddem1, ItemCnt, c(Item, Country), sep = "_", remove = FALSE)
-
-# create year by project indicators
-sddem1 = unite(sddem1, YrProj, c(Year, Project), sep = "_", remove = FALSE)
-
-# create year by project by country indicators
-sddem1 = unite(sddem1, YrProjCnt, c(YrProj, Country), sep = "_", remove = FALSE)
-
-# factorise
-sddem1$Country = as.factor(as.character(sddem1$Country))
-sddem1$Item = as.factor(as.character(sddem1$Item))
-sddem1$ItemCnt = as.factor(as.character(sddem1$ItemCnt))
-sddem1$Project = as.factor(as.character(sddem1$Project))
-sddem1$YrProj = as.factor(as.character(sddem1$YrProj))
-sddem1$YrProjCnt = as.factor(as.character(sddem1$YrProjCnt))
-sddem1$Year = sddem1$Year-year0
-
-# count data
-dim(sddem1)[1]                   # 3765 national responses
-length(unique(sddem1$Country))   # 150 countries
-length(unique(sddem1$Project))   # 14 projects
-length(unique(sddem1$Item))      # 52 items
-length(unique(sddem1$ItemCnt))   # 1453 item-country
-length(unique(sddem1$YrProjCnt)) # 1390 national surveys
-length(unique(sddem1$Year))      # 27 unique years (out of 30)
-sum(sddem1$Sample) / dim(sddem1)[1] * length(unique(sddem1$YrProjCnt))   # 1,804,450 respondents              
-
-# drop countries with less than 2 years of data
-cnt.obs.years = rowSums(table(sddem1$Country, sddem1$Year) > 0)
-sort(cnt.obs.years)
-sddem2 = sddem1[sddem1$Country %in% levels(sddem1$Country)[cnt.obs.years > 1], ]
-length(unique(sddem2$Country))   # 137 countries with 2+ years of data
+```{r comparison_table}
 
 
-
-#### Stan estimation
-
-
-# prepare data for stan
-n.items = length(unique(sddem2$Item))
-n.cntrys = length(unique(sddem2$Country))
-n.yrs = 2017-year0
-n.proj = length(unique(sddem2$Project))
-n.resp = dim(sddem2)[1]
-n.itm.cnt = length(unique(sddem2$ItemCnt))
-n.cntry.yrs = n.cntrys * n.yrs
-n.yr.proj.cnt = length(unique(sddem2$YrProjCnt))
-cntrys = as.numeric(factor(sddem2$Country))
-cnt.names = as.character(sort(unique(sddem2$Country)))
-cnt.code = as.character(sddem2[match(cnt.names, sddem2$Country), "CAbb"])
-cnt.code[83] = "MNE"
-cnt.code[106] = "SRB"
-items = as.numeric(factor(sddem2$Item))
-yrs = sddem2$Year
-projs = as.numeric(factor(sddem2$Project))
-itm.cnts = as.numeric(factor(sddem2$ItemCnt))
-
-# specify data for stan
-dat.1 = list(N=n.resp, K=n.items, T=n.yrs, J=n.cntrys, jj=cntrys, tt=yrs, kk=items, 
-             x=sddem2$Response, samp=sddem2$Sample)
-dat.2 = list(N=n.resp, K=n.items, T=n.yrs, J=n.cntrys, P=n.itm.cnt, jj=cntrys, tt=yrs, 
-             pp=itm.cnts, kk=items, x=sddem2$Response, samp=sddem2$Sample)
-sapply(dat.2, summary)
-
-# pars
-pars.4 = c("mu_lambda","sigma_lambda","sigma_theta","phi","lambda","theta","x_pred","log_lik")
-pars.5 = c("mu_lambda","sigma_lambda","sigma_delta","sigma_theta","phi","lambda","delta","theta",
-            "x_pred","log_lik")
-pars.6 = c("Sigma","Omega","sigma_delta","sigma_theta","phi","lambda","gamm","delta","theta",
-           "x_pred","log_lik")
-
-# iterations
-n.iter = 500
-n.warm = 250
-n.chn = 4
-n.thin = 1
-
-# best model from PA article (model 5)
-stan.mod.5 = stan(file='supdem.stan.mod5.stan', data=dat.2, pars=pars.5, 
-                   iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
-                   control=list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
-
-# model 5 with different priors
-stan.mod.5.2 = stan(file='supdem.stan.mod5.2.stan', data=dat.2, pars=pars.5, 
-                  iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
-                  control=list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
-
-# model 5 with item slopes
-stan.mod.6 = stan(file='supdem.stan.mod6.2.stan', data=dat.2, pars=pars.6, 
-                   iter=n.iter, warmup=n.warm, chains=n.chn, thin=n.thin, 
-                   control=list(adapt_delta=0.99, stepsize=0.01, max_treedepth=13))
 ```
-
 
 # A Better Measure of Democratic Support
 The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
