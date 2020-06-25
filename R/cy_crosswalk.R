@@ -12,7 +12,7 @@ supdem_cy <- supdem %>%                                             # 1390 obs
     unique()
 
 claassen_input_cy <- read_csv("data/claassen_input_raw.csv",
-                              col_types = "cdcddcd") %>%    # 1560 obs
+                              col_types = "cdcddcd") %>%    # 1578 obs
     mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
            project = case_when(p_dcpo == "afrob" ~ "afb",
                                p_dcpo == "amb" ~ "lapop",
@@ -30,7 +30,7 @@ no_problems <- inner_join(supdem_cy, claassen_input_cy)             # 1297 obs
 
 needed <- anti_join(supdem_cy, claassen_input_cy)                   # 93 obs
 
-available <- anti_join(claassen_input_cy, supdem_cy)                # 263 obs
+available <- anti_join(claassen_input_cy, supdem_cy)                # 281 obs
 
 year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 89 obs
     mutate(diff = year.x - year.y) %>% 
@@ -48,7 +48,7 @@ cys_crosswalk <- year_fixes %>%
 
 still_needed <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 4 obs; listed in issue #5 
 
-cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% 
+cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 192 obs
     select(-y_dcpo)
 
 save(cys_crosswalk, cys_to_drop,
