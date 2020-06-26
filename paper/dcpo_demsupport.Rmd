@@ -173,13 +173,21 @@ claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.st
 
 save(claassen_m5, file = "data/claassen_m5.rda")
 
+claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")
+
+save(claassen_m5_theta, file = "data/claassen_m5_theta.rda")
+
 claassen_m5_x_pred <- rstan::extract(claassen_m5, pars = "x_pred")
 
 save(claassen_input, claassen_m5_x_pred, file = "data/claassen_m5_x_pred.rda")
 ```
 
 ```{r comparison_table}
+load("data/claassen_m5_x_pred.rda")
 
+ivt_claassen <- DCPOtools::internal_validation_tests(claassen_input, claassen_m5_x_pred, "claassen")
+
+# see https://github.com/fsolt/dcpo_article/blob/master/R/validation_table.R for more to add when we have it
 
 ```
 
