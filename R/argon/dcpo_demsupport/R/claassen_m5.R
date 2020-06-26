@@ -1,9 +1,9 @@
 library(tidyverse)
 library(rstan)
 
-download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/claassen_input.Rda", "data/claassen_input.Rda")
+download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/claassen_input.rda", "data/claassen_input.rda")
 
-load("data/claassen_input.Rda")
+load("data/claassen_input.rda")
 
 claassen_m5 <- stan(file = 'R/supdem.stan.mod5.stan',
                     data = claassen_input,
