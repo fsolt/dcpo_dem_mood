@@ -158,7 +158,10 @@ claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcd
   mutate(item = if_else(item == "strong_amb_1" & year == 2004, "strong_amb_2", item)) # items conflated in amb_combo file
   
 claassen_input <- DCPOtools::format_claassen(claassen_input_raw1)
-save(claassen_input, file = "data/claassen_input.Rda")
+save(claassen_input, file = here::here("data", "claassen_input.rda"))
+
+dcpo_replication_input <- DCPOtools::format_dcpo(claassen_input_raw1)
+save(dcpo_replication_input, file = here::here("data", "dcpo_replication_input.rda"))
 ```
 
 ```{r claassen_m5, eval=FALSE}
