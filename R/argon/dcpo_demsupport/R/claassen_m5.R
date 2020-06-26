@@ -15,7 +15,7 @@ claassen_m5 <- stan(file = 'R/supdem.stan.mod5.stan',
                              "x_pred","log_lik"),
                     control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
 
-save(demsup_claassen, claassen_m5, 
+save(claassen_input, claassen_m5, 
      file = str_c("data/claassen_m5_2k_", 
                   str_replace_all(Sys.time(), "[ :]", "-") %>%
                       str_replace("20\\d{2}-", "") %>%
