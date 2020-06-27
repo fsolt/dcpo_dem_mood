@@ -1,27 +1,24 @@
-remotes::install_github("fsolt/DCPOtools")
-remotes::install_github("fsolt/DCPO")
+install.packages("DCPO", repos = "https://cloud.r-project.org/")
 
 library(tidyverse)
-library(DCPOtools)
 library(DCPO)
 
 fold <- commandArgs(trailingOnly=TRUE) %>%
-  as.numeric()
-
-demsup <- read_csv(system.file("extdata", "all_data_demsupport.csv", package = "DCPOtools"))
+    as.numeric()
 
 print(fold)
 
-demsup_data <- format_dcpo(demsup %>% with_min_yrs(3),
-                       scale_q = "church_21",
-                       scale_cp = 2)
+download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/dcpo_replication_input.rda", "data/dcpo_replication_input.rda")
 
-demsup_kfold <- dcpo_xvt(demsup_data,
-                          fold_number = fold, 
-			  number_of_folds = 10,
-                          iter = 500)
+load("data/dcpo_replication_input.rda")
 
-save(demsup_kfold, 
+
+dcpo_kfold <- dcpo_xvt(dcpo_replication_input,
+                       fold_number = fold, 
+                       number_of_folds = 10,
+                       iter = 2000)
+
+save(dcpo_kfold, 
      file = str_c("data/fold_",
-		  fold,
+                  fold,
                   ".rda"))
