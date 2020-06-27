@@ -19,6 +19,6 @@ dcpo_kfold <- dcpo_xvt(dcpo_replication_input,
                        iter = 2000)
 
 save(dcpo_kfold, 
-     file = str_c("data/fold_",
+     file = str_c("data/dcpo_fold_",
                   fold,
                   ".rda"))
