@@ -192,6 +192,9 @@ load(here::here("data", "claassen_m5_x_pred.rda"))
 
 ivt_claassen <- DCPOtools::internal_validation_tests(claassen_input, claassen_m5_x_pred, "claassen")
 
+load(here::here("data", "dcpo_replication_y_r_pred.rda"))
+
+ivt_dcpo <- DCPOtools::internal_validation_tests(dcpo_replication_input, dcpo_replication_y_r_pred)
 # see https://github.com/fsolt/dcpo_article/blob/master/R/validation_table.R for more to add when we have it
 
 ```
