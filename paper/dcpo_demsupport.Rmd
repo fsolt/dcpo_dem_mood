@@ -160,7 +160,9 @@ claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcd
 claassen_input <- DCPOtools::format_claassen(claassen_input_raw1)
 save(claassen_input, file = here::here("data", "claassen_input.rda"))
 
-dcpo_replication_input <- DCPOtools::format_dcpo(claassen_input_raw1)
+dcpo_replication_input <- DCPOtools::format_dcpo(claassen_input_raw1,
+                                                 scale_q = "church_lb",
+                                                 scale_cp = 2)
 save(dcpo_replication_input, file = here::here("data", "dcpo_replication_input.rda"))
 ```
 
@@ -186,7 +188,7 @@ save(claassen_input, claassen_m5_x_pred, file = "data/claassen_m5_x_pred.rda")
 ```
 
 ```{r comparison_table}
-load("data/claassen_m5_x_pred.rda")
+load(here::here("data", "claassen_m5_x_pred.rda"))
 
 ivt_claassen <- DCPOtools::internal_validation_tests(claassen_input, claassen_m5_x_pred, "claassen")
 
@@ -213,11 +215,7 @@ Column 4 shows the mean of the MAEs of the ten resulting sets of out-of-sample p
 Column 6 reports the discrepancy between the percentage of all response proportions that fall within their corresponding predictions' 80% confidence intervals and the expected 80%; it therefore provides a gauge of the accuracy of the models' estimates of uncertainty.
 A negative value in this column indicate that less than 80% of the observed out-of-sample survey proportions are included with the model's predictions' nominal 80% credible intervals, and so its uncertainty estimates are overconfident, while a positive value indicates the opposite, that more than 80% of the observed proportions fall within the credible intervals and so the model's uncertainty estimates are overly conservative.
 
-```{r validation}
-# load(here::here("data", "validation_table.rda"))
-# 
-# validation_table
-```
+<!-- We will probably want to just want to summarize results in writing instead of a table, given that we're comparing just two models, rather than three, and space constraints -->
 
 Comparing first the results for Claassen's [-@Claassen2019] Model 5 with those for the @Caughey2019 model reveals that, at least for this set of survey questions, while the former has a smaller MAE, the latter accounts for a larger percentage of the variation in its source data left unexplained by its respective country-means model.
 This is true both in the internal validation test and on average across the ten folds of the external validation test.
@@ -231,7 +229,12 @@ In both cases, these represent the largest percentage improvement over the count
 Further, in the external validation test, the DCPO credible intervals come closest to matching the nominal 80% level of any of the three models.
 
 ## Results
-DCPO results here
+
+### Claassen with uncertainty
+
+### DCPO replication (with uncertainty, of course)
+
+### DCPO, with lots more data
 
 
 # Conclusion
