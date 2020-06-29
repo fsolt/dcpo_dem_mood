@@ -169,10 +169,10 @@ save(dcpo_replication_input, file = here::here("data", "dcpo_replication_input.r
 ```{r claassen_m5, eval=FALSE}
 claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.stan',
                            data = claassen_input,
-                           iter = 2000,
+                           iter = 3000,
                            chains = 4,
                            cores = 4,
-                           thin = 2,
+                           thin = 3,
                            pars = c("mu_lambda", "sigma_lambda", "sigma_delta", "sigma_theta", "phi", "lambda", "delta", "theta", "x_pred","log_lik"),
                            control = list(adapt_delta=0.99, stepsize=0.02, max_treedepth=11))
 
