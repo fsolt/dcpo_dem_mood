@@ -276,3 +276,7 @@ wvs4_swe,evdemoc_wvs,v167,c(4:1),"c(-1,-2)"
 gallup_vop2004,church_vop,q2d,c(4:1),9
 gallup_vop2005,church_vop,q6a1,c(4:1),9
 gallup_vop2007,church_vop,q3a,c(4:1),9
+tcmeg2004,church_tcmeg,m602,c(4:1),"c(97,98,99)"
+tcmeg2004,evdemoc_tcmeg,m603a,c(4:1),"c(97,98,99)"
+tcmeg2004,strong_tcmeg,m603b,c(1:4),"c(97,98,99)"
+tcmeg2004,army_tcmeg,m603e,c(1:4),"c(97,98,99)"
