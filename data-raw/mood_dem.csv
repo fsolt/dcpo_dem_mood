@@ -213,6 +213,8 @@ lb2016,threestate_lb,p8stgbs,"c(2,3,1)","c(-1,-2)"
 lb2016,church_lb,p31sta,c(4:1),"c(-1,-2)"
 lb2017,threestate_lb,p8stgbs,"c(2,3,1)","c(-1,-2)"
 lb2017,church_lb,p22st,c(4:1),c(-1)
+lb2018,threestate_lb,p12stgbs,"c(2,3,1)","c(-1,-2)"
+lb2018,church_lb,p24st,c(4:1),c(-1)
 pew2002,strong_pew,q47,c(2:1),"c(3,4)"
 pew2002,impdemoc_pew,q41b,c(4:1),"c(5,6)"
 pew2005_6,strong_pew,q33,c(2:1),"c(8,9)"
@@ -276,7 +278,7 @@ wvs4_swe,evdemoc_wvs,v167,c(4:1),"c(-1,-2)"
 gallup_vop2004,church_vop,q2d,c(4:1),9
 gallup_vop2005,church_vop,q6a1,c(4:1),9
 gallup_vop2007,church_vop,q3a,c(4:1),9
-tcmeg2004,church_tcmeg,m602,c(4:1),"c(97,98,99)"
+tcmeg2004,church_tcmeg,m601d,c(4:1),"c(97,98,99)"
 tcmeg2004,evdemoc_tcmeg,m603a,c(4:1),"c(97,98,99)"
 tcmeg2004,strong_tcmeg,m603b,c(1:4),"c(97,98,99)"
 tcmeg2004,army_tcmeg,m603e,c(1:4),"c(97,98,99)"
