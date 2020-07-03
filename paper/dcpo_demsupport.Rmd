@@ -15,7 +15,7 @@ author:
   affiliation: Tsinghua University
 - name: Frederick Solt
   affiliation: University of Iowa
-abstract: ""
+abstract: "Public opinion’s effect on democratic institutions is important and long-studied topic.  Claassen (2020) renewed attention to this question by using a Bayesian latent variable approach to measure mass democratic support from survey data and concluded such support has a positive effect on subsequent democratic change and especially on democracy’s endurance once in place.  In this article, we reexamine the question, bringing more survey data on democratic support; a superior measure, Dynamic Comparative Public Opinion (DCPO); and an improved methodological approach that takes the uncertainty in this measure into account.  Our results [further reinforce/contradict] the long-held view that democracies depend on public support to survive."
 keywords: ""
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
@@ -69,11 +69,7 @@ set.seed(313)
 
 <!-- The following text is all cribbed from `fsolt/dcpo_article` and obviously needs heavy revision -->
 
-# Incorporating Uncertainty
-This means not simply employing the point estimates, that is, the means of the posterior distributions [_contra_ @Claassen2020a; @Claassen2020b].
-
-Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
-The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
+# More Data
 
 ```{r dcpo_input_raw}
 dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
@@ -82,21 +78,22 @@ dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
 ```
 
 ```{r dcpo_input}
-demsup_input_raw1 <- read_csv("data/demsup_input_raw.csv", col_types = "cdcddcd") %>% 
+dcpo_input_raw2 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(item, "army_wvs") & # WVS obs identified as problematic by Claassen 
     ((country=="Albania" & year==1998) |
          (country=="Indonesia" & (year==2001 | year==2006)) |
          (country=="Iran" & year==2000) |
-         (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
+         (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
          (country=="Vietnam" & year==2001)) |
     (str_detect(item, "strong_wvs") &
          ((country=="Egypt" & year==2012) |
-              (country=="Iran" & (year==2000 | year==2007)) | #in DCPO, the year is 2007 rather than 2005
+              (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
               (country=="India") |
-              (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
+              (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
               (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
               (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-              (country=="Vietnam" & year==2001)))))
+              (country=="Vietnam" & year==2001))))) %>%
+  with_min_yrs(2)
 
 dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
                                      scale_q = "church_lb",
@@ -107,43 +104,13 @@ save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 # A Better Measure of Democratic Support
 The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
 
-## Relative Fit
-<!-- We'll only compare Model 5 and DCPO and save ourselves the heartache of dealing with dgirt, but the comparison needs updated with the full dataset -->
-To assess the ability of the DCPO model to fit public opinion data relative to the two alternative approaches, I use the set of survey questions on support for democracy employed in @Claassen2019 [, 7-8].
+# Incorporating Uncertainty
+This means not simply employing the point estimates, that is, the means of the posterior distributions [_contra_ @Claassen2020a; @Claassen2020b].
 
-The first three columns of Table \ref{tab:validation_table} present the results of an internal validation test, that is, a test that uses the same data that was used to fit the model [see, e.g., @Claassen2019, 9].
-In column 1, the mean absolute error (MAE) measures the average difference between the observed proportion of survey respondents in country $k$ in year $t$ with replies to question $q$ with a response at least as positive as response $r$ (or with an affirmative response, in the case of Claassen's [-@Claassen2019] Model 5) and the model's predicted proportion across all countries, years, questions, and response categories.
-Given, however, that Claassen's [-@Claassen2019] Model 5 is fit to dichotomized data, while the @Caughey2019 and DCPO models are fit to the original, possibly ordinal, survey data, which have higher variance, comparing the MAE across all three models can be somewhat misleading.
-Therefore, the MAE of the country means---the average proportions answering affirmatively (for Claassen's [-@Claassen2019] Model 5) or with a response at least as positive as response $r$ (for @Caughey2019 and DCPO) in each country across all years and all questions---serve as a baseline [see @Claassen2019, 11-12]; these appear in column 2.
-The percentage reduction in MAE achieved by each model, listed in column 3, represents the improvement in fit compared to this baseline.
+Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
+The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
-The last three columns of Table \ref{tab:validation_table} present the results of an external validation test, a test of the models' ability to predict out-of-sample survey responses.
-This test employs $k$-fold validation with 10 folds, that is, it randomly divides the available country-year-questions into tenths and then sequentially treats each tenth as a test set to be predicted while fitting the model on a training set consisting of the other nine tenths of the data.
-Column 4 shows the mean of the MAEs of the ten resulting sets of out-of-sample predictions, while column 5 presents the mean improvement over of these ten MAEs over their respective ten country-mean MAEs.
-Column 6 reports the discrepancy between the percentage of all response proportions that fall within their corresponding predictions' 80% confidence intervals and the expected 80%; it therefore provides a gauge of the accuracy of the models' estimates of uncertainty.
-A negative value in this column indicate that less than 80% of the observed out-of-sample survey proportions are included with the model's predictions' nominal 80% credible intervals, and so its uncertainty estimates are overconfident, while a positive value indicates the opposite, that more than 80% of the observed proportions fall within the credible intervals and so the model's uncertainty estimates are overly conservative.
-
-<!-- We will probably want to just want to summarize results in writing instead of a table, given that we're comparing just two models, rather than three, and space constraints -->
-
-Comparing first the results for Claassen's [-@Claassen2019] Model 5 with those for the @Caughey2019 model reveals that, at least for this set of survey questions, while the former has a smaller MAE, the latter accounts for a larger percentage of the variation in its source data left unexplained by its respective country-means model.
-This is true both in the internal validation test and on average across the ten folds of the external validation test.
-Again, this discrepancy is possible due to the greater variance in the survey data when its ordinal nature is preserved, as in the @Caughey2019 model, rather than dichotomized, as in Claassen's [-@Claassen2019] approach.
-An examination of column 6 reveals that the @Caughey2019 model yielded predictions with credible intervals that are much too narrow, encompassing only about 13% of the actual sample observations, while those for Claassen's [-@Claassen2019] Model 5 were slightly too conservative.^[
-The relatively poor uncertainty estimates of the @Caughey2019 model are similar to those found for the dichotomous version presented in @Caughey2015 by @Claassen2019 [, 12].]
-
-However, it is the DCPO model that provides what is unambiguously the best fit.
-It features the smallest mean absolute error: on average, in the internal validation test its predictions are just over 3 percentage points away from the actual sample observations, and in the external validation test they are only 5.5 percentage points away from the actual out-of-sample observations.
-In both cases, these represent the largest percentage improvement over the country-means MAE.
-Further, in the external validation test, the DCPO credible intervals come closest to matching the nominal 80% level of any of the three models.
-
-## Results
-
-### Claassen with uncertainty
-
-### DCPO replication (with uncertainty, of course)
-
-### DCPO, with lots more data
-
+# Results
 
 # Conclusion
 
