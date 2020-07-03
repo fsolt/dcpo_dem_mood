@@ -92,7 +92,9 @@ dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>
               (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
               (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
               (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-              (country=="Vietnam" & year==2001))))) %>%
+              (country=="Vietnam" & year==2001))) |
+      (country %in% c("Puerto Rico", "Northern Ireland", 
+                      "SrpSka Republic", "Hong Kong SAR China")))) %>%
   with_min_yrs(2)
 
 dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
@@ -103,15 +105,17 @@ save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 
 ```{r compare_n}
 supdem <- dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>%
-  read_csv(col_types = "cdcddcdc")
+  read_csv(col_types = "cdcddcdc") %>% 
+  janitor::clean_names() %>% 
+  with_min_yrs(2)
 
 supdem_ncy <- supdem %>%
-  dplyr::select(Country, Year) %>% 
+  dplyr::select(country, year) %>% 
   unique() %>% 
   nrow()
 
 supdem_ncyi <- supdem %>%
-  dplyr::select(Country, Year, Item) %>% 
+  dplyr::select(country, year, item) %>% 
   unique() %>% 
   nrow()
 
