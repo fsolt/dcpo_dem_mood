@@ -1,7 +1,6 @@
-install.packages("DCPO", repos = "https://cloud.r-project.org/")
-
 library(tidyverse)
-library(DCPO)
+if (!require("DCPO")) install.packages("DCPO", repos = "https://cloud.r-project.org/"); library(DCPO)
+
 
 download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/dcpo_input.rda", "data/dcpo_input.rda")
 
