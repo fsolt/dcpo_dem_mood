@@ -79,22 +79,22 @@ dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
 
 ```{r dcpo_input}
 dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
-  filter(!(str_detect(item, "army_wvs") & # WVS obs identified as problematic by Claassen 
-    ((country=="Albania" & year==1998) |
-         (country=="Indonesia" & (year==2001 | year==2006)) |
-         (country=="Iran" & year==2000) |
-         (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-         (country=="Vietnam" & year==2001)) |
-    (str_detect(item, "strong_wvs") &
-         ((country=="Egypt" & year==2012) |
-              (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
-              (country=="India") |
-              (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-              (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
-              (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-              (country=="Vietnam" & year==2001))) |
-      (country %in% c("Puerto Rico", "Northern Ireland", 
-                      "SrpSka Republic", "Hong Kong SAR China")))) %>%
+  filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
+                 ((country=="Albania" & year==1998) |
+                      (country=="Indonesia" & (year==2001 | year==2006)) |
+                      (country=="Iran" & year==2000) |
+                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                      (country=="Vietnam" & year==2001)) |
+                 (str_detect(item, "strong_wvs") &
+                      ((country=="Egypt" & year==2012) |
+                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                           (country=="India") |
+                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                           (country=="Vietnam" & year==2001))) |
+                 (country %in% c("Puerto Rico", "Northern Ireland", 
+                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
   with_min_yrs(2)
 
 dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
@@ -135,6 +135,14 @@ increase_cyi <- round((dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 
 # A Better Measure of Democratic Support
 The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
+
+```{r country_years}
+dcpo_input_cy <- dcpo_input_raw1 %>% 
+  dplyr::select(country, year) %>% 
+  unique()
+
+save(dcpo_input_cy, file = here::here("data", "dcpo_input_cy.rda"))
+```
 
 # Incorporating Uncertainty
 This means not simply employing the point estimates, that is, the means of the posterior distributions [_contra_ @Claassen2020a; @Claassen2020b].
