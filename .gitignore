@@ -14,7 +14,7 @@
 dev/*
 framed.sty
 data/church*.rda
-data/claassen*.rda
+data/claassen_m5*.rda
 paper/*cache/
 paper/figures/old/
 paper/lit/
