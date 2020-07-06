@@ -8,11 +8,11 @@ load("data/dcpo_replication_input.rda")
 
 iter <- 3000
 
-dcpo_output <- dcpo(dcpo_replication_input,
-                    iter = iter,
-                    chains = 4,
-                    thin = iter/500, # this yields 250 draws per chain, 1000 draws total
-                    pars = c("sd_delta","sd_theta_evolve", "sd_sigma_evolve", "sigma","phi","beta","alpha","delta","theta","y_r_pred","log_lik"))
+dcpo_replication_output <- dcpo(dcpo_replication_input,
+                                iter = iter,
+                                chains = 4,
+                                thin = iter/500, # this yields 250 draws per chain, 1000 draws total
+                                pars = c("sd_delta","sd_theta_evolve", "sd_sigma_evolve", "sigma","phi","beta","alpha","delta","theta","y_r_pred","log_lik"))
 
 save(dcpo_replication_input, dcpo_replication_output,
      file = str_c("data/church_lb2_rep_", round(iter/1000), "k_",
