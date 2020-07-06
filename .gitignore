@@ -15,11 +15,14 @@ dev/*
 framed.sty
 data/church*.rda
 data/claassen_m5*.rda
+data/dcpo_output.rda
+data/*/claassen_m5*.rda
 paper/*cache/
 paper/figures/old/
 paper/lit/
 paper/cda/
 data/kfold/*fold*
+data/kfold/*/*fold*
 reference/
 
 
