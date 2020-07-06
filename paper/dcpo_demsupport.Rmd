@@ -133,6 +133,26 @@ increase_cy <- round((dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
 increase_cyi <- round((dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 ```
 
+```{r dcpo, eval=FALSE}
+iter <- 3000
+
+dcpo_output <- dcpo(dcpo_input,
+                    iter = iter,
+                    chains = 4,
+                    thin = iter/500, # this yields 250 draws per chain, 1000 draws total
+                    pars = c("sd_delta","sd_theta_evolve", "sd_sigma_evolve", "sigma","phi","beta","alpha","delta","theta","y_r_pred","log_lik"))
+
+save(dcpo_output, file = here::here("data", "dcpo_output.rda"))
+
+dcpo_theta <- rstan::extract(dcpo_output, pars = "theta")
+
+save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
+
+dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
+
+save(dcpo_input, dcpo_x_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
+```
+
 # A Better Measure of Democratic Support
 The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
 
