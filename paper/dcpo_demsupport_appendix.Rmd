@@ -75,7 +75,7 @@ claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_
                                        file = "data/claassen_input_raw.csv")
 ```
 
-```{r claassen_input}
+```{r claassen_replication_input}
 # Note that before running `dataverse::get_file()` below, one should set their personal token and server in their system environment first: 
 # Sys.setenv("DATAVERSE_KEY" = "exampleToken")
 # Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
@@ -131,7 +131,7 @@ missing_cyps <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.
 cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 398 obs
     select(-y_dcpo)
 
-claassen_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcddcd") %>% 
+claassen_replication_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(item, "army_wvs") & # WVS obs identified as problematic by Claassen 
     ((country=="Albania" & year==1998) |
          (country=="Indonesia" & (year==2001 | year==2006)) |
@@ -191,6 +191,32 @@ load(here::here("data", "dcpo_replication_y_r_pred.rda"))
 
 ivt_dcpo <- DCPOtools::internal_validation_tests(dcpo_replication_input, dcpo_replication_y_r_pred)
 # see https://github.com/fsolt/dcpo_article/blob/master/R/validation_table.R for more to add when we have it
+
+```
+
+
+```{r claassen_input}
+claassen_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
+  filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
+                 ((country=="Albania" & year==1998) |
+                      (country=="Indonesia" & (year==2001 | year==2006)) |
+                      (country=="Iran" & year==2000) |
+                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                      (country=="Vietnam" & year==2001)) |
+                 (str_detect(item, "strong_wvs") &
+                      ((country=="Egypt" & year==2012) |
+                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                           (country=="India") |
+                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                           (country=="Vietnam" & year==2001))) |
+                 (country %in% c("Puerto Rico", "Northern Ireland", 
+                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+  with_min_yrs(2)
+
+claassen_input <- DCPOtools::format_claassen(claassen_input_raw1)
+save(claassen_input, file = here::here("data", "claassen_input.rda"))
 
 ```
 
