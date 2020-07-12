@@ -163,11 +163,39 @@ Instead, researchers should follow the recommendations of work using other laten
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
 ```{r country_years}
-dcpo_input_cy <- dcpo_input_raw1 %>% 
-  dplyr::select(country, year) %>% 
-  unique()
+path_df <-
+  list.files(
+    "../data",
+    pattern = ".*_theta.rda",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>%
+  .[str_which(., "claassen")]
 
-save(dcpo_input_cy, file = here::here("data", "dcpo_input_cy.rda"))
+load(path_df)
+
+df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
+       function(year) {
+         map_df(seq(claassen_m5_theta$theta[1, 1, ]),
+                function(country) {
+                  df_temp <-
+                    sample(claassen_m5_theta$theta[, year, country],
+                           size = 100,
+                           replace = TRUE) %>%
+                    matrix(ncol = 100) %>%
+                    as_tibble()
+                  df_temp$yearID <- year
+                  df_temp$countryID <- country
+                  return(df_temp)
+                })
+       }) %>% 
+  pivot_longer(
+    df_temp,
+    cols = starts_with("V"),
+    names_to = "draw",
+    values_to = "theta"
+  ) %>% 
+  group_split(draw)
 ```
 
 # Results
