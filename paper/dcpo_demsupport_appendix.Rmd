@@ -67,12 +67,28 @@ p_load(
 set.seed(313)
 ```
 
+```{r claassen_input}
+dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
+  filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
+                 ((country=="Albania" & year==1998) |
+                      (country=="Indonesia" & (year==2001 | year==2006)) |
+                      (country=="Iran" & year==2000) |
+                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                      (country=="Vietnam" & year==2001)) |
+                 (str_detect(item, "strong_wvs") &
+                      ((country=="Egypt" & year==2012) |
+                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                           (country=="India") |
+                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                           (country=="Vietnam" & year==2001))) |
+                 (country %in% c("Puerto Rico", "Northern Ireland", 
+                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+  with_min_yrs(2)
 
-
-```{r claassen_input_raw}
-claassen_input_raw <- DCPOtools:::claassen_setup(vars = read_csv("data-raw/mood_dem.csv",
-                                                                 col_types = "ccccc"),
-                                       file = "data/claassen_input_raw.csv")
+claassen_input <- DCPOtools::format_claassen(dcpo_input_raw1)
+save(claassen_input, file = here::here("data", "claassen_input.rda"))
 ```
 
 ```{r claassen_replication_input}
@@ -91,26 +107,26 @@ supdem_cy <- supdem %>%                                             # 1390 obs
     dplyr::select(country, year, project) %>% 
     unique()
 
-claassen_input_cy <- read_csv("data/claassen_input_raw.csv",
-                              col_types = "cdcddcd") %>%           # 1784 obs
-    mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
-           project = case_when(p_dcpo == "afrob" ~ "afb",
-                               p_dcpo == "amb" ~ "lapop",
-                               p_dcpo == "arabb" ~ "arb",
-                               p_dcpo == "asiab" ~ "asb",
-                               p_dcpo == "asianb" ~ "asnb",
-                               p_dcpo == "neb" ~ "ndb",
-                               p_dcpo == "sasianb" ~ "sab",
-                               TRUE ~ p_dcpo),
-           y_dcpo = year) %>%
-    dplyr::select(country, year, y_dcpo, survey, project) %>% 
-    unique()
+claassen_input_cy <- read_csv("data/dcpo_input_raw.csv",
+                              col_types = "cdcddcd") %>%           # 1813 obs
+  mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
+         project = case_when(p_dcpo == "afrob" ~ "afb",
+                             p_dcpo == "amb" ~ "lapop",
+                             p_dcpo == "arabb" ~ "arb",
+                             p_dcpo == "asiab" ~ "asb",
+                             p_dcpo == "asianb" ~ "asnb",
+                             p_dcpo == "neb" ~ "ndb",
+                             p_dcpo == "sasianb" ~ "sab",
+                             TRUE ~ p_dcpo),
+         y_dcpo = year) %>%
+  dplyr::select(country, year, y_dcpo, survey, project) %>% 
+  unique()
 
 no_problems <- inner_join(supdem_cy, claassen_input_cy)             # 1297 obs
 
 needed <- anti_join(supdem_cy, claassen_input_cy)                   # 93 obs
 
-available <- anti_join(claassen_input_cy, supdem_cy)                # 487 obs
+available <- anti_join(claassen_input_cy, supdem_cy)                # 516 obs
 
 year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 89 obs
     mutate(diff = year.x - year.y) %>% 
@@ -128,7 +144,7 @@ cys_crosswalk <- year_fixes %>%
 
 missing_cyps <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 4 obs; listed in issue #5 
 
-cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 398 obs
+cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 427 obs
     select(-y_dcpo)
 
 claassen_replication_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcddcd") %>% 
