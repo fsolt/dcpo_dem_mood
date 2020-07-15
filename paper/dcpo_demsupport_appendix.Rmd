@@ -71,21 +71,21 @@ set.seed(313)
 ```{r claassen_input}
 dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
-                 ((country=="Albania" & year==1998) |
-                      (country=="Indonesia" & (year==2001 | year==2006)) |
-                      (country=="Iran" & year==2000) |
-                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                      (country=="Vietnam" & year==2001)) |
-                 (str_detect(item, "strong_wvs") &
-                      ((country=="Egypt" & year==2012) |
-                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
-                           (country=="India") |
-                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
-                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-                           (country=="Vietnam" & year==2001))) |
-                 (country %in% c("Puerto Rico", "Northern Ireland", 
-                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+             ((country=="Albania" & year==1998) |
+                (country=="Indonesia" & (year==2001 | year==2006)) |
+                (country=="Iran" & year==2000) |
+                (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                (country=="Vietnam" & year==2001)) |
+             (str_detect(item, "strong_wvs") &
+                ((country=="Egypt" & year==2012) |
+                   (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                   (country=="India") |
+                   (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                   (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                   (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                   (country=="Vietnam" & year==2001))) |
+             (country %in% c("Puerto Rico", "Northern Ireland", 
+                             "SrpSka Republic", "Hong Kong SAR China")))) %>%
   with_min_yrs(2)
 
 claassen_input <- DCPOtools::format_claassen(dcpo_input_raw1)
@@ -99,14 +99,14 @@ save(claassen_input, file = here::here("data", "claassen_input.rda"))
 # These values can be set to persist across R sessions using `usethis::edit_r_environ()`
 
 supdem <- dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
-    read_csv(col_types = "cdcddcdc")
+  read_csv(col_types = "cdcddcdc")
 
 supdem_cy <- supdem %>%                                             # 1390 obs
-    janitor::clean_names() %>% 
-    mutate(old_country = country,
-           country = countrycode::countrycode(old_country, "country.name", "country.name")) %>%
-    dplyr::select(country, year, project) %>% 
-    unique()
+  janitor::clean_names() %>% 
+  mutate(old_country = country,
+         country = countrycode::countrycode(old_country, "country.name", "country.name")) %>%
+  dplyr::select(country, year, project) %>% 
+  unique()
 
 claassen_input_cy <- read_csv("data/dcpo_input_raw.csv",
                               col_types = "cdcddcd") %>%           # 1813 obs
@@ -130,45 +130,45 @@ needed <- anti_join(supdem_cy, claassen_input_cy)                   # 93 obs
 available <- anti_join(claassen_input_cy, supdem_cy)                # 516 obs
 
 year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 89 obs
-    mutate(diff = year.x - year.y) %>% 
-    group_by(country, project, year.x) %>% 
-    mutate(closest_to_claassen = min(abs(diff))) %>% 
-    ungroup() %>% 
-    group_by(country, project, year.y) %>% 
-    mutate(closest_to_dcpo = min(abs(diff))) %>% 
-    ungroup() %>% 
-    filter(closest_to_claassen == abs(diff) & closest_to_dcpo == abs(diff) & abs(diff) <= 3) %>% 
-    filter(!(country == "Egypt" & year.x == 2014 & survey == "afrob5")) # double match (it's really afrob6)
+  mutate(diff = year.x - year.y) %>% 
+  group_by(country, project, year.x) %>% 
+  mutate(closest_to_claassen = min(abs(diff))) %>% 
+  ungroup() %>% 
+  group_by(country, project, year.y) %>% 
+  mutate(closest_to_dcpo = min(abs(diff))) %>% 
+  ungroup() %>% 
+  filter(closest_to_claassen == abs(diff) & closest_to_dcpo == abs(diff) & abs(diff) <= 3) %>% 
+  filter(!(country == "Egypt" & year.x == 2014 & survey == "afrob5")) # double match (it's really afrob6)
 
 cys_crosswalk <- year_fixes %>% 
-    select(country, y_dcpo, y_claassen = year.x, survey)
+  select(country, y_dcpo, y_claassen = year.x, survey)
 
 missing_cyps <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 4 obs; listed in issue #5 
 
 cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 427 obs
-    select(-y_dcpo)
+  select(-y_dcpo)
 
 claassen_replication_input_raw1 <- read_csv("data/claassen_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(item, "army_wvs") & # WVS obs identified as problematic by Claassen 
-    ((country=="Albania" & year==1998) |
-         (country=="Indonesia" & (year==2001 | year==2006)) |
-         (country=="Iran" & year==2000) |
-         (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
-         (country=="Vietnam" & year==2001)) |
-    (str_detect(item, "strong_wvs") &
-         ((country=="Egypt" & year==2012) |
-              (country=="Iran" & (year==2000 | year==2007)) | #in DCPO, the year is 2007 rather than 2005
-              (country=="India") |
-              (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
-              (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
-              (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-              (country=="Vietnam" & year==2001))))) %>% 
+             ((country=="Albania" & year==1998) |
+                (country=="Indonesia" & (year==2001 | year==2006)) |
+                (country=="Iran" & year==2000) |
+                (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
+                (country=="Vietnam" & year==2001)) |
+             (str_detect(item, "strong_wvs") &
+                ((country=="Egypt" & year==2012) |
+                   (country=="Iran" & (year==2000 | year==2007)) | #in DCPO, the year is 2007 rather than 2005
+                   (country=="India") |
+                   (country=="Pakistan" & (year==1997 | year==2001)) | #in DCPO,it is 1997 instead of 1996
+                   (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                   (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                   (country=="Vietnam" & year==2001))))) %>% 
   anti_join(cys_to_drop, by = c("country", "year", "survey")) %>% # surveys unused by Claassen
   left_join(cys_crosswalk, by = c("country", "year" = "y_dcpo", "survey")) %>% 
   mutate(year = if_else(!is.na(y_claassen), y_claassen, year)) %>% # use Claassen's year codings
   mutate(item = if_else(item == "strong_amb_1" & year == 2004, "strong_amb_2", item)) %>% # items conflated in amb_combo file
   with_min_yrs(2)
-  
+
 claassen_replication_input <- DCPOtools::format_claassen(claassen_input_raw1)
 save(claassen_replication_input, file = here::here("data", "claassen_replication_input.rda"))
 
@@ -215,21 +215,21 @@ ivt_dcpo <- DCPOtools::internal_validation_tests(dcpo_replication_input, dcpo_re
 ```{r claassen_input}
 claassen_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
-                 ((country=="Albania" & year==1998) |
-                      (country=="Indonesia" & (year==2001 | year==2006)) |
-                      (country=="Iran" & year==2000) |
-                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                      (country=="Vietnam" & year==2001)) |
-                 (str_detect(item, "strong_wvs") &
-                      ((country=="Egypt" & year==2012) |
-                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
-                           (country=="India") |
-                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
-                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-                           (country=="Vietnam" & year==2001))) |
-                 (country %in% c("Puerto Rico", "Northern Ireland", 
-                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+             ((country=="Albania" & year==1998) |
+                (country=="Indonesia" & (year==2001 | year==2006)) |
+                (country=="Iran" & year==2000) |
+                (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                (country=="Vietnam" & year==2001)) |
+             (str_detect(item, "strong_wvs") &
+                ((country=="Egypt" & year==2012) |
+                   (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                   (country=="India") |
+                   (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                   (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                   (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                   (country=="Vietnam" & year==2001))) |
+             (country %in% c("Puerto Rico", "Northern Ireland", 
+                             "SrpSka Republic", "Hong Kong SAR China")))) %>%
   with_min_yrs(2)
 
 claassen_input <- DCPOtools::format_claassen(claassen_input_raw1)
@@ -246,20 +246,20 @@ ls_year <- 1988:2017
 ls_country <- claassen_replication_input$data$country %>% unique()
 
 df_thetaDraw <- map_df(seq(ls_year), # year2
-       function(oneYear) {
-         map_df(seq(ls_country),
-                function(oneCountry) {
-                  df_temp <-
-                    sample(claassen_m5_theta$theta[, oneYear, oneCountry],
-                           size = 100, #draw 100 from the distribution
-                           replace = TRUE) %>%
-                    matrix(ncol = 100) %>%
-                    as_tibble()
-                  df_temp$year <- ls_year[oneYear]
-                  df_temp$country <- ls_country[oneCountry]
-                  return(df_temp)
-                })
-       }) %>% 
+                       function(oneYear) {
+                         map_df(seq(ls_country),
+                                function(oneCountry) {
+                                  df_temp <-
+                                    sample(claassen_m5_theta$theta[, oneYear, oneCountry],
+                                           size = 100, #draw 100 from the distribution
+                                           replace = TRUE) %>%
+                                    matrix(ncol = 100) %>%
+                                    as_tibble()
+                                  df_temp$year <- ls_year[oneYear]
+                                  df_temp$country <- ls_country[oneCountry]
+                                  return(df_temp)
+                                })
+                       }) %>% 
   pivot_longer(
     cols = starts_with("V"),
     names_to = "draw",
@@ -286,11 +286,11 @@ result_m5N <- map(df_thetaDraw, function(aDataset){
   plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(theta, 1) + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1), model="pooling", data = aDataset)
 })
 
-vcovBK_se <- function(x){
+vcovBK_se <- function(x) {
   vcovBK(x, cluster = "time") %>% 
     diag() %>% 
-    sqrt()}
-
+    sqrt()
+}
 
 result_betas_m5 <- mitools::MIextract(result_m5N, fun = coef)
 result_vars_m5 <- mitools::MIextract(result_m5N, fun = vcovBK_se)
@@ -298,6 +298,32 @@ result_vars_m5 <- mitools::MIextract(result_m5N, fun = vcovBK_se)
 summary(result_m5O)
 summary(mitools::MIcombine(results = result_betas_m5, 
                            variance = result_vars_m5))
+
+
+first_year <- min(claassen_replication_input$data$year)
+
+df_theta <- purrr::map(1:1000, function(x) {
+  claassen_m5_theta$theta[1,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_country, .cols = starts_with("V")) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = ls_country,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year) %>% 
+    left_join(df_controls, by = c("country" = "Country", "year" = "Year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+result_m5_1k <- map(df_theta, function(aDataset) {
+  plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(theta, 1) + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1), model="pooling", data = aDataset)
+})
+
+result_betas_m5_1k <- mitools::MIextract(result_m5N_1k, fun = coef)
+result_vars_m5_1k <- mitools::MIextract(result_m5N_1k, fun = vcovBK_se)
+
+summary(mitools::MIcombine(results = result_betas_m5_1k, 
+                           variance = result_vars_m5_1k))
 ```
 
 
