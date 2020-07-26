@@ -104,8 +104,14 @@ save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 ```
 
 ```{r compare_n}
-supdem <- dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>%
-  read_csv(col_types = "cdcddcdc") %>% 
+if (!file.exists("data/supdem raw survey marginals.tab")) {
+  dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
+    read_csv(col_types = "cdcddcdc") %>% 
+    write_csv("data/supdem raw survey marginals.tab")
+}
+
+supdem <- read_csv("data/supdem raw survey marginals.tab",
+                   col_types = "cdcddcdc") %>% 
   janitor::clean_names() %>% 
   with_min_yrs(2)
 
