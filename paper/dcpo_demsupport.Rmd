@@ -135,8 +135,8 @@ dcpo_input_ncyi <- dcpo_input_raw1 %>%
   unique() %>% 
   nrow()
 
-increase_cy <- round((dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
-increase_cyi <- round((dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
+increase_cy <- sprintf("%2.1f", (dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
+increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 ```
 
 # A Better Measure of Democratic Support
