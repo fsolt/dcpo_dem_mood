@@ -159,7 +159,7 @@ save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
 
 dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
 
-save(dcpo_input, dcpo_x_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
+save(dcpo_input, dcpo_y_r_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
 ```
 
 # Incorporating Uncertainty
