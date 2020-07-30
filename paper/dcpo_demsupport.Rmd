@@ -7,7 +7,7 @@ output:
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
 title: "[dcpo_demsupport]"
-thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`."
+thanks: "The authors contributed equally to this work.  Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
 - name: Yuehong 'Cassandra' Tai
   affiliation: University of Iowa
@@ -219,26 +219,25 @@ vcovBK_se <- function(x) {
 load(here::here("data", "dcpo_input_update.rda"))
 load(here::here("data", "dcpo_theta.rda"))
 
-ls_year <- 1988:2017
-ls_country <- dcpo_input$data$country %>% 
-  unique
-
 df_controls <- read_csv(here::here("data", "control_variables.csv"),
-                        col_types = cols(
-                          .default = col_double(),
-                          Country = col_character(),
-                          Cnt_code = col_character(),
-                          ISO_code = col_character(),
-                          Region_UN = col_character()))
+                        col_types = cols(.default = col_double(),
+                                         country = col_character(),
+                                         country_name = col_character(),
+                                         ISO = col_character(),
+                                         Region_UN = col_character(),
+                                         Region_UN.1 = col_character())) %>% 
+  mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
+         country = countrycode::countrycode(country0, "country.name", "country.name"))
 
+ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
 
 df_theta <- purrr::map(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
-    as_tibble() %>% 
-    rename_with(~ ls_country, .cols = starts_with("V")) %>% 
+    as_tibble(.name_repair = ~make.names(., unique = TRUE)) %>% 
+    rename_with(~ ls_country, .cols = everything()) %>% 
     mutate(year = first_year + row_number() - 1) %>% 
-    pivot_longer(cols = ls_country,
+    pivot_longer(cols = all_of(ls_country),
                  names_to = "country",
                  values_to = "theta") %>%
     arrange(country, year) %>% 
