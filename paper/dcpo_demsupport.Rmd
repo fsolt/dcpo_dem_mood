@@ -56,7 +56,8 @@ library(pacman)
 # load all the packages you will use below 
 p_load(
   dataverse, # data scraping
-  DCPOtools, # analysis
+  DCPOtools,
+  plm, # analysis
   huxtable, kableExtra, modelsummary, # tabulation
   latex2exp, # visualization
   rstan, # Bayesian estimation
@@ -206,7 +207,7 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 
 # Results
 
-```{r dcpo-uncertainty}
+```{r dcpo-uncertainty, cache=TRUE}
 # Preload function ----
 vcovBK_se <- function(x) {
   vcovBK(x, cluster = "time") %>% 
@@ -216,7 +217,7 @@ vcovBK_se <- function(x) {
 
 # Data input ----
 
-# load(here::here("data", "dcpo_input_update.rda"))
+load(here::here("data", "dcpo_input.rda"))
 load(here::here("data", "dcpo_theta.rda"))
 
 df_controls <- read_csv(here::here("data", "control_variables.csv"),
@@ -240,13 +241,13 @@ df_theta <- purrr::map(1:1000, function(anEntry) {
                  values_to = "theta") %>%
     arrange(country, year) %>% 
     left_join(df_controls, by = c("country", "year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
+    pdata.frame(index = c("country", "year"))
 })
 
 result_dcpo_1k <- map(df_theta, function(aDataset) {
   plm(Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + plm::lag(theta, 1) +
         plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) +
-        plm::lag(Region_UN, 1) + plm::lag(muslism_prop_2010, 1) +
+        plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) +
         plm::lag(dependence_pc_di, 1),
     model = "pooling",
     data = aDataset
@@ -256,10 +257,34 @@ result_dcpo_1k <- map(df_theta, function(aDataset) {
 result_betas_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = coef)
 result_vars_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
 
-summary(mitools::MIcombine(results = result_betas_dcpo_1k, 
-                           variance = result_vars_dcpo_1k))
+df_result_dcpo <- summary(mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)) %>% rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)"))
 
 ```
+
+```{r dcpoVisualization, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
+
+(dwplot(df_result_dcpo, by_2sd = FALSE)) %>% 
+  relabel_predictors(c(`plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
+`plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
+`plm::lag(theta, 1)` = "Democratic Mood(t-1)",
+`plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+`plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
+`plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+`plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)", #there's a lag in the replication file
+`plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)")) +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Level of Democracy") + 
+  xlab("Coefficient Estimate") +
+  theme(axis.title.y = element_blank(),
+        legend.position = "none")
+
+```
+
 
 
 # Conclusion
