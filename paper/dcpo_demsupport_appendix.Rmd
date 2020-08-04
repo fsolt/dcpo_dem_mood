@@ -245,60 +245,11 @@ load(here::here("data", "claassen_m5_theta.rda"))
 ls_year <- 1988:2017
 ls_country <- claassen_replication_input$data$country %>% unique()
 
-df_thetaDraw <- map_df(seq(ls_year), # year2
-                       function(oneYear) {
-                         map_df(seq(ls_country),
-                                function(oneCountry) {
-                                  df_temp <-
-                                    sample(claassen_m5_theta$theta[, oneYear, oneCountry],
-                                           size = 100, #draw 100 from the distribution
-                                           replace = TRUE) %>%
-                                    matrix(ncol = 100) %>%
-                                    as_tibble()
-                                  df_temp$year <- ls_year[oneYear]
-                                  df_temp$country <- ls_country[oneCountry]
-                                  return(df_temp)
-                                })
-                       }) %>% 
-  pivot_longer(
-    cols = starts_with("V"),
-    names_to = "draw",
-    values_to = "theta"
-  ) %>% 
-  group_split(draw)
-
-df_controls <- read_csv(here::here("data", "Support_democracy_ajps.csv"),
-                        col_types = cols(
-                          .default = col_double(),
-                          Country = col_character(),
-                          Cnt_code = col_character(),
-                          ISO_code = col_character(),
-                          Region_UN = col_character()))
-
-df_thetaDraw <- map(df_thetaDraw, function(oneDraw){
-  left_join(oneDraw, df_controls, by = c("country" = "Country", "year" = "Year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
-
-result_m5O <- plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(SupDem_trim, 1) + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1), pdata.frame(df_controls, index = c("Country", "Year")), model="pooling")
-
-result_m5N <- map(df_thetaDraw, function(aDataset){
-  plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(theta, 1) + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1), model="pooling", data = aDataset)
-})
-
 vcovBK_se <- function(x) {
   vcovBK(x, cluster = "time") %>% 
     diag() %>% 
     sqrt()
 }
-
-result_betas_m5 <- mitools::MIextract(result_m5N, fun = coef)
-result_vars_m5 <- mitools::MIextract(result_m5N, fun = vcovBK_se)
-
-summary(result_m5O)
-summary(mitools::MIcombine(results = result_betas_m5, 
-                           variance = result_vars_m5))
-
 
 first_year <- min(claassen_replication_input$data$year)
 
@@ -322,10 +273,32 @@ result_m5_1k <- map(df_theta, function(aDataset) {
 result_betas_m5_1k <- mitools::MIextract(result_m5N_1k, fun = coef)
 result_vars_m5_1k <- mitools::MIextract(result_m5N_1k, fun = vcovBK_se)
 
-summary(mitools::MIcombine(results = result_betas_m5_1k, 
-                           variance = result_vars_m5_1k))
+df_result_cls <- summary(mitools::MIcombine(results = result_betas_m5_1k, variance = result_vars_m5_1k))%>% rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)"))
 ```
 
+```{r dcpoVisualization, fig.cap= "Replication of Model 5 in Claassen's AJPS 2019"}
+
+(dwplot(df_result_cls, by_2sd = FALSE)) %>% 
+  relabel_predictors(c(`plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
+`plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
+`plm::lag(theta, 1)` = "Democratic Mood(t-1)",
+`plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+`plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
+`plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+`plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)", #there's a lag in the replication file
+`plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)")) +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Level of Democracy") + 
+  xlab("Coefficient Estimate") +
+  theme(axis.title.y = element_blank(),
+        legend.position = "none")
+
+```
 
 # Conclusion
 
