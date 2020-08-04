@@ -60,6 +60,7 @@ p_load(
   huxtable, kableExtra, modelsummary, # tabulation
   latex2exp, # visualization
   rstan, # Bayesian estimation
+  plm,
   tidyverse # data wrangling
 ) 
 
@@ -209,7 +210,7 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 ```{r dcpo-uncertainty}
 # Preload function ----
 vcovBK_se <- function(x) {
-  vcovBK(x, cluster = "time") %>% 
+  plm::vcovBK(x, cluster = "time") %>% 
     diag() %>% 
     sqrt()
 }
