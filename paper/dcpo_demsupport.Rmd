@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 output: 
   pdf_document:
@@ -323,3 +324,324 @@ dwplot(df_result_dcpo, by_2sd = FALSE) %>%
 # Conclusion
 
 \pagebreak
+=======
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: svm-latex-ms2.tex
+title: "[dcpo_demsupport]"
+thanks: "The authors contributed equally to this work.  Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
+author:
+- name: Yuehong 'Cassandra' Tai
+  affiliation: University of Iowa
+- name: Yue Hu
+  affiliation: Tsinghua University
+- name: Frederick Solt
+  affiliation: University of Iowa
+abstract: "Public opinion’s effect on democratic institutions is important and long-studied topic.  Claassen (2020) renewed attention to this question by using a Bayesian latent variable approach to measure mass democratic support from survey data and concluded such support has a positive effect on subsequent democratic change and especially on democracy’s endurance once in place.  In this article, we reexamine the question, bringing more survey data on democratic support; a superior measure, Dynamic Comparative Public Opinion (DCPO); and an improved methodological approach that takes the uncertainty in this measure into account.  Our results [further reinforce/contradict] the long-held view that democracies depend on public support to survive."
+keywords: ""
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+spacing: double
+bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
+# csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
+biblio-style: apsr
+citecolor: black
+linkcolor: black
+endnote: no
+header-includes:
+      - \usepackage{array}
+      - \usepackage{caption}
+      - \usepackage{graphicx}
+      - \usepackage{siunitx}
+      - \usepackage{colortbl}
+      - \usepackage{multirow}
+      - \usepackage{hhline}
+      - \usepackage{calc}
+      - \usepackage{tabularx}
+      - \usepackage{threeparttable}
+      - \usepackage{wrapfig}
+nocite: |
+  @Solt2020a
+---
+
+intro
+
+More data, better method, superior measure
+
+review models
+
+results
+
+```{r setup, include=FALSE}
+options(tinytex.verbose = TRUE)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300)
+
+# If you haven't install `DCPOtools`
+# remotes::install_github("fsolt/DCPOtools")
+
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+
+# load all the packages you will use below 
+p_load(
+  dataverse, # data scraping
+  DCPOtools,
+  plm, # analysis
+  huxtable, kableExtra, modelsummary, # tabulation
+  latex2exp, # visualization
+  rstan, # Bayesian estimation
+  tidyverse, # data wrangling
+  dotwhisker # visualization
+) 
+
+# Functions preload
+set.seed(313)
+```
+
+<!-- The following text is all cribbed from `fsolt/dcpo_article` and obviously needs heavy revision -->
+
+# More Data
+
+```{r dcpo_input_raw}
+dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
+                                                          col_types = "cccccc"),
+                                          file = "data/dcpo_input_raw.csv")
+```
+
+```{r dcpo_input}
+dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
+  filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
+                 ((country=="Albania" & year==1998) |
+                      (country=="Indonesia" & (year==2001 | year==2006)) |
+                      (country=="Iran" & year==2000) |
+                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                      (country=="Vietnam" & year==2001)) |
+                 (str_detect(item, "strong_wvs") &
+                      ((country=="Egypt" & year==2012) |
+                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
+                           (country=="India") |
+                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
+                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
+                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
+                           (country=="Vietnam" & year==2001))) |
+                 (country %in% c("Puerto Rico", "Northern Ireland", 
+                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+  with_min_yrs(2)
+
+dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
+                                     scale_q = "church_lb",
+                                     scale_cp = 2)
+save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
+```
+
+```{r compare_n}
+if (!file.exists("data/supdem raw survey marginals.tab")) {
+  dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
+    read_csv(col_types = "cdcddcdc") %>% 
+    write_csv("data/supdem raw survey marginals.tab")
+}
+
+supdem <- read_csv("data/supdem raw survey marginals.tab",
+                   col_types = "cdcddcdc") %>% 
+  janitor::clean_names() %>% 
+  with_min_yrs(2)
+
+supdem_ncy <- supdem %>%
+  dplyr::select(country, year) %>% 
+  unique() %>% 
+  nrow()
+
+supdem_ncyi <- supdem %>%
+  dplyr::select(country, year, item) %>% 
+  unique() %>% 
+  nrow()
+
+dcpo_input_ncy <- dcpo_input_raw1 %>% 
+  dplyr::select(country, year) %>% 
+  unique() %>% 
+  nrow()
+
+dcpo_input_ncyi <- dcpo_input_raw1 %>% 
+  dplyr::select(country, year, item) %>% 
+  unique() %>% 
+  nrow()
+
+increase_cy <- sprintf("%2.1f", (dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
+increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
+```
+
+# A Better Measure of Democratic Support
+The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
+
+```{r dcpo, eval=FALSE}
+iter <- 3000
+
+dcpo_output <- dcpo(dcpo_input,
+                    iter = iter,
+                    chains = 4,
+                    thin = iter/500, # this yields 250 draws per chain, 1000 draws total
+                    pars = c("sd_delta","sd_theta_evolve", "sd_sigma_evolve", "sigma","phi","beta","alpha","delta","theta","y_r_pred","log_lik"))
+
+save(dcpo_output, file = here::here("data", "dcpo_output.rda"))
+
+dcpo_theta <- rstan::extract(dcpo_output, pars = "theta")
+
+save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
+
+dcpo_sigma <- rstan::extract(dcpo_output, pars = "sigma")
+
+save(dcpo_sigma, file = here::here("data", "dcpo_sigma.rda"))
+
+dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
+
+save(dcpo_input, dcpo_y_r_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
+```
+
+# Incorporating Uncertainty
+This means not simply employing the point estimates, that is, the means of the posterior distributions [_contra_ @Claassen2020a; @Claassen2020b].
+
+Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
+The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
+
+```{r country_years}
+path_df <-
+  list.files(
+    "../data",
+    pattern = ".*_theta.rda",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>%
+  .[str_which(., "claassen")]
+
+load(path_df)
+
+df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
+       function(year) {
+         map_df(seq(claassen_m5_theta$theta[1, 1, ]),
+                function(country) {
+                  df_temp <-
+                    sample(claassen_m5_theta$theta[, year, country],
+                           size = 100,
+                           replace = TRUE) %>%
+                    matrix(ncol = 100) %>%
+                    as_tibble()
+                  df_temp$yearID <- year
+                  df_temp$countryID <- country
+                  return(df_temp)
+                })
+       }) %>% 
+  pivot_longer(
+    df_temp,
+    cols = starts_with("V"),
+    names_to = "draw",
+    values_to = "theta"
+  ) %>% 
+  group_split(draw)
+```
+
+# Results
+
+```{r dcpo-uncertainty, cache=TRUE}
+# Preload function ----
+vcovBK_se <- function(x) {
+  plm::vcovBK(x, cluster = "time") %>% 
+    diag() %>% 
+    sqrt()
+}
+
+# Data input ----
+
+load(here::here("data", "dcpo_theta.rda"))
+
+df_controls <- read_csv(here::here("data", "control_variables.csv"),
+                        col_types = cols(.default = col_double(),
+                                         country = col_character(),
+                                         country_name = col_character(),
+                                         ISO = col_character(),
+                                         Region_UN = col_character())) %>% 
+  mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
+         country = countrycode::countrycode(country0, "country.name", "country.name"))
+
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+reformat_dcpo_output <- function(x, parameter_name) {
+  df_temp <- x %>% 
+    as_tibble(.name_repair = ~ls_country) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = all_of(ls_country),
+                 names_to = "country",
+                 values_to = parameter_name) %>%
+    arrange(country, year)
+  return(df_temp)
+}
+
+df_dcpo <- purrr::map(1:1000, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>% 
+    reformat_dcpo_output("theta") %>% 
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country")) %>% 
+    left_join(df_controls, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+  plm::plm(Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + plm::lag(theta, 1) +
+             plm::lag(sigma, 1) + plm::lag(lg_imp_mdpgdp, 1) +
+             plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
+             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1),
+    model = "pooling",
+    data = aDataset)
+})
+
+result_betas_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = coef)
+result_vars_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+
+df_result_dcpo <- summary(mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)) %>% rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)"))
+
+```
+
+```{r dcpoVisualization, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
+
+dwplot(df_result_dcpo, by_2sd = FALSE) %>% 
+  relabel_predictors(
+    c(
+      `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
+      `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
+      `plm::lag(theta, 1)` = "Democratic Mood(t-1)",
+      `plm::lag(sigma, 1)` = "Democratic Mood Polarization(t-1)",
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
+      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+      `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
+      #there's a lag in the replication file
+      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)"
+    )
+  ) +
+  geom_vline(xintercept = 0,
+             colour = "grey80",
+             linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Level of Democracy") +
+  xlab("Coefficient Estimate") +
+  theme(axis.title.y = element_blank(),
+        legend.position = "none")
+
+```
+
+
+
+# Conclusion
+
+\pagebreak
+>>>>>>> e804bffe869cdef06565e4d4a674715965eea46e
