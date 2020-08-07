@@ -42,13 +42,11 @@ nocite: |
   @Solt2020a
 ---
 
-intro
+One of the classic but disputable questions in comparative politics is whether mass democratic support stabilizes democracy. A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @norris_democratic_2011], but findings from empirical analyses still remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011]. One reason for the mixed results is the approaches to measure public democratic support. One concern is whether self-report attitude toward democracy could transfer to behaviorally democratic commitments when the democratic system is in economic or societal crisis. Recent studies show that although the public understands and supports democratic principles, their support is elastic, especially in the context of polarization [@graham_democracy_2020]. Voters sometimes are willing to subordinate democratic norms to their partisan and policy preferences [@nyhan_who_2020] and subsequently support their elected leaders to take anti-democratic measures [@mccoy_democratic_2020]. However, before considering whether public opinion could transfer to public behavior, one more essential concern is whether and how we capture and measure the latent public opinion accurately, especially comparative public opinion. The sparse and incomparable comparative public opinion data has perplexed the study of comparative politics for a long time [@Solt2020a]. Recently, a few pioneering studies are contributing to the latent public opinion measurement in comparative studies [@Caughey2019,@Claassen2019,@Solt2020a]. A prominent study by @Claassen2020a applied an advanced Bayesian Item Response Model to measure dynamic public democratic support for 135 countries for up to 29 years. It found that mass democratic support had a positive impact on democratic change, especially the endurance of democracy. @Claassen2020a's study reignites the debate on the relationship between public opinion and democracy 
 
-More data, better method, superior measure
+To adjudicate/contribute to the ongoing debate, this article applies a superior measure, Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, to estimate democratic support for a larger data with 144 countries for up to 32 years between 1988 and 2019. Next, we employ a better method to incorporate uncertainty by using random draws from the posterior distributions and following @Rubin1987's rules. In addition to account for item response bias across countries and the extent of polarization by generating estimates on bounded scales,  the DCPO model has superiority in dealing with both binominal and ordinal survey data cross countries over time. Both internal and external k-fold validation tests corroborate that the DCPO model yields more accurate results than other latent variable measurements, either of @Claassen2019 Model 5 and @Caughey2019 model.
 
-review models
-
-results
+We first replicated Claassen's model but including uncertainty. Next, we replicate Claassen's analysis using the DCPO model with more data and uncertainty. Surprisingly, our study reveals that there is no significant relationship between public support and democratic change in both the replication analysis of @Claassen2020a model and DCPO analysis when uncertainty is included.
 
 ```{r setup, include=FALSE}
 options(tinytex.verbose = TRUE)
@@ -80,6 +78,9 @@ set.seed(313)
 <!-- The following text is all cribbed from `fsolt/dcpo_article` and obviously needs heavy revision -->
 
 # More Data
+We collected available data from 62 survey questions in 120 surveys across 159 countries for up to 33 years between 1988 and 2020. Survey data was extracted automatically through DCPO package. DCPO package also automatically identifies survey conducted year, which captures more accurate correspondence between public opinion and democracy level. Compared to Claassen's (2019) 1178 available country-years, our data consists of 1406 country-years, which is a 19.4% increase. The mass support for democracy is estimated for 144 countries with at least 2 country-years observed. Since V-Dem does not have data for small countries and data for 2020, xx countries are filtered from our final data set. The dataset in our analysis consists of xxxx estimates, drawn from 144 countries. 
+
+
 
 ```{r dcpo_input_raw}
 dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
@@ -150,7 +151,12 @@ increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 ```
 
 # A Better Measure of Democratic Support
-The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b].
+The DCPO model is estimated using the `DCPO` package for R [@Solt2020a], which is written in the Stan probabilistic programming language [@StanDevTeam2019a; @StanDevTeam2019b]. The DCPO shows its superiority in several significant ways. 
+First, the model permits to treat the data as their originial scales, either dichotomou or ordinal. 
+Second, the model generates estimates on a bounded scale. Bounded scales serve to both theoretical and methodologoical needs [@Linzer2015]. 
+Third, the model takes into account item response bias across countries.
+Results from validation tests in @Solt2020a. In validation tests, @Solt2020a employs k-fold validation with 10 folds, which reduces the misrepresentation of the model due to the chosen data from single cross-validation. The validation tests corroborate that DCPO not only features the smallest mean absolute error and largest improvement over the country-means MAE but also provides a more stable and efficient prediction on out-of-sample data than either of @Claassen2019 Model 5 and @Caughey2019 model.
+
 
 ```{r dcpo, eval=FALSE}
 iter <- 3000
@@ -169,7 +175,7 @@ save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
 
 dcpo_sigma <- rstan::extract(dcpo_output, pars = "sigma")
 
-save(dcpo_theta, file = here::here("data", "dcpo_sigma.rda"))
+save(dcpo_sigma, file = here::here("data", "dcpo_sigma.rda"))
 
 dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
 
