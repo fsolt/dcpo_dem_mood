@@ -334,17 +334,32 @@ df_dcpo <- purrr::map(1:1000, function(anEntry) {
     plm::pdata.frame(index = c("country", "year"))
 })
 
-estimate_dcpo_pooled <- function(aModel) {
-  result_dcpo_1k <- map(df_dcpo, function(aDataset) {
-    plm::plm(aModel,
-             model = "pooling",
-             data = aDataset)
-  })
-  
-  result_betas_dcpo_1k <-
-    mitools::MIextract(result_dcpo_1k, fun = coef)
-  result_vars_dcpo_1k <-
-    mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+estimate_dcpo <- function(aModel, aType = "pooling") {
+  if (aType == "gmm") {
+    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+      pgmm(
+        as.formula(aModel),
+        effect = "individual",
+        model = "onestep",
+        transformation = "ld",
+        indexes = c("Country", "Year"),
+        data = aDataset
+      )
+    })
+    
+    result_vars_dcpo_1k <-
+      mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
+    
+  } else {
+    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+      plm::plm(aModel,
+               model = "pooling",
+               data = aDataset)
+    })
+    
+    result_vars_dcpo_1k <-
+      mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+  }
   
   df_result_dcpo <-
     summary(
@@ -365,27 +380,7 @@ mod_ls <- paste0(
              plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
 )
 
-df_result_dcpo <- map(mod_ls, estimate_dcpo_pooled)
-
-estimate_dcpo_gmm <- function(aModel) {
-  result_dcpo_1k <- map(df_dcpo, function(aDataset) {
-    pgmm(as.formula(aModel), effect="individual", model="onestep", transformation="ld", indexes=c("Country", "Year"), data = aDataset)
-  })
-  
-  result_betas_dcpo_1k <-
-    mitools::MIextract(result_dcpo_1k, fun = coef)
-  result_vars_dcpo_1k <-
-    mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
-  
-  df_result_dcpo <-
-    summary(
-      mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
-    ) %>% rownames_to_column(var = "term") %>%
-    rename(conf.low = `(lower`,
-           conf.high = `upper)`,
-           estimate = results) %>%
-    filter(!str_detect(term, "(Intercept)"))
-}
+df_result_dcpo <- map(mod_ls, estimate_dcpo)
 
 mod_ls <- paste0(
   "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
@@ -397,7 +392,7 @@ mod_ls <- paste0(
     " | plm::lag(Vdem_libdem, 3:5)"
 )
 
-df_result_dcpo[3:4] <- map(mod_ls, estimate_dcpo_gmm)
+df_result_dcpo[3] <- map(mod_ls[[1]], estimate_dcpo, aType = "gmm")
 
 ```
 
