@@ -81,13 +81,13 @@ set.seed(313)
 
 # More Data
 
-```{r dcpo_input_raw}
+```{r dcpo_input_raw, eval = FALSE}
 dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
                                                           col_types = "cccccc"),
                                           file = "data/dcpo_input_raw.csv")
 ```
 
-```{r dcpo_input}
+```{r dcpo_input, eval = FALSE}
 dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
   filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
                  ((country=="Albania" & year==1998) |
@@ -113,7 +113,7 @@ dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
 save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 ```
 
-```{r compare_n}
+```{r compare_n, eval = FALSE}
 if (!file.exists("data/supdem raw survey marginals.tab")) {
   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
     read_csv(col_types = "cdcddcdc") %>% 
@@ -169,7 +169,7 @@ save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
 
 dcpo_sigma <- rstan::extract(dcpo_output, pars = "sigma")
 
-save(dcpo_theta, file = here::here("data", "dcpo_sigma.rda"))
+save(dcpo_sigma, file = here::here("data", "dcpo_sigma.rda"))
 
 dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
 
@@ -182,7 +182,7 @@ This means not simply employing the point estimates, that is, the means of the p
 Instead, researchers should follow the recommendations of work using other latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures incorporating uncertainty, such as the Standardized World Income Inequality Database [@Solt2020]: generate many duplicate versions of the analysis dataset, assign to each a different random draw from the posterior distributions of the variables measured with uncertainty, perform the analyses repeatedly on each of these multiple versions of the dataset, and combine the results following the rules set out in @Rubin1987.
 The functional programming tools in the `purrr` package [@Henry2019] make this a matter of just a few additional lines of code.
 
-```{r country_years}
+```{r country-years, eval=FALSE}
 path_df <-
   list.files(
     "../data",
@@ -220,16 +220,77 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 
 # Results
 
-```{r dcpo-uncertainty, cache=TRUE}
-# Preload function ----
+```{r claassen-replication}
+# Data input ----
+
+supdem <- read.csv("../data/Support_democracy_ajps.csv")
+v_dem <- read.csv("../data/vdem15.csv")
+
+sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
+
+# Pooled model -----
+
+## Beck-Katz panel-corrected standard errors
 vcovBK_se <- function(x) {
   plm::vcovBK(x, cluster = "time") %>% 
     diag() %>% 
     sqrt()
 }
 
-# Data input ----
 
+# regime = ifelse(sd2$Regime_VD > 1, 1, 0)
+
+ls_mod <-
+  paste0(
+    "Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + ",
+    c(
+      "plm::lag(SupDem_trim, 1)",
+      "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)"
+    ),
+    "+ plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)"
+  )
+
+result_cls <- map(ls_mod, function(mod){
+  result <- plm(ls_mod, model = "pooling", data = sd.plm)
+  df_result <- tidy(result) %>%
+    mutate(std.error = vcovBK_se(result))
+})
+
+# GMM ----
+
+## Windmeijer corrected standard errors
+vcovHC_se <- function(x) {
+  plm::vcovHC(x, cluster = "time") %>% 
+    diag() %>% 
+    sqrt()
+}
+
+ls_mod <- 
+  paste0(
+    "Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + ",
+    c(
+      "plm::lag(SupDem_trim, 1)",
+      "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)"
+    ),
+    "+ plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)",
+    " | plm::lag(Libdem_VD, 3:5)"
+  )
+
+result_cls[3:4] <- map(ls_mod, function(mod){
+  result <- pgmm(as.formula(ls_mod), effect="individual", model="onestep", transformation="ld", indexes=c("Country", "Year"), data = sd.plm)
+  df_result <- coef(result) %>% 
+    tibble::enframe(name = "term", value = "estimate") %>% 
+    mutate(std.error = vcovHC_se(result))
+})
+
+```
+
+
+```{r dcpo-uncertainty, cache=TRUE}
+
+# Data input ----
+load(here::here("data", "dcpo_input.rda"))
+load(here::here("data", "dcpo_sigma.rda"))
 load(here::here("data", "dcpo_theta.rda"))
 
 df_controls <- read_csv(here::here("data", "control_variables.csv"),
@@ -239,7 +300,8 @@ df_controls <- read_csv(here::here("data", "control_variables.csv"),
                                          ISO = col_character(),
                                          Region_UN = col_character())) %>% 
   mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
-         country = countrycode::countrycode(country0, "country.name", "country.name"))
+         country = countrycode::countrycode(country0, "country.name", "country.name"),
+         regime = Vdem_libdem > 1)
 
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
@@ -259,28 +321,77 @@ df_dcpo <- purrr::map(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
     reformat_dcpo_output("theta") %>% 
     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-              by = c("year", "country")) %>% 
+              by = c("year", "country")) %>%
     left_join(df_controls, by = c("country", "year")) %>% 
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
-result_dcpo_1k <- map(df_dcpo, function(aDataset) {
-  plm::plm(Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + plm::lag(theta, 1) +
-             plm::lag(sigma, 1) + plm::lag(lg_imp_mdpgdp, 1) +
+estimate_dcpo_pooled <- function(aModel) {
+  result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+    plm::plm(aModel,
+             model = "pooling",
+             data = aDataset)
+  })
+  
+  result_betas_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = coef)
+  result_vars_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+  
+  df_result_dcpo <-
+    summary(
+      mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
+    ) %>% rownames_to_column(var = "term") %>%
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`,
+           estimate = results) %>%
+    filter(!str_detect(term, "(Intercept)"))
+}
+
+mod_ls <- paste0(
+  "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
+  c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
+  " + plm::lag(lg_imp_mdpgdp, 1) +
              plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
-             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1),
-    model = "pooling",
-    data = aDataset)
-})
+             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
+)
 
-result_betas_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = coef)
-result_vars_dcpo_1k <- mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+df_result_dcpo <- map(mod_ls, estimate_dcpo_pooled)
 
-df_result_dcpo <- summary(mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)) %>% rownames_to_column(var = "term") %>% 
-  rename(conf.low = `(lower`,
-         conf.high = `upper)`, 
-         estimate = results) %>% 
-  filter(!str_detect(term, "(Intercept)"))
+estimate_dcpo_gmm <- function(aModel) {
+  result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+    pgmm(as.formula(aModel), effect="individual", model="onestep", transformation="ld", indexes=c("Country", "Year"), data = aDataset)
+  })
+  
+  result_betas_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = coef)
+  result_vars_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
+  
+  df_result_dcpo <-
+    summary(
+      mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
+    ) %>% rownames_to_column(var = "term") %>%
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`,
+           estimate = results) %>%
+    filter(!str_detect(term, "(Intercept)"))
+}
+
+mod_ls <- paste0(
+  "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
+  c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
+  " + plm::lag(lg_imp_mdpgdp, 1) +
+             plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
+             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)",
+    " | plm::lag(Vdem_libdem, 3:5)"
+)
+
+df_result_dcpo[3:4] <- map(mod_ls, estimate_dcpo_gmm)
 
 ```
 
