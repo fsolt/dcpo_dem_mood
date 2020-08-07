@@ -169,7 +169,7 @@ save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
 
 dcpo_sigma <- rstan::extract(dcpo_output, pars = "sigma")
 
-save(dcpo_theta, file = here::here("data", "dcpo_sigma.rda"))
+save(dcpo_sigma, file = here::here("data", "dcpo_sigma.rda"))
 
 dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
 
