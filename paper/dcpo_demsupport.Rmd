@@ -380,7 +380,7 @@ mod_ls <- paste0(
   "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
   c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
-  " + plm::lag(lg_imp_mdpgdp, 1) +
+  " + plm::lag(sigma, 1) + plm::lag(lg_imp_mdpgdp, 1) +
              plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
              plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
 )
@@ -391,7 +391,7 @@ mod_ls <- paste0(
   "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
   c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
-  " + plm::lag(lg_imp_mdpgdp, 1) +
+  " + plm::lag(sigma, 1) + plm::lag(lg_imp_mdpgdp, 1) +
              plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
              plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)",
     " | plm::lag(Vdem_libdem, 3:5)"
@@ -399,7 +399,7 @@ mod_ls <- paste0(
 
 df_result_dcpo[3] <- map(mod_ls[[1]], estimate_dcpo, aType = "gmm")
 
-df_result_dcpo[4] <- map(mod_ls[[2]], estimate_dcpo, aType = "gmm")
+# df_result_dcpo[4] <- map(mod_ls[[2]], estimate_dcpo, aType = "gmm")
 
 save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
 ```
