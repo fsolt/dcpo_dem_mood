@@ -63,7 +63,7 @@ library(pacman)
 p_load(
   dataverse, # data scraping
   DCPOtools,
-  plm, # analysis
+  boot, plm, # analysis
   huxtable, kableExtra, modelsummary, # tabulation
   latex2exp, # visualization
   rstan, # Bayesian estimation
@@ -405,10 +405,8 @@ save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
 ```
 
 
-```{r polarizationVisualization, eval = FALSE}
-# Bootstrap to get confidence intervals
-
-library(boot)
+```{r polarizationVisualization, fig.cap="Variance of Polarization"}
+# Bootstrap to get confidence intervals----
 
 ## function to obtain the mean
 Bmean <- function(data, indices) {
@@ -416,7 +414,7 @@ Bmean <- function(data, indices) {
     return(mean(d))
 } 
 
-# bootstrapping with 1000 replications 
+## bootstrapping with 1000 replications 
 bootstrapCI_sigma <- function(aData) {
   aSigma <- aData$sigma
   result_temp <- boot(data = aSigma,
@@ -478,29 +476,69 @@ gridExtra::grid.arrange(plot_us, plot_2019, nrow = 1)
 
 ```{r dcpoVisualization, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
 
-dwplot(df_result_dcpo, by_2sd = FALSE) %>% 
-  relabel_predictors(
-    c(
-      `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
-      `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
-      `plm::lag(theta, 1)` = "Democratic Mood(t-1)",
-      `plm::lag(sigma, 1)` = "Democratic Mood Polarization(t-1)",
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
-      `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
-      #there's a lag in the replication file
-      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)"
-    )
-  ) +
-  geom_vline(xintercept = 0,
-             colour = "grey80",
-             linetype = 2) +
-  theme_minimal() +
-  ggtitle("Dependent Variable: Level of Democracy") +
-  xlab("Coefficient Estimate") +
-  theme(axis.title.y = element_blank(),
-        legend.position = "none")
+load(here::here("output", "estimates_dcpo.RDS"))
+load(here::here("output", "estimates_cls.RDS"))
+
+df_plot <- df_result_cls[[1]] %>% 
+  mutate(model = "Uncertainty\n Ignored",
+         type = "Pooled OLS") 
+
+df_plot <- df_result_dcpo[[1]] %>% 
+  mutate(model = "DCPO",
+         type = "Pooled OLS") %>% 
+  rename(std.error = se) %>% 
+  bind_rows(df_plot)
+
+df_plot <- df_result_cls[[3]] %>% 
+  mutate(model = "Uncertainty\n Ignored",
+         type = "System GMM") %>% 
+  bind_rows(df_plot)
+
+df_plot <- df_result_dcpo[[3]] %>% 
+  mutate(model = "DCPO",
+         type = "System GMM") %>% 
+  rename(std.error = se) %>% 
+  bind_rows(df_plot) %>% 
+  select(term, estimate, std.error, model, type) 
+
+## Facet cause NA column, very weird. 
+plot_estimate <- map(c("Pooled OLS", "System GMM"), function(aType) {
+  filter(df_plot, type == aType) %>%
+    dwplot(by_2sd = FALSE) %>%
+    relabel_predictors(
+      c(
+        `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
+        `plm::lag(Libdem_VD, 1:2)1` = "Democracy(t-1)",
+        `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
+        `plm::lag(Libdem_VD, 1:2)2` = "Democracy(t-2)",
+        `plm::lag(theta, 1)` = "Democratic Mood(t-1)",
+        `plm::lag(SupDem_trim, 1)` = "Democratic Mood(t-1)",
+        `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+        `plm::lag(lnGDP_imp, 1)` = "Log GDP per capita(t−1)",
+        `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
+        `plm::lag(GDP_imp_grth, 1)` = "GDP per capita Growth(t−1)",
+        `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+        `plm::lag(Libdem_regUN, 1)` = "Regional democracy(t−1)",
+        `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
+        `plm::lag(Pr_Muslim, 1)` = "Percent Muslim (t-1)",
+        `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)",
+        `plm::lag(Res_cp_WDI_di, 1)` = "Resource Dependence(t−1)",
+        `plm::lag(sigma, 1)` = "Democratic Mood Polarization(t-1)"
+      )
+    ) +
+    geom_vline(xintercept = 0,
+               colour = "grey80",
+               linetype = 2) +
+    theme_minimal() +
+    ggtitle(aType) +
+    xlab("Coefficient Estimate") +
+    theme(axis.title.y = element_blank())
+})
+  
+  
+library(ggpubr)
+ggarrange(plotlist = plot_estimate, common.legend = TRUE)
+
 
 ```
 
