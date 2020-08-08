@@ -501,7 +501,9 @@ df_plot <- df_result_dcpo[[3]] %>%
   bind_rows(df_plot) %>% 
   select(term, estimate, std.error, model, type) 
 
-plot_wNA <- dwplot(df_plot, by_2sd = FALSE) %>% 
+# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
+plot_pooled <- filter(df_plot, type == "Pooled OLS") %>% 
+  dwplot(by_2sd = FALSE) %>% 
   relabel_predictors(
     c(
 `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
@@ -527,11 +529,45 @@ plot_wNA <- dwplot(df_plot, by_2sd = FALSE) %>%
              colour = "grey80",
              linetype = 2) +
   theme_minimal() +
-  ggtitle("Dependent Variable: Level of Democracy") +
+  ggtitle("Pooled OLS") +
   xlab("Coefficient Estimate") +
-  theme(axis.title.y = element_blank()) + 
-  facet_wrap(~ type)
+  theme(axis.title.y = element_blank(),
+        legend.position = "none")
 
+plot_gmm <- filter(df_plot, type == "System GMM") %>% 
+  dwplot(by_2sd = FALSE) %>% 
+  relabel_predictors(
+    c(
+`plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
+`plm::lag(Libdem_VD, 1:2)1` = "Democracy(t-1)",
+`plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
+`plm::lag(Libdem_VD, 1:2)2` = "Democracy(t-2)",
+`plm::lag(theta, 1)` = "Democratic Mood(t-1)",
+`plm::lag(SupDem_trim, 1)` = "Democratic Mood(t-1)",
+`plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+`plm::lag(lnGDP_imp, 1)` = "Log GDP per capita(t−1)",
+`plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
+`plm::lag(GDP_imp_grth, 1)` = "GDP per capita Growth(t−1)",
+`plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+`plm::lag(Libdem_regUN, 1)` = "Regional democracy(t−1)",
+`plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
+`plm::lag(Pr_Muslim, 1)` = "Percent Muslim (t-1)",
+`plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)",
+`plm::lag(Res_cp_WDI_di, 1)` = "Resource Dependence(t−1)",
+`plm::lag(sigma, 1)` = "Democratic Mood Polarization(t-1)"
+    )
+  ) +
+  geom_vline(xintercept = 0,
+             colour = "grey80",
+             linetype = 2) +
+  theme_minimal() +
+  ggtitle("System GMM") +
+  xlab("Coefficient Estimate") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        legend.title = element_blank())
+
+gridExtra::grid.arrange(plot_pooled, plot_gmm, ncol = 2)
 ```
 
 
