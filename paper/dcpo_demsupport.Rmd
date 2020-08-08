@@ -266,7 +266,7 @@ result_cls <- map(ls_mod, function(mod){
 
 ## Windmeijer corrected standard errors
 vcovHC_se <- function(x) {
-  plm::vcovHC(x, cluster = "time") %>% 
+  plm::vcovHC(x) %>% 
     diag() %>% 
     sqrt()
 }
@@ -289,6 +289,8 @@ result_cls[3:4] <- map(ls_mod, function(mod){
     mutate(std.error = vcovHC_se(result))
 })
 
+
+save(df_result_dcpo, file = here::here("output", "estimates_cls.RDS"))
 ```
 
 
@@ -361,6 +363,9 @@ estimate_dcpo <- function(aModel, aType = "pooling") {
       mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
   }
   
+  result_betas_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = coef)
+  
   df_result_dcpo <-
     summary(
       mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
@@ -394,6 +399,9 @@ mod_ls <- paste0(
 
 df_result_dcpo[3] <- map(mod_ls[[1]], estimate_dcpo, aType = "gmm")
 
+df_result_dcpo[4] <- map(mod_ls[[2]], estimate_dcpo, aType = "gmm")
+
+save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
 ```
 
 ```{r dcpoVisualization, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
