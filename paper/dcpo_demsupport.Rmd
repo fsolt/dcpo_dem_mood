@@ -502,6 +502,7 @@ df_plot <- df_result_dcpo[[3]] %>%
   select(term, estimate, std.error, model, type) 
 
 # the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
+
 plot_pooled <- filter(df_plot, type == "Pooled OLS") %>% 
   dwplot(by_2sd = FALSE) %>% 
   relabel_predictors(
