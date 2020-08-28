@@ -659,21 +659,35 @@ estimate_dcpo <- function(aDataset) {
   
     result_dcpo_1k <- vector(mode = "list")
     
-    result_dcpo_1k[[1]] <- plm(diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1)
-    + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1), model = "pooling", data = aDataset)
-    result_dcpo_1k[[2]] <- plm(diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(cpi_sd, lag = 1) + plm::lag(cpi_sd, 1), model = "pooling", data = aDataset)
-      
+    result_dcpo_1k[[1]] <-
+      plm(
+        diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1)
+        + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1),
+        model = "pooling",
+        data = aDataset
+      )
+    
+    result_dcpo_1k[[2]] <-
+      plm(
+        diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(cpi_sd, lag = 1) + plm::lag(cpi_sd, 1),
+        model = "pooling",
+        data = aDataset
+      )
+    
+}
 
-    result_vars_dcpo_1k <- map(result_dcpo_1k, function(aFit){
+df_result_dcpoAPSR <- map(df_dcpo, estimate_dcpo)
+
+result_vars_dcpo_1k <- map(df_result_dcpoAPSR, function(aFit){
       mitools::MIextract(aFit, fun = vcovHC_se)
     })
 
-    result_betas_dcpo_1k <- map(result_dcpo_1k, function(aFit){
+result_betas_dcpo_1k <- map(df_result_dcpoAPSR, function(aFit){
       mitools::MIextract(aFit, fun = coef)
     })
     
   
-  df_result_dcpo <- map2(result_vars_dcpo_1k, result_betas_dcpo_1k, function(aVar, aBeta){
+df_result_dcpoAPSR <- map2(result_vars_dcpo_1k, result_betas_dcpo_1k, function(aVar, aBeta){
     summary(
       mitools::MIcombine(results = aBeta, variance = aVar)
     ) %>% rownames_to_column(var = "term") %>%
@@ -682,9 +696,6 @@ estimate_dcpo <- function(aDataset) {
            estimate = results) %>%
     filter(!str_detect(term, "(Intercept)"))
   })
-}
-
-df_result_dcpoAPSR <- map(df_dcpo, estimate_dcpo)
 
 save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
