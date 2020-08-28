@@ -421,7 +421,7 @@ df_result_dcpo <- map(mod_ls, estimate_dcpo)
 save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
 ```
 
-```{r visualizedMood, fig.cap= "The Effect of Democratic Mood on Institutional Democratization"}
+```{r visualizedMoodAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization"}
 
 load(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoMeanAJPS.RDS"))
@@ -489,7 +489,7 @@ plot_clsVsDCPO2 <- small_multiple(df_plotS) +
 gridExtra::grid.arrange(plot_clsVsDCPO, plot_clsVsDCPO2, ncol = 2)
 ```
 
-```{r visualizedUncertain, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty"}
+```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty"}
 
 df_plot <- df_result_dcpoMean[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
@@ -615,6 +615,7 @@ df_controls <- read_csv(here::here("data", "APSRctlv.csv"),
   mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
          country = countrycode::countrycode(country0, "country.name", "country.name"))
 
+load(here::here("output", "estimates_dcpoMean.RDS"))
 
 df_dcpoMeanAPSR <- df_dcpoMean %>% 
   left_join(df_controls, by = c("country", "year")) %>% 
@@ -695,11 +696,10 @@ df_result_dcpoAPSR <- map(estimate_dcpo, function(aModel){
 save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
 
-```{r visualizedMood, fig.cap= "Effects of Democracy on Change in Mood"}
+```{r visualizedMoodAPSR, fig.cap= "Effects of Democracy on Change in Mood"}
 
 load(here::here("output", "estimates_clsAPSR.RDS"))
 load(here::here("output", "estimates_dcpoMeanAPSR.RDS"))
-load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
 df_plot <- df_result_clsAPSR[[1]] %>% 
   mutate(model = "Claassen 2020") 
@@ -759,12 +759,14 @@ plot_clsVsDCPO2 <- small_multiple(df_plotS) +
 gridExtra::grid.arrange(plot_clsVsDCPO, plot_clsVsDCPO2, ncol = 2)
 ```
 
-```{r visualizedSep, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
+```{r visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
 
-df_plot <- df_result_dcpoMean[[1]] %>% 
+load(here::here("output", "estimates_dcpoAPSR.RDS"))
+
+df_plot <- df_result_dcpoMeanAPSR[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
  
-df_plot <- df_result_dcpo[[1]] %>%
+df_plot <- df_result_dcpoAPSR[[1]] %>%
   mutate(model = "DCPO\n (w. Uncertainty)") %>%
   rename(std.error = se) %>%
   bind_rows(df_plot)
@@ -773,22 +775,13 @@ plot_pooled <- filter(df_plot, model != "Claassen 2019") %>%
   dwplot(by_2sd = FALSE) %>%
   relabel_predictors(
     c(
-      `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
-      `plm::lag(Libdem_VD, 1:2)1` = "Democracy(t-1)",
-      `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
-      `plm::lag(Libdem_VD, 1:2)2` = "Democracy(t-2)",
-      `plm::lag(theta, 1)` = "Democratic Mood(t-1)",
-      `plm::lag(SupDem_trim, 1)` = "Democratic Mood(t-1)",
+      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
+      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
+      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
+      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
+      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
       `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(lnGDP_imp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(GDP_imp_grth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
-      `plm::lag(Libdem_regUN, 1)` = "Regional democracy(t−1)",
-      `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
-      `plm::lag(Pr_Muslim, 1)` = "Percent Muslim (t-1)",
-      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)",
-      `plm::lag(Res_cp_WDI_di, 1)` = "Resource Dependence(t−1)"
+      `plm::lag(mdprgdp_grwth, 1)` = "Corruption (Difference)"
     )
   ) +
   geom_vline(xintercept = 0,
@@ -803,10 +796,10 @@ plot_pooled <- filter(df_plot, model != "Claassen 2019") %>%
     legend.title = element_blank()
   )
 
-df_plot <- df_result_dcpoMean[[2]] %>% 
+df_plot <- df_result_dcpoMeanAPSR[[2]] %>% 
   mutate(model = "DCPO\n (Point Estimates)")
 
-df_plot <- df_result_dcpo[[2]] %>%
+df_plot <- df_result_dcpoAPSR[[2]] %>%
   mutate(model = "DCPO\n (w. Uncertainty)") %>%
   rename(std.error = se) %>%
   bind_rows(df_plot)
@@ -815,15 +808,14 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
   dwplot(by_2sd = FALSE) %>%
   relabel_predictors(
     c(
-      `plm::lag(Vdem_libdem, 1:2)1` = "Democracy(t-1)",
-      `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
-      `plm::lag(theta_dem, 1)` = "Mood Democracy(t-1)",
-      `plm::lag(theta_aut, 1)` = "Mood Autocracy(t-1)",
+      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
+      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
+      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
+      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
+      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
       `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
-      `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
-      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)"
+      `diff(cpi_sd, lag = 1)` = "Corruption (Difference)",
+      `plm::lag(cpi_sd, 1)` = "Corruption (t-1)"
     )
   ) +
   geom_vline(xintercept = 0,
