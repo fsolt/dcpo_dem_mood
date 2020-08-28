@@ -592,7 +592,7 @@ mods[[2]] <- plm(
 )
 
 vcovHC_se <-  function(x) {
-  plm::vcovBK(x, cluster = "time") %>% 
+  plm::vcovHC(x, method="arellano", cluster="group") %>% 
     diag() %>% 
     sqrt()
 }
