@@ -368,7 +368,6 @@ df_result_dcpo <- map(mod_ls, estimate_dcpo)
 save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
 ```
 
-
 ```{r dcpoPointAJPS}
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
@@ -394,7 +393,9 @@ df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
   summarise(theta = mean(theta), 
             sigma = mean(sigma))
 
-df_controls <- read_csv(here::here("data", "control_variables.csv"),
+save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
+
+df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
                         col_types = cols(.default = col_double(),
                                          country = col_character(),
                                          country_name = col_character(),
@@ -402,10 +403,11 @@ df_controls <- read_csv(here::here("data", "control_variables.csv"),
                                          Region_UN = col_character())) %>% 
   mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
          country = countrycode::countrycode(country0, "country.name", "country.name"),
-         regime = Vdem_regime > 1)
+         regime = Vdem_regime > 1) %>% 
+  filter(year >= first_year) # using trimmed data as Claassen 
 
 df_dcpoMeanAJPS <- df_dcpoMean %>% 
-  left_join(df_controls, by = c("country", "year")) %>% 
+  right_join(df_controls, by = c("country", "year")) %>% 
   mutate(theta_dem = theta * regime,
          theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
@@ -426,7 +428,6 @@ df_result_dcpoMeanAJPS <- map(ls_mod, function(mod){
     mutate(std.error = vcovBK_se(result))
 })
 
-save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
 save(df_result_dcpoMeanAJPS, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 ```
 
@@ -491,21 +492,21 @@ mod_ls <- paste0(
              plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
 )
 
-df_result_dcpo <- map(mod_ls, estimate_dcpo)
+df_result_dcpoAJPS <- map(mod_ls, estimate_dcpo)
 
-save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
+save(df_result_dcpoAJPS, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 ```
 
 ```{r visualizedMoodAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization"}
 
 load(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoMeanAJPS.RDS"))
-load(here::here("output", "estimates_dcpo.RDS"))
+load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
 df_plot <- df_result_cls[[1]] %>% 
   mutate(model = "Claassen 2019") 
 
-df_plot <- df_result_dcpoMean[[1]] %>% 
+df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") %>%  
   bind_rows(df_plot)
 
@@ -535,7 +536,7 @@ plot_clsVsDCPO <- small_multiple(df_plotS) +
 df_plot <- df_result_cls[[2]] %>% 
   mutate(model = "Claassen 2019") 
 
-df_plot <- df_result_dcpoMean[[2]] %>% 
+df_plot <- df_result_dcpoMeanAJPS[[2]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") %>%  
   bind_rows(df_plot)
 
