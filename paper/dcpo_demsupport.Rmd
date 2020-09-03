@@ -251,14 +251,23 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 
 # Results
 
-```{r claassenAJPS}
-# Data input ----
+```{r dataInput, eval = FALSE}
 
 supdem <- read.csv("../data/Support_democracy_ajps.csv")
 v_dem <- read.csv("../data/vdem15.csv")
-
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
+load(here::here("data", "claassen_m5_theta.rda"))
+load(here::here("data", "dcpo_input.rda"))
+load(here::here("data", "dcpo_theta.rda"))
+load(here::here("data", "dcpo_sigma.rda"))
+load(here::here("data", "dem_mood_apsr.RData"))
+
+```
+
+
+
+```{r claassenAJPS}
 # Pooled model -----
 
 ## Beck-Katz panel-corrected standard errors
@@ -290,11 +299,79 @@ df_result_cls <- map(ls_mod, function(mod){
 save(df_result_cls, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
-```{r dcpoPointAJPS}
-load(here::here("data", "dcpo_input.rda"))
-load(here::here("data", "dcpo_theta.rda"))
-load(here::here("data", "dcpo_sigma.rda"))
+```{r claassenUncertainty}
 
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+
+df_claassen <- purrr::map(1:1000, function(anEntry) {
+  claassen_m5_theta$theta[anEntry,,] %>% 
+    reformat_dcpo_output("theta") %>% 
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country")) %>%
+    left_join(df_controls, by = c("country", "year")) %>% 
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime)) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+estimate_dcpo <- function(aModel, aType = "pooling") {
+  if (aType == "gmm") {
+    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+      pgmm(
+        as.formula(aModel),
+        effect = "individual",
+        model = "onestep",
+        transformation = "ld",
+        indexes = c("Country", "Year"),
+        data = aDataset
+      )
+    })
+    
+    result_vars_dcpo_1k <-
+      mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
+    
+  } else {
+    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+      plm::plm(aModel,
+               model = "pooling",
+               data = aDataset)
+    })
+    
+    result_vars_dcpo_1k <-
+      mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+  }
+  
+  result_betas_dcpo_1k <-
+    mitools::MIextract(result_dcpo_1k, fun = coef)
+  
+  df_result_dcpo <-
+    summary(
+      mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
+    ) %>% rownames_to_column(var = "term") %>%
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`,
+           estimate = results) %>%
+    filter(!str_detect(term, "(Intercept)"))
+}
+
+mod_ls <- paste0(
+  "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
+  c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
+  " + plm::lag(lg_imp_mdpgdp, 1) +
+             plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
+             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
+)
+
+df_result_dcpo <- map(mod_ls, estimate_dcpo)
+
+save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
+```
+
+
+```{r dcpoPointAJPS}
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
 
@@ -572,7 +649,6 @@ gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
 ```{r claassenAPSR}
-load("../data/dem_mood_apsr.RData")
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
 mods <- vector(mode = "list")

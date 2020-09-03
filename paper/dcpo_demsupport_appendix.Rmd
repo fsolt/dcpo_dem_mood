@@ -238,7 +238,7 @@ save(claassen_input, file = here::here("data", "claassen_input.rda"))
 ```
 
 
-```{r claassenWUncertainty}
+```{r claassenUncertainty}
 load(here::here("data", "claassen_replication_input.rda"))
 load(here::here("data", "claassen_m5_theta.rda"))
 
