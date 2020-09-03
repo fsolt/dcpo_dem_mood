@@ -404,7 +404,7 @@ df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
   mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
          country = countrycode::countrycode(country0, "country.name", "country.name"),
          regime = Vdem_regime > 1) %>% 
-  filter(year >= first_year) # using trimmed data as Claassen 
+  filter(year >= firstyear) # using trimmed data as Claassen 
 
 df_dcpoMeanAJPS <- df_dcpoMean %>% 
   right_join(df_controls, by = c("country", "year")) %>% 
@@ -567,10 +567,10 @@ gridExtra::grid.arrange(plot_clsVsDCPO, plot_clsVsDCPO2, ncol = 2)
 
 ```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty"}
 
-df_plot <- df_result_dcpoMean[[1]] %>% 
+df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
  
-df_plot <- df_result_dcpo[[1]] %>%
+df_plot <- df_result_dcpoAJPS[[1]] %>%
   mutate(model = "DCPO\n (w. Uncertainty)") %>%
   rename(std.error = se) %>%
   bind_rows(df_plot)
@@ -609,10 +609,10 @@ plot_pooled <- filter(df_plot, model != "Claassen 2019") %>%
     legend.title = element_blank()
   )
 
-df_plot <- df_result_dcpoMean[[2]] %>% 
+df_plot <- df_result_dcpoMeanAJPS[[2]] %>% 
   mutate(model = "DCPO\n (Point Estimates)")
 
-df_plot <- df_result_dcpo[[2]] %>%
+df_plot <- df_result_dcpoAJPS[[2]] %>%
   mutate(model = "DCPO\n (w. Uncertainty)") %>%
   rename(std.error = se) %>%
   bind_rows(df_plot)
@@ -681,14 +681,15 @@ save(df_result_clsAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
 ```
 
 ```{r dcpoPointAPSR}
-df_controls <- read_csv(here::here("data", "APSRctlv.csv"),
+df_controls <- read_csv(here::here("data", "control_variables_apsr.csv"),
                         col_types = cols(.default = col_double(),
                                          country = col_character(),
                                          country_name = col_character(),
                                          ISO = col_character(),
                                          Region_UN = col_character())) %>% 
   mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
-         country = countrycode::countrycode(country0, "country.name", "country.name"))
+         country = countrycode::countrycode(country0, "country.name", "country.name")) %>% 
+  filter(year >= firstyear)
 
 load(here::here("output", "estimates_dcpoMean.RDS"))
 
@@ -707,7 +708,7 @@ mods[[1]] <-
 
 mods[[2]] <-
   plm(
-    diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(cpi_sd, lag = 1) + plm::lag(cpi_sd, 1),
+    diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1),
     data = df_dcpoMeanAPSR,
     model = "pooling"
   )
@@ -744,7 +745,7 @@ estimate_dcpo[[1]] <- function(aDataset) {
 
 estimate_dcpo[[2]] <- function(aDataset) {
   plm(
-      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(cpi_sd, lag = 1) + plm::lag(cpi_sd, 1),
+      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1),
       model = "pooling",
       data = aDataset
     )
@@ -815,10 +816,10 @@ df_plotS <- df_plot %>%
   filter(term != "(Intercept)") %>%
   mutate(
     term = rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Liberal Democracy\n (Difference)",
-      "Liberal Democracy\n (t-1)",
+      c("Democratic\n Mood\n (t-1)",
+        "Democratic\n Mood\n (t-2)",
+      "Liberal\n Democracy\n (Difference)",
+      "Liberal\n Democracy\n (t-1)",
       "Log GDP\n per capita\n (Difference)",
       "Log GDP\n (t−1)",
       "Corruption\n (Difference)",
