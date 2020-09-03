@@ -265,8 +265,6 @@ load(here::here("data", "dem_mood_apsr.RData"))
 
 ```
 
-
-
 ```{r claassenAJPS}
 # Pooled model -----
 
