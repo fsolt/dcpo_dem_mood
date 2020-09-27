@@ -47,25 +47,25 @@ One reason for the mixed results is the measurement of public democratic support
 Measuring democratic support by using self-report survey data is still the dominant approach.
 However, one essential concern is whether and how we can measure the latent public opinion correctly, especially for comparative public opinion survey data.
 The sparse and incomparable comparative public opinion data has perplexed the study of comparative politics for a long time [@Solt2020a].
-Public support for democracy is a latent variable and the incorrect measurement of it may conceal the real relationship between public opinion and democratic institution development.
+Public support for democracy is a latent variable and the incorrect measurement of it may conceal the real relationship between public opinion and democratic institutional development.
 Recently, a few pioneering studies are contributing to the latent public opinion measurement in comparative studies[@Caughey2019,@Claassen2019,@Solt2020a].     
 A prominent study by @Claassen2020a applied an advanced Bayesian Item Response Model to measure dynamic public democratic support for 135 countries for up to 29 years.
 It found that mass democratic support had a positive impact on democratic change, especially the endurance of democracy.
 @Claassen2020a's study reignites the debate on the relationship between public opinion and democracy.
 To adjudicate/contribute to the ongoing debate, by using a superior measurement, bigger data, and incorporating uncertainty, our study presents a thorough reexamination of the relationship between mass democratic support and democracy survival across counties and over time.
-We use a superior measure, Dynamic Comparative Public Opinion (DCPO) model developed by@Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
-In addition to account for item response bias across countries and the extent of polarization by generating estimates on bounded scales, the DCPO model has superiority in dealing with both binominal and ordinal survey data cross countries over time.
+We use a superior measure, the Dynamic Comparative Public Opinion (DCPO) model developed by@Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
+In addition to accounting for item response bias across countries and the extent of polarization by generating estimates on bounded scales, the DCPO model has superiority in dealing with both binominal and ordinal survey data across countries over time.
 Both internal and external k-fold validation tests corroborate that the DCPO model yields more accurate results than other latent variable measurements, either of @Claassen2019 Model 5 and @Caughey2019 model.
 The nature of latent variables' unobservability decides that the estimates of latent variables are inherently accompanied with measurement uncertainty. 
-Omitting to account for measurement error distorts both statistical and substantive inference (See Juhl 2019for review in this literature). 
+Omitting measurement error distorts both statistical and substantive inference (See Juhl 2019for review in this literature). 
 Since the measurement uncertainty could have consequential (propagated) effects on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models (Treier and Jackman 2008, Crabtree and Fariss 2015). 
 Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies (Schnakenberg and Fariss 2014, Caughey and Warshaw 2018), and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures ( Solis and Waggoner 2020, Gandhi and Sumner 2020). 
-However, in comparative public opinion field, previous efforts on measuring comparative public opinion didn’t account for measurement uncertainty in their analysis.  
-To address the uncertainty, the inherent trail of latent constructs, in addition to employ the DCPO which reduces uncertainty in measurement, we also incorporated uncertainty in our analysis by using random draws from the posterior distributions and following @Rubin1987's rules. 
-Surprisingly, our study reveals that there is no significant relationship between public support and democratic change in both the replication analysis of @Claassen2020a model and DCPO analysis when uncertainty is included.
+However, in the comparative public opinion field, previous efforts on measuring comparative public opinion didn’t account for measurement uncertainty in their analyses.  
+To address the uncertainty (caused by the inherent trail of latent constructs), in addition to employing the DCPO which reduces uncertainty in measurement, we also incorporated uncertainty in our analysis by using random draws from the posterior distributions and following @Rubin1987's rules. 
+Surprisingly, our study reveals that there is no significant relationship between public support and democratic change in both the replication analysis of @Claassen2020a model and the DCPO analysis when uncertainty is included.
 Our study reaffirms Fariss 2014, Juhl (2019) and Solt (2020)'s suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty. 
-In addition to methodological concerns, our reanalysis echoes recent studies about public’s behavioral commitment to democracy.  
-It is questionable that whether self-report based conventional measures of support for democracy could transfer to behaviorally democratic commitments when the democratic system is in economic or societal crisis.
+In addition to methodological concerns, our reanalysis echoes recent studies about the public’s behavioral commitment to democracy.  
+It is questionable whether self-report based conventional measures of support for democracy could transfer to behaviorally democratic commitments when the democratic system is in economic or societal crisis.
 Recent studies show that although the public understands and supports democratic principles, their support is elastic, especially in the context of polarization [@graham_democracy_2020].
 Voters sometimes are willing to subordinate democratic norms to their partisan and policy preferences [@nyhan_who_2020] and subsequently support their elected leaders to take anti-democratic measures [@mccoy_democratic_2020].
 
@@ -190,15 +190,15 @@ increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 Using the DCPO model in the `DCPO` package, we attained 4,752 estimates for mass support for democracy, drawn from 144 countries with at least 2 country-years observed.
 The DCPO model has methodological superiority in significant ways. 
 First, the DCPO model allows us to treat the data as their original scales, either dichotomous or ordinal, to avoid information missing due to the potential scale change.
-For example, our data consists of 20885 national responses as the result of measuring public attitude at ordinal scales, which has potential to give us more nuances about public demcratic support. 
+For example, our data consists of 20,885 national responses as the result of measuring public attitude at ordinal scales, which has the potential to give us more nuances about public democratic support. 
 Second, to reduce the uncertainty in estimating countries which lie at the extreme ends of the public opinion spectrum[@Linzer2015], the estimates of mean public opinion are bounded and the extent of polarization is included in the DCPO model.
 The capture of the extent of polarization is more meaningful in this era, since the respondents from countries with more polarized opinions are more likely to give negative responses even though these countries may have the similar mean estimates of public opinion. 
 It is worth noticing that the small number of extreme opinions in countries may have a louder voice and bigger effects on actual politics. 
 Third, to address the differences in item response across countries, caused by factors other than public attitude or preference, a country-specific item bias is modelled as "a country-specific bias in the difficulty of each question" [@Solt2020a, 6]. 
-This approach allows us to keep information embeded in questions rather than discarding them directly. 
-In sum, the DCPO model has methodological advantages in keeping as much as available information, reducing uncertainty by bounding scales and capturing the extent of polarization. 
-The validation tests in @Solt2020a's paper corroborate that DCPO not only features the smallest mean absolute error(MAE) and largest improvement over the country-means MAE but also provides a more stable and efficient prediction on out-of-sample data than either of @Claassen2019 Model 5 and @Caughey2019 model.
-Following @Solt2020a's apporoach, our validation test employ k-fold validation with 10 folds, which reduces the misrepresentation of the model due to the chosen data from single cross-validation (See details of the validation test in Appendix).
+This approach allows us to keep information embedded in questions rather than discarding them directly. 
+In sum, the DCPO model has methodological advantages in keeping as much available information as possible, reducing uncertainty by bounding scales and capturing the extent of polarization. 
+The validation tests in @Solt2020a's paper corroborate that DCPO not only features the smallest mean absolute error (MAE) and largest improvement over the country-means MAE but also provides a more stable and efficient prediction on out-of-sample data than either the @Claassen2019's Model 5 or the @Caughey2019's model.
+Following @Solt2020a's approach, our validation test employs k-fold validation with 10 folds, which reduces the misrepresentation of the model due to the chosen data from single cross-validation (See details of the validation test in Appendix).
 
 
 ```{r dcpo, eval=FALSE}
@@ -226,11 +226,11 @@ save(dcpo_input, dcpo_y_r_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
 ```
 
 # Incorporating Uncertainty
-The latent constructs are inherently accompanied with amount of measurement uncertainty due to the unobservability of variables.
-The measurement is more far away from prefection when concepts are complex. 
-With a strong assumption that latent variables are measured perfectly, the omittance to incorporate measurement error might obscure the true relationship between theoretical concepts and invalidates findings.
+The latent constructs are inherently accompanied by amount of measurement uncertainty due to the unobservability of variables.
+The measurement is more far away from perfection when concepts are complex. 
+With a strong assumption that latent variables are measured perfectly, the omittance of measurement error might obscure the true relationship between theoretical concepts and invalidates findings.
 Therefore, incorporating uncertainty is substantively necessary for “comparing relationship between complex theoretical concepts across political contexts and over time"[@Crabtree2015,p2]. 
-In our reexamination, instead of employing the point estimates, we relax the implausible assumption of perfect measurment of latent variables, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures, such as the Standardized World Income Inequality Database [@Solt2020].
+In our reexamination, instead of employing the point estimates, we relax the implausible assumption of perfect measurement of latent variables. We followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures, such as the Standardized World Income Inequality Database [@Solt2020].
 Specifically, we generated 1,000 duplicate versions of the analysis dataset, assigned to each a different random draw from the posterior distributions of public democratic support, performed the analyses repeatedly on each of these 1,000 versions of the dataset, and then combined the results following the rules set out in @Rubin1987.
 This process can be achieved by using the `purrr` package [@Henry2019] and adding only a few lines of code.
 
@@ -279,17 +279,17 @@ Results here. indistinguishable from zero.
 In short, the main empirical findings about the estimated effect of public democratic support on democracy or vice versa are not replicable when measurement uncertainty is accounted, even using better measurement and more data.
 There are potential causes for the null results.
 First, the survey items we used might not capture real public democratic support, given the complexity of this concept and limited indicators compared to other concepts like gender egalitarian (Solt, 2021??).
-Second, these survey items do capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to accompany with high uncertainty.
+Second, these survey items do capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to high uncertainty.
 Methodologically, given the nature trail of latent variables and specific characters of comparative public opinion, performing analyses based on the strong assumption that comparative public attitudes are perfectly measured might exaggerate scholars' certainty methodologically and obscure a proper substantive evaluation of theoretical claims.
-In addition to the potentially methodological cause, the measurement errors, there are some potentially substantive causes for the disappearing relationship.
+In addition to the potentially methodological cause (the measurement errors), the measurement errors, there are some potentially substantive causes for the disappearing relationship.
 First, democratic backsliding might be mainly caused by elites.
 Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors (Weingast 1997).
-After the Cold War, many democracies backslided and imperiled in the worldwide because elected leaders lack of commitment to democratic norms when the public even did not notice that (Bermeo 2016; Levtsky and Ziblatt 2018, Waldner and Lust 2018).
+After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that (Bermeo 2016; Levtsky and Ziblatt 2018, Waldner and Lust 2018).
 Second, there has been a gulf between public perception and elites’ perception on important democratic principles (McClosky, 1959).
-A recent study shown that polarized public cannot get a consensus on democratic erosion which experts preserved (Carey et al 2018).
-Given the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
+A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved (Carey et al 2018).
+Given that the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
 Third, since there is a difference between the public support for democracy in the abstract and under specific propositions (Bartels 2020), recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
-By using survey experiments, Graham an Svolik (2020) pointed out a " fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
+By using survey experiments, Graham and Svolik (2020) pointed out a " fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
 It turned out that voters subordinated democratic norms to their partisan preference by not electorally penalizing their candidates who endorse measures that violate norms.
 Furthermore, McCoy et al (2020) found that rather than only tolerate anti-democratic policies, voters support/encourage these policies when their co-partisans are in power. 
 This increasing substantial literature emphasizes the eroding effect of polarization on democracy worldwide (McCoy et al 2019). 
