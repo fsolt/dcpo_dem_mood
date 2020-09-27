@@ -87,6 +87,7 @@ p_load(
   DCPOtools,
   boot, plm, # analysis
   huxtable, kableExtra, modelsummary, # tabulation
+  gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
   tidyverse, # data wrangling
@@ -95,6 +96,17 @@ p_load(
 
 # Functions preload
 set.seed(313)
+
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+# Theme setup
+theme_set(theme_minimal())
+source("../R/uiowa_palette.R")
 ```
 
 <!-- The following text is all cribbed from `fsolt/dcpo_article` and obviously needs heavy revision -->
@@ -294,16 +306,13 @@ supdem <- read.csv("../data/Support_democracy_ajps.csv")
 v_dem <- read.csv("../data/vdem15.csv")
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
+load(here::here("data", "claassen_replication_input.rda"))
 load(here::here("data", "claassen_m5_theta.rda"))
 load(here::here("data", "dcpo_input.rda"))
 load(here::here("data", "dcpo_theta.rda"))
 load(here::here("data", "dcpo_sigma.rda"))
 load(here::here("data", "dem_mood_apsr.RData"))
 
-```
-
-```{r claassenAJPS}
-# Pooled model -----
 
 ## Beck-Katz panel-corrected standard errors
 vcovBK_se <- function(x) {
@@ -313,6 +322,27 @@ vcovBK_se <- function(x) {
 }
 
 
+vcovHC_se <-  function(x) {
+  plm::vcovHC(x, method="arellano", cluster="group") %>% 
+    diag() %>% 
+    sqrt()
+}
+
+
+reformat_dcpo_output <- function(x, parameter_name) {
+  df_temp <- x %>% 
+    as_tibble(.name_repair = ~ls_country) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = all_of(ls_country),
+                 names_to = "country",
+                 values_to = parameter_name) %>%
+    arrange(country, year)
+  return(df_temp)
+}
+```
+
+```{r claassenAJPS}
+# Pooled model -----
 # regime = ifelse(sd2$Regime_VD > 1, 1, 0)
 
 ls_mod <-
@@ -331,29 +361,35 @@ df_result_cls <- map(ls_mod, function(mod){
     mutate(std.error = vcovBK_se(result))
 })
 
-save(df_result_cls, file = here::here("output", "estimates_clsAJPS.RDS"))
+save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
-```{r claassenUncertainty}
+```{r claassenUncertaintyAJPS,eval=FALSE}
 
-ls_country <- levels(dcpo_input$data$kk)
-first_year <- min(dcpo_input$data$year)
+ls_country <- unique(claassen_replication_input$data$country)
+first_year <- min(claassen_replication_input$data$year)
 
+sd_control <- sd.plm %>%
+  mutate(
+    country = as.character(Country),
+    year = as.numeric(as.character(Year)),
+    regime = ifelse(Regime_VD > 1, 1, 0)
+  )
 
-df_claassen <- purrr::map(1:1000, function(anEntry) {
+df_cls <- purrr::map(1:1000, function(anEntry) {
   claassen_m5_theta$theta[anEntry,,] %>% 
     reformat_dcpo_output("theta") %>% 
-    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-              by = c("year", "country")) %>%
-    left_join(df_controls, by = c("country", "year")) %>% 
+    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+    #           by = c("year", "country")) %>%
+    left_join(sd_control, by = c("country", "year")) %>% 
     mutate(theta_dem = theta * regime,
            theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
-estimate_dcpo <- function(aModel, aType = "pooling") {
+estimate_cls <- function(aModel, aType = "pooling") {
   if (aType == "gmm") {
-    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+    result_cls_1k <- map(df_cls, function(aDataset) {
       pgmm(
         as.formula(aModel),
         effect = "individual",
@@ -364,26 +400,26 @@ estimate_dcpo <- function(aModel, aType = "pooling") {
       )
     })
     
-    result_vars_dcpo_1k <-
-      mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
+    result_vars_cls_1k <-
+      mitools::MIextract(result_cls_1k, fun = vcovHC_se)
     
   } else {
-    result_dcpo_1k <- map(df_dcpo, function(aDataset) {
+    result_cls_1k <- map(df_cls, function(aDataset) {
       plm::plm(aModel,
                model = "pooling",
                data = aDataset)
     })
     
-    result_vars_dcpo_1k <-
-      mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
+    result_vars_cls_1k <-
+      mitools::MIextract(result_cls_1k, fun = vcovBK_se)
   }
   
-  result_betas_dcpo_1k <-
-    mitools::MIextract(result_dcpo_1k, fun = coef)
+  result_betas_cls_1k <-
+    mitools::MIextract(result_cls_1k, fun = coef)
   
-  df_result_dcpo <-
+  df_result_cls <-
     summary(
-      mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
+      mitools::MIcombine(results = result_betas_cls_1k, variance = result_vars_cls_1k)
     ) %>% rownames_to_column(var = "term") %>%
     rename(conf.low = `(lower`,
            conf.high = `upper)`,
@@ -392,33 +428,20 @@ estimate_dcpo <- function(aModel, aType = "pooling") {
 }
 
 mod_ls <- paste0(
-  "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
+  "Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + ",
   c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
-  " + plm::lag(lg_imp_mdpgdp, 1) +
-             plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
-             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
+  " + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)"
 )
 
-df_result_dcpo <- map(mod_ls, estimate_dcpo)
+df_result_clsUncertain <- map(mod_ls, estimate_cls)
 
-save(df_result_dcpo, file = here::here("output", "estimates_dcpo.RDS"))
+save(df_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
-```{r dcpoPointAJPS}
+```{r dcpoPointAJPS, eval=FALSE}
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
-
-reformat_dcpo_output <- function(x, parameter_name) {
-  df_temp <- x %>% 
-    as_tibble(.name_repair = ~ls_country) %>% 
-    mutate(year = first_year + row_number() - 1) %>% 
-    pivot_longer(cols = all_of(ls_country),
-                 names_to = "country",
-                 values_to = parameter_name) %>%
-    arrange(country, year)
-  return(df_temp)
-}
 
 df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
@@ -536,15 +559,19 @@ save(df_result_dcpoAJPS, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 
 ```{r visualizedMoodAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization"}
 
+load(here::here("output", "estimates_clsMeanAJPS.RDS"))
 load(here::here("output", "estimates_clsAJPS.RDS"))
-load(here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
 df_plot <- df_result_cls[[1]] %>% 
   mutate(model = "Claassen 2019") 
 
-df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)") %>%  
+df_plot <- df_result_clsUncertain[[1]] %>% 
+  mutate(model = "Claassen w. Uncertainty") %>%  
+  bind_rows(df_plot)
+
+df_plot <- df_result_dcpoAJPS[[1]] %>% 
+  mutate(model = "DCPO") %>%  
   bind_rows(df_plot)
 
 df_plotS <- df_plot %>%
@@ -559,22 +586,28 @@ df_plotS <- df_plot %>%
       "Regional\n Democracy\n (t−1)",
       "Percent\n Muslim\n (t-1)",
       "Resource\n Dependence\n (t−1)"),
-    time = 2)
+    time = 3)
   )
 
+plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8) +
+  scale_color_uiowa(name = "", palette = "digitMixed") +
+  labs(
+    title = "DV: Institutional Democracy (Vdem)",
+    subtitle = "Pooled"
+  ) +
+  theme(legend.position = "none")
 
 # the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
 
-plot_clsVsDCPO <- small_multiple(df_plotS) +
-  theme_minimal() +
-  ggtitle("DV: Liberal Democracy (Vdem)")+
-  theme(legend.position = "none")
- 
 df_plot <- df_result_cls[[2]] %>% 
   mutate(model = "Claassen 2019") 
 
-df_plot <- df_result_dcpoMeanAJPS[[2]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)") %>%  
+df_plot <- df_result_clsUncertain[[2]] %>% 
+  mutate(model = "Claassen w. Uncertainty") %>%  
+  bind_rows(df_plot)
+
+df_plot <- df_result_dcpoAJPS[[2]] %>% 
+  mutate(model = "DCPO") %>%  
   bind_rows(df_plot)
 
 df_plotS <- df_plot %>%
@@ -590,19 +623,28 @@ df_plotS <- df_plot %>%
       "Regional\n Democracy\n (t−1)",
       "Percent\n Muslim\n (t-1)",
       "Resource\n Dependence\n (t−1)"),
-    time = 2)
+    time = 3)
   )
 
+plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8) +
+  scale_color_uiowa(name = "", palette = "digitMixed") +
+  labs(
+    title = "",
+    subtitle = "Regime Specific"
+  ) +
+  theme(legend.position = "bottom")
 
-plot_clsVsDCPO2 <- small_multiple(df_plotS) +
-  theme_minimal() +
-  ggtitle("DV: Liberal Democracy (Vdem)")+
-  theme(legend.position = "none")
+legend <- get_legend(plot_AJPS2)
 
-gridExtra::grid.arrange(plot_clsVsDCPO, plot_clsVsDCPO2, ncol = 2)
+plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
+
+grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol=2, nrow = 2, 
+             layout_matrix = rbind(c(1,2), c(3,3)),
+             widths = c(2.7, 2.7), heights = c(2.5, 0.2))
+
 ```
 
-```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty"}
+```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty", eval=FALSE}
 
 df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
@@ -703,21 +745,77 @@ mods[[2]] <- plm(
   model = "pooling"
 )
 
-vcovHC_se <-  function(x) {
-  plm::vcovHC(x, method="arellano", cluster="group") %>% 
-    diag() %>% 
-    sqrt()
-}
-
 df_result_clsAPSR <- map(mods, function(aMod){
   tidy(aMod) %>%
     mutate(std.error = vcovHC_se(aMod))
 })
 
-save(df_result_clsAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
 ```
 
-```{r dcpoPointAPSR}
+```{r claassenAPSRUncertainty}
+ls_country <- unique(claassen_replication_input$data$country)
+first_year <- min(claassen_replication_input$data$year)
+
+sd_control <- sd.plm %>%
+  mutate(
+    country = as.character(Country),
+    year = as.numeric(as.character(Year))
+  )
+
+df_clsAPSR <- purrr::map(1:1000, function(anEntry) {
+  claassen_m5_theta$theta[anEntry,,] %>% 
+    reformat_dcpo_output("theta") %>% 
+    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+    #           by = c("year", "country")) %>%
+    left_join(sd_control, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+
+estimate_cls <- vector(mode = "list")
+
+estimate_cls[[1]] <- function(aDataset) {
+  plm(
+      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Libdem_z, lag = 1)
+  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
+      model = "pooling",
+      data = aDataset
+    )
+}
+
+estimate_cls[[2]] <- function(aDataset) {
+  plm(
+      diff(theta, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
+  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)
+  + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1),
+      model = "pooling",
+      data = aDataset
+    )
+}
+
+
+df_result_clsUncertainAPSR <- map(estimate_cls, function(aModel){
+  aFit <- map(df_clsAPSR, aModel)
+  
+  result_vars_cls_1k <- mitools::MIextract(aFit, fun = vcovHC_se)
+  result_betas_cls_1k <- mitools::MIextract(aFit, fun = coef)
+  
+  summary(
+      mitools::MIcombine(results = result_betas_cls_1k, 
+                         variance = result_vars_cls_1k)
+    ) %>% rownames_to_column(var = "term") %>%
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`,
+           estimate = results) %>%
+    filter(!str_detect(term, "(Intercept)"))
+
+})
+
+save(df_result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+```
+
+```{r dcpoPointAPSR, eval = FALSE}
 df_controls <- read_csv(here::here("data", "control_variables_apsr.csv"),
                         col_types = cols(.default = col_double(),
                                          country = col_character(),
@@ -811,14 +909,19 @@ save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 
 ```{r visualizedMoodAPSR, fig.cap= "Effects of Democracy on Change in Mood"}
 
+load(here::here("output", "estimates_clsMeanAPSR.RDS"))
 load(here::here("output", "estimates_clsAPSR.RDS"))
-load(here::here("output", "estimates_dcpoMeanAPSR.RDS"))
+load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
 df_plot <- df_result_clsAPSR[[1]] %>% 
   mutate(model = "Claassen 2020") 
 
-df_plot <- df_result_dcpoMeanAPSR[[1]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)") %>%  
+df_plot <- df_result_clsUncertainAPSR[[1]] %>% 
+  mutate(model = "Claassen w. Uncertainty") %>%  
+  bind_rows(df_plot)
+
+df_plot <- df_result_dcpoAPSR[[1]] %>% 
+  mutate(model = "DCPO") %>%  
   bind_rows(df_plot)
 
 df_plotS <- df_plot %>%
@@ -831,22 +934,27 @@ df_plotS <- df_plot %>%
       "Liberal Democracy\n (t-1)",
       "Log GDP\n per capita\n (Difference)",
       "Log GDP\n (t−1)"),
-    time = 2)
+    time = 3)
   )
 
-
-# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
-
-plot_clsVsDCPO <- small_multiple(df_plotS) +
-  theme_minimal() +
-  ggtitle("DV: Democracy Mood")+
+plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8) +
+  scale_color_uiowa(name = "", palette = "digitMixed") +
+  labs(
+    title = "DV: Democratic Mood",
+    subtitle = "Basic"
+  ) +
   theme(legend.position = "none")
+
  
 df_plot <- df_result_clsAPSR[[2]] %>% 
   mutate(model = "Claassen 2020") 
 
-df_plot <- df_result_dcpoMeanAPSR[[2]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)") %>%  
+df_plot <- df_result_clsUncertainAPSR[[2]] %>% 
+  mutate(model = "Claassen w. Uncertainty") %>%  
+  bind_rows(df_plot)
+
+df_plot <- df_result_dcpoAPSR[[2]] %>% 
+  mutate(model = "DCPO") %>%  
   bind_rows(df_plot)
 
 df_plotS <- df_plot %>%
@@ -861,18 +969,27 @@ df_plotS <- df_plot %>%
       "Log GDP\n (t−1)",
       "Corruption\n (Difference)",
       "Corruption\n (t−1)"
-      ),time = 2)
+      ),time = 3)
   )
 
-plot_clsVsDCPO2 <- small_multiple(df_plotS) +
-  theme_minimal() +
-  ggtitle("DV: Democracy Mood")+
+plot_APSR2 <- dwplot(df_plotS, dodge_size = 0.8) +
+  scale_color_uiowa(name = "", palette = "digitMixed") +
+  labs(
+    title = "",
+    subtitle = "w. Corruption"
+  )
+
+legend <- get_legend(plot_AJPS2)
+
+plot_APSR2 <- plot_APSR2 +
   theme(legend.position = "none")
 
-gridExtra::grid.arrange(plot_clsVsDCPO, plot_clsVsDCPO2, ncol = 2)
+gridExtra::grid.arrange(plot_APSR1, plot_APSR2, legend, ncol=2, nrow = 2, 
+             layout_matrix = rbind(c(1,2), c(3,3)),
+             widths = c(2.7, 2.7), heights = c(2.5, 0.2))
 ```
 
-```{r visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
+```{r visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO", eval = FALSE}
 
 load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
