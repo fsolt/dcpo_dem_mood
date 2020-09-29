@@ -340,7 +340,8 @@ ls_mod <-
 df_result_cls <- map(ls_mod, function(mod){
   result <- plm(mod, model = "pooling", data = sd.plm)
   df_result <- tidy(result) %>%
-    mutate(std.error = vcovBK_se(result))
+    mutate(std.error = vcovBK_se(result),
+           n = nobs(result))
 })
 
 save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
@@ -467,7 +468,8 @@ ls_mod <- paste0(
 df_result_dcpoMeanAJPS <- map(ls_mod, function(mod){
   result <- plm(mod, model = "pooling", data = df_dcpoMeanAJPS)
   df_result <- tidy(result) %>%
-    mutate(std.error = vcovBK_se(result))
+    mutate(std.error = vcovBK_se(result),
+           n = nobs(result))
 })
 
 save(df_result_dcpoMeanAJPS, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
@@ -734,7 +736,8 @@ mods[[2]] <- plm(
 
 df_result_clsAPSR <- map(mods, function(aMod){
   tidy(aMod) %>%
-    mutate(std.error = vcovHC_se(aMod))
+    mutate(std.error = vcovHC_se(aMod),
+           n = nobs(aMod))
 })
 
 save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
@@ -838,7 +841,8 @@ mods[[2]] <-
 df_result_dcpoMeanAPSR <- map(mods, function(aMod){
   aMod %>% 
     tidy %>%
-    mutate(std.error = vcovHC_se(aMod))
+    mutate(std.error = vcovHC_se(aMod),
+           n = nobs(aMod))
 })
 
 save(df_result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
@@ -1050,7 +1054,7 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
-The results are presented in Figure \@ref(fig:visualizeAJPS)
+The results are presented in Figure \@ref(fig:visualizeAJPS) (and numerically in the Appendix \@ref(replicateAJPS))
 
 
 # Discussion
@@ -1100,7 +1104,7 @@ It suggests that the relationship between public opinion and institution or poli
 
 # (APPENDIX) Appendix {-},
 
-## Models of Effect of Democratic Mood on Institutional Democratization
+## Models of Effect of Democratic Mood on Institutional Democratization {#replicateAJPS}
 
 ```{r tableAJPS}
 
