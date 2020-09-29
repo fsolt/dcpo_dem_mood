@@ -73,7 +73,7 @@ Voters sometimes are willing to subordinate democratic norms to their partisan a
 ```{r setup, include=FALSE}
 options(tinytex.verbose = TRUE)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, dpi = 300)
 
 # If you haven't install `DCPOtools`
 # remotes::install_github("fsolt/DCPOtools")
@@ -86,12 +86,12 @@ p_load(
   dataverse, # data scraping
   DCPOtools,
   boot, plm, # analysis
-  huxtable, kableExtra, modelsummary, # tabulation
+  flextable, kableExtra, modelsummary, # tabulation
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
   tidyverse, # data wrangling
-  dotwhisker # visualization
+  dotwhisker, # visualization
 ) 
 
 # Functions preload
@@ -234,7 +234,7 @@ In our reexamination, instead of employing the point estimates, we relax the imp
 Specifically, we generated 1,000 duplicate versions of the analysis dataset, assigned to each a different random draw from the posterior distributions of public democratic support, performed the analyses repeatedly on each of these 1,000 versions of the dataset, and then combined the results following the rules set out in @Rubin1987.
 This process can be achieved by using the `purrr` package [@Henry2019] and adding only a few lines of code.
 
-```{r country-years, eval=FALSE}
+```{r country-years}
 path_df <-
   list.files(
     "../data",
@@ -270,37 +270,19 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 ```
 
 # Results
-Our reanalysis follows the following steps. Frist, we replicated Claassen's  (2019,2020)  studies by using his measurement and analysis models.
-Results here.
-Next, adding measurement uncertainty into Claassen's analysis models, we found xxxx.
-Tables and results here.
-We then reanalyzed the relationship between public democratic attitude and democracy institution in both directions, using more data, the DCPO measurement model and measurement uncertainty incorporated.
-Results here. indistinguishable from zero.
-In short, the main empirical findings about the estimated effect of public democratic support on democracy or vice versa are not replicable when measurement uncertainty is accounted, even using better measurement and more data.
-There are potential causes for the null results.
-First, the survey items we used might not capture real public democratic support, given the complexity of this concept and limited indicators compared to other concepts like gender egalitarian (Solt, 2021??).
-Second, these survey items do capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to high uncertainty.
-Methodologically, given the nature trail of latent variables and specific characters of comparative public opinion, performing analyses based on the strong assumption that comparative public attitudes are perfectly measured might exaggerate scholars' certainty methodologically and obscure a proper substantive evaluation of theoretical claims.
-In addition to the potentially methodological cause (the measurement errors), the measurement errors, there are some potentially substantive causes for the disappearing relationship.
-First, democratic backsliding might be mainly caused by elites.
-Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors (Weingast 1997).
-After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that (Bermeo 2016; Levtsky and Ziblatt 2018, Waldner and Lust 2018).
-Second, there has been a gulf between public perception and elites’ perception on important democratic principles (McClosky, 1959).
-A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved (Carey et al 2018).
-Given that the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
-Third, since there is a difference between the public support for democracy in the abstract and under specific propositions (Bartels 2020), recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
-By using survey experiments, Graham and Svolik (2020) pointed out a " fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
-It turned out that voters subordinated democratic norms to their partisan preference by not electorally penalizing their candidates who endorse measures that violate norms.
-Furthermore, McCoy et al (2020) found that rather than only tolerate anti-democratic policies, voters support/encourage these policies when their co-partisans are in power. 
-This increasing substantial literature emphasizes the eroding effect of polarization on democracy worldwide (McCoy et al 2019). 
-Regarding the polarization, the sigma in our measurement model captures the polarization.
-The figure xx shows the varying polarization in public support for democracy across countries. 
-Given the uncertainty in measures of public support, it is unsurprising that we did not find the statistically significant effect of polarization.
-However, the estimated effect of the interaction term between public support and polarization was negative, which referred to the attenuation effect of polarization on the impact of public support on democracy.
-Specifically, the big polarization in the U.S. implies that political polarization exists not only in partisan politics but also in more general democracy values.
-Future studies could take advantage of the DCPO’s polarization measurement in their analysis, given the necessity to analyze traditional relationships under the environment of polarization.
 
-```{r dataInput, eval = FALSE}
+<!-- I may suggest to move this paragraph to the beginning of the previous section or a separate section of research design -->
+
+**To examine the influence of empirical uncertainty, we conducted a three-step test. 
+We first reproduced @Claassen2019.
+Then applying the method he described in the article, we replicated his IRT-based measurement of democratic mood and maintain the entire distribution of the predicted outcome, instead of aggregating to a single point estimate.
+Utilizing the estimated distribution, we involved uncertainty to the analysis of the influence of democratic mood on institutional democracy cross-nationally.
+In the third step, we applied an advanced method and added one-third more data to the analysis to reduce potential effects of measurement biases and data spareness.
+We compared the outcomes of the three steps and showed as below that uncertainty is an critical factor in the studies of mass democratic attitude, which may alter the analytic conclusions. 
+We further show that accounting for uncertainty is at least equivalently important when the latent-variable estimates plays as the dependent variable in a study by replicating Claassen2020b. **
+
+
+```{r dataInput}
 
 supdem <- read.csv("../data/Support_democracy_ajps.csv")
 v_dem <- read.csv("../data/vdem15.csv")
@@ -364,7 +346,7 @@ df_result_cls <- map(ls_mod, function(mod){
 save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
-```{r claassenUncertaintyAJPS,eval=FALSE}
+```{r claassenUncertaintyAJPS}
 
 ls_country <- unique(claassen_replication_input$data$country)
 first_year <- min(claassen_replication_input$data$year)
@@ -439,7 +421,7 @@ df_result_clsUncertain <- map(mod_ls, estimate_cls)
 save(df_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
-```{r dcpoPointAJPS, eval=FALSE}
+```{r dcpoPointAJPS}
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
 
@@ -491,7 +473,7 @@ df_result_dcpoMeanAJPS <- map(ls_mod, function(mod){
 save(df_result_dcpoMeanAJPS, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 ```
 
-```{r dcpoUncertaintyAJPS, eval = FALSE}
+```{r dcpoUncertaintyAJPS}
 df_dcpo <- purrr::map(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
     reformat_dcpo_output("theta") %>% 
@@ -557,7 +539,7 @@ df_result_dcpoAJPS <- map(mod_ls, estimate_dcpo)
 save(df_result_dcpoAJPS, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 ```
 
-```{r visualizedMoodAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization"}
+```{r visualizeAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization", eval = TRUE}
 
 load(here::here("output", "estimates_clsMeanAJPS.RDS"))
 load(here::here("output", "estimates_clsAJPS.RDS"))
@@ -588,6 +570,11 @@ df_plotS <- df_plot %>%
       "Resource\n Dependence\n (t−1)"),
     time = 3)
   )
+
+df_tableAJPS <- df_plotS %>% mutate(
+  std.error = ifelse(is.na(std.error), se, std.error)
+) %>% 
+  select(term, estimate, std.error, model)
 
 plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
@@ -644,7 +631,7 @@ grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol=2, nrow = 2,
 
 ```
 
-```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty", eval=FALSE}
+```{r visualizedUncertainAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization Accounting for Uncertainty"}
 
 df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
@@ -815,7 +802,7 @@ df_result_clsUncertainAPSR <- map(estimate_cls, function(aModel){
 save(df_result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
 ```
 
-```{r dcpoPointAPSR, eval = FALSE}
+```{r dcpoPointAPSR}
 df_controls <- read_csv(here::here("data", "control_variables_apsr.csv"),
                         col_types = cols(.default = col_double(),
                                          country = col_character(),
@@ -857,7 +844,7 @@ df_result_dcpoMeanAPSR <- map(mods, function(aMod){
 save(df_result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
 ```
 
-```{r dcpoUncertaintyAPSR, eval = FALSE}
+```{r dcpoUncertaintyAPSR}
 df_dcpo <- purrr::map(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
     reformat_dcpo_output("theta") %>% 
@@ -907,7 +894,7 @@ df_result_dcpoAPSR <- map(estimate_dcpo, function(aModel){
 save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
 
-```{r visualizedMoodAPSR, fig.cap= "Effects of Democracy on Change in Mood"}
+```{r visualizedAPSR, fig.cap= "Effects of Democracy on Change in Mood", eval = TRUE}
 
 load(here::here("output", "estimates_clsMeanAPSR.RDS"))
 load(here::here("output", "estimates_clsAPSR.RDS"))
@@ -989,7 +976,7 @@ gridExtra::grid.arrange(plot_APSR1, plot_APSR2, legend, ncol=2, nrow = 2,
              widths = c(2.7, 2.7), heights = c(2.5, 0.2))
 ```
 
-```{r visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO", eval = FALSE}
+```{r visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
 
 load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
@@ -1063,6 +1050,37 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
+The results are presented in Figure \@ref(fig:visualizeAJPS)
+
+
+# Discussion
+
+In short, the main empirical findings about the estimated effect of public democratic support on democracy or vice versa are not replicable when measurement uncertainty is accounted, even using better measurement and more data.
+There are potential causes for the null results.
+First, the survey items we used might not capture real public democratic support, given the complexity of this concept and limited indicators compared to other concepts like gender egalitarian (Solt, 2021??).
+Second, these survey items do capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to high uncertainty.
+Methodologically, given the nature trail of latent variables and specific characters of comparative public opinion, performing analyses based on the strong assumption that comparative public attitudes are perfectly measured might exaggerate scholars' certainty methodologically and obscure a proper substantive evaluation of theoretical claims.
+In addition to the potentially methodological cause (the measurement errors), the measurement errors, there are some potentially substantive causes for the disappearing relationship.
+First, democratic backsliding might be mainly caused by elites.
+Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors (Weingast 1997).
+After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that (Bermeo 2016; Levtsky and Ziblatt 2018, Waldner and Lust 2018).
+Second, there has been a gulf between public perception and elites’ perception on important democratic principles (McClosky, 1959).
+A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved (Carey et al 2018).
+Given that the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
+Third, since there is a difference between the public support for democracy in the abstract and under specific propositions (Bartels 2020), recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
+By using survey experiments, Graham and Svolik (2020) pointed out a " fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
+It turned out that voters subordinated democratic norms to their partisan preference by not electorally penalizing their candidates who endorse measures that violate norms.
+Furthermore, McCoy et al (2020) found that rather than only tolerate anti-democratic policies, voters support/encourage these policies when their co-partisans are in power. 
+This increasing substantial literature emphasizes the eroding effect of polarization on democracy worldwide (McCoy et al 2019). 
+Regarding the polarization, the sigma in our measurement model captures the polarization.
+The figure xx shows the varying polarization in public support for democracy across countries. 
+Given the uncertainty in measures of public support, it is unsurprising that we did not find the statistically significant effect of polarization.
+However, the estimated effect of the interaction term between public support and polarization was negative, which referred to the attenuation effect of polarization on the impact of public support on democracy.
+Specifically, the big polarization in the U.S. implies that political polarization exists not only in partisan politics but also in more general democracy values.
+Future studies could take advantage of the DCPO’s polarization measurement in their analysis, given the necessity to analyze traditional relationships under the environment of polarization.
+
+
+
 
 # Conclusion
 In this reexamination, we show how the measurement uncertainty of public attitude causes inferential errors regardless of public attitude as an independent variable or dependent variable, even using more data and a sophisticated DCPO model which reduces the noises in measures for extreme countries. 
@@ -1078,3 +1096,15 @@ It suggests that the relationship between public opinion and institution or poli
 
 
 \pagebreak
+
+
+# (APPENDIX) Appendix {-},
+
+## Models of Effect of Democratic Mood on Institutional Democratization
+
+```{r tableAJPS}
+
+```
+
+
+## Models of Effects of Democracy on Change in Mood
