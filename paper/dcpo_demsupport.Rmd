@@ -574,9 +574,11 @@ df_plotS <- df_plot %>%
   )
 
 df_tableAJPS <- df_plotS %>% mutate(
-  std.error = ifelse(is.na(std.error), se, std.error)
+  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
+  group = "Pooled"
 ) %>% 
-  select(term, estimate, std.error, model)
+  select(term, estimate, conf, n, model, group) %>% 
+  fill(n, .direction = "up")
 
 plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
@@ -614,6 +616,15 @@ df_plotS <- df_plot %>%
       "Resource\n Dependence\n (t−1)"),
     time = 3)
   )
+
+df_tableAJPS <- df_plotS %>% mutate(
+  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
+  group = "Regime Spec."
+) %>% 
+  select(term, estimate, conf, n, model, group) %>% 
+  fill(n, .direction = "up") %>% 
+  bind_rows(df_tableAJPS) %>% 
+  mutate(estimate = round(estimate, digits = 3))
 
 plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
@@ -937,6 +948,13 @@ df_plotS <- df_plot %>%
     time = 3)
   )
 
+df_tableAPSR <- df_plotS %>% mutate(
+  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
+  group = "Basic"
+) %>% 
+  select(term, estimate, conf, n, model, group) %>% 
+  fill(n, .direction = "up")
+
 plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
@@ -971,6 +989,15 @@ df_plotS <- df_plot %>%
       "Corruption\n (t−1)"
       ),time = 3)
   )
+
+df_tableAPSR <- df_plotS %>% mutate(
+  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
+  group = "W. Corruption"
+) %>% 
+  select(term, estimate, conf, n, model, group) %>% 
+  fill(n, .direction = "up") %>% 
+  bind_rows(df_tableAPSR) %>% 
+  mutate(estimate = round(estimate, digits = 3))
 
 plot_APSR2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
@@ -1123,8 +1150,42 @@ It suggests that the relationship between public opinion and institution or poli
 ## Models of Effect of Democratic Mood on Institutional Democratization {#replicateAJPS}
 
 ```{r tableAJPS}
-
+df_tableAJPS %>% 
+  mutate(estimate = paste0(estimate, "\n ", conf),
+         group = paste0(group, "\n (n: ", n, ")")) %>% 
+  arrange(group, model) %>% 
+  select(group, model, term, estimate) %>% 
+  group_by(group) %>% 
+  pivot_wider(names_from = model, values_from = estimate) %>% 
+  mutate(term = str_replace_all(term, "\\n", " ")) %>% 
+  arrange(group) %>% 
+  flextable %>% 
+  set_header_labels(group = "Model",
+                    term = "Variable") %>% 
+  merge_v(j = c("group")) %>% 
+  hline(i = 8, border = officer::fp_border()) %>% 
+  autofit() %>% 
+  add_header_lines(values = paste0("Number of Observations: ", unique(df_tableAJPS$n)))
 ```
 
 
 ## Models of Effects of Democracy on Change in Mood
+
+```{r table APSR}
+df_tableAPSR %>% 
+  mutate(estimate = paste0(estimate, "\n ", conf),
+         group = paste0(group, "\n (n: ", n, ")")) %>% 
+  arrange(group, model) %>% 
+  select(group, model, term, estimate) %>% 
+  group_by(group) %>% 
+  pivot_wider(names_from = model, values_from = estimate) %>% 
+  mutate(term = str_replace_all(term, "\\n", " ")) %>% 
+  arrange(group) %>% 
+  flextable %>% 
+  set_header_labels(group = "Model",
+                    term = "Variable") %>% 
+  merge_v(j = c("group")) %>% 
+  hline(i = 8, border = officer::fp_border()) %>% 
+  autofit() 
+```
+
