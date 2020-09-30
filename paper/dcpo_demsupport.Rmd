@@ -90,7 +90,7 @@ p_load(
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
-  tidyverse, # data wrangling
+  broom, tidyverse, # data wrangling
   dotwhisker, # visualization
 ) 
 
@@ -339,7 +339,7 @@ ls_mod <-
 
 df_result_cls <- map(ls_mod, function(mod){
   result <- plm(mod, model = "pooling", data = sd.plm)
-  df_result <- tidy(result) %>%
+  df_result <- tidy(result, conf.int = TRUE) %>%
     mutate(std.error = vcovBK_se(result),
            n = nobs(result))
 })
@@ -578,10 +578,10 @@ df_tableAJPS <- df_plotS %>% mutate(
 ) %>% 
   select(term, estimate, std.error, model)
 
-plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8) +
+plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
-    title = "DV: Institutional Democracy (Vdem)",
+    title = "DV: Institutional Democratization",
     subtitle = "Pooled"
   ) +
   theme(legend.position = "none")
@@ -615,7 +615,7 @@ df_plotS <- df_plot %>%
     time = 3)
   )
 
-plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8) +
+plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
     title = "",
@@ -715,6 +715,15 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
+The results are presented in Figure \@ref(fig:visualizeAJPS) (and numerically in Appendix \@ref(replicateAJPS)).
+In the pooled model (left panel), the aggregated measurement of democratic mood shows a positive effect on the institutional democratization in Claassen's original model, and the effect is statistically significant at the 0.05 level.
+However, when accounting for the uncertainty of the latent variable measurement of the mood, the significance disappears.
+We added one-third more data and applied a more efficient measurement (DCPO), resulting a saliently shrink of the range of measurement uncertainty, but the confidence intervals still cut zero---that is, remaining statistically insignificant.^[The point estimates also alters. We attribute it to additional more information and better measuring method by DCPO.]
+Similar phenomenon also happens on the estimates of, for example, the second-time-unit lag of democratization and resouce dependency.
+
+We further examined Claassen's regime specific model [@Claassen2019: Model 2].
+The originally significant contribution of democratic mood in democratic regimes disappears as well, regardless whether more information and better method are applied.
+
 ```{r claassenAPSR}
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
@@ -735,7 +744,7 @@ mods[[2]] <- plm(
 )
 
 df_result_clsAPSR <- map(mods, function(aMod){
-  tidy(aMod) %>%
+  tidy(aMod, conf.int = TRUE) %>%
     mutate(std.error = vcovHC_se(aMod),
            n = nobs(aMod))
 })
@@ -842,7 +851,7 @@ df_result_dcpoMeanAPSR <- map(mods, function(aMod){
   aMod %>% 
     tidy %>%
     mutate(std.error = vcovHC_se(aMod),
-           n = nobs(aMod))
+           n = nobs(aMod`))
 })
 
 save(df_result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
@@ -928,7 +937,7 @@ df_plotS <- df_plot %>%
     time = 3)
   )
 
-plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8) +
+plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
     title = "DV: Democratic Mood",
@@ -963,14 +972,15 @@ df_plotS <- df_plot %>%
       ),time = 3)
   )
 
-plot_APSR2 <- dwplot(df_plotS, dodge_size = 0.8) +
+plot_APSR2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
     title = "",
     subtitle = "w. Corruption"
-  )
+  ) +
+  theme(legend.position = "bottom")
 
-legend <- get_legend(plot_AJPS2)
+legend <- get_legend(plot_APSR2)
 
 plot_APSR2 <- plot_APSR2 +
   theme(legend.position = "none")
@@ -1054,8 +1064,14 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
-The results are presented in Figure \@ref(fig:visualizeAJPS) (and numerically in the Appendix \@ref(replicateAJPS))
+The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
+In Figure \@ref(fig:visualizedAPSR), we examine the thermostatic model of democratic mood [@Claassen2020b]. 
+The estimates without taking uncertainty into account imply that democatic mood decreases along with the progress of democratization. 
+Nevertheless, this effect no longer holds when the measurement uncertainty is involved. 
 
+As previous operation, we tested if this alteration is caused by the data scarcity or estimating inefficiency. 
+When more data and better method are applied, the confidence intervals do shrink yet remaining statistically insignificant. 
+We observed the similar changes after adjusting the effect of domestic corruption [@Claassen2020b: 41]. 
 
 # Discussion
 
