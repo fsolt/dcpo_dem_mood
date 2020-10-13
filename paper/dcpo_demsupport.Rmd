@@ -62,9 +62,9 @@ To reduce the uncertainty, we used a superior measurement, the Dynamic Comparati
 Surprisingly, our study revealed that the significant relationship between public support and democratic change disappeared when uncertainty was included in the replication analysis of @Claassen2020a modelwith his original data and the DCPO analysis with more data.
 
 The underlying reasons for the uncertainty could be the ineffectiveness of survey questions in capturing public attitude compared to rich indicators for other concept,like gender egalitarianism [Solt, 2021??], the shortage of indicators for public support worldwide, or the gap between self-reported democratic attitude and behaviorally democratic commitments [@graham_democracy_2020,@nyhan_who_2020,@mccoy_democratic_2020].
-There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding (Weingast 1997,Levtsky and Ziblatt 2018), the lack of a consensus on democratic erosion between the public and experts (Carey et al 2018), and the difference between the public support in abstract and public commitments in context (Bartels 2020,Graham and Svolik 2020,McCoy et al 2020).
+There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding [@weingast_political_1997,@levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020,@graham_democracy_2020,@mccoy_democratic_2020].
 
-Although we could not exclude or identify any of them in this study, our reexamination reaffirmed Fariss (2014), Juhl (2019), and Solt (2020)'s suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
+Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt (2020)'s suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
 
 
 ```{r setup, include=FALSE}
@@ -116,8 +116,8 @@ We compared the outcomes of the three steps and showed as below that uncertainty
 We further showed that accounting for uncertainty is at least equivalently important when the latent-variable estimates plays as the dependent variable in a study by replicating Claassen2020b.
 
 ## Incorporating Uncertainty
-Given the measurement uncertainty caused by the inherent trail of latent constructs and the consequential (propagated) effects of measurement uncertainty on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models (Treier and Jackman 2008, Crabtree and Fariss 2015). 
-Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies (Schnakenberg and Fariss 2014, Caughey and Warshaw 2018), and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures ( Solis and Waggoner 2020, Gandhi and Sumner 2020). 
+Given the measurement uncertainty caused by the inherent trail of latent constructs and the consequential (propagated) effects of measurement uncertainty on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models [@treier_democracy_2008,@Crabtree2015].
+Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies [@Schnakenberg2014,@caughey_policy_2018], and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures [@solis_measuring_2020,@gandhi_measuring_2020]. 
 However, in the comparative public opinion field, previous efforts on measuring comparative public opinion didn’t account for measurement uncertainty in their analyses.
 
 In our reexamination, instead of employing the point estimates, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures, such as the Standardized World Income Inequality Database [@Solt2020].
@@ -1108,21 +1108,21 @@ Methodologically, given the nature trail of latent variables and specific charac
 
 In addition to the potentially methodological cause (the measurement errors), there are some potentially substantive causes for the disappearing relationship.
 First, democratic backsliding might be mainly caused by elites.
-Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors (Weingast 1997).
-After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that (Bermeo 2016; Levtsky and Ziblatt 2018, Waldner and Lust 2018).
+Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors [@weingast_political_1997].
+After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that [@bermeo_democratic_2016,@levitsky_how_2018, @waldner_unwelcome_2018].
 
-Second, there has been a gulf between public perception and elites’ perception on important democratic principles (McClosky, 1959).
-A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved (Carey et al 2018).
+Second, there has been a gulf between public perception and elites’ perception on important democratic principles [@mcclosky_consensus_1964].
+A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved [@carey_searching_2019].
 Given that the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
 
-Third, since there is a difference between the public support for democracy in the abstract and under specific propositions (Bartels 2020), recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
-By using survey experiments, Graham and Svolik (2020) pointed out a "fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
+Third, since there is a difference between the public support for democracy in the abstract and under specific propositions [@bartels_ethnic_2020], recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
+By using survey experiments, @graham_democracy_2020 pointed out a "fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
 It turned out that voters subordinated democratic norms to their partisan preference by not electorally penalizing their candidates who endorse measures that violate norms.
-Furthermore, McCoy et al (2020) found that rather than only tolerate anti-democratic policies, voters support/encourage democratic norm-eroding policies when their co-partisans are in power. 
+Furthermore, @Carey2020 found that rather than only tolerate anti-democratic policies, voters support/encourage democratic norm-eroding policies when their co-partisans are in power. 
 
 
 # Conclusion
-In this note, we reexamined the findings from Claassens'(2019, 2020) that public support helps the survival of democarcy and democratic development has a thermostatic effect on public support for democracy.
+In this note, we reexamined the findings from Claassens'[-@Claassen2019,-@Claassen2020b] paper that public support helps the survival of democarcy and democratic development has a thermostatic effect on public support for democracy.
 We demonstrated that the relationships between public support and democratic development depends on the incorporation of uncertainty in the measurement of latent variables.
 Even using more data and a sophisticated DCPO model, the measurement uncertainty made the relationships irreplicable irrespective of whether public support is an independent variable or dependent variable.
 
