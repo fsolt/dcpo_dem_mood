@@ -44,27 +44,27 @@ nocite: |
 # Introduction
 
 One of the classic but disputable questions in comparative politics is the relationship between mass democratic support and countries' level of democracy.
-A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @norris_democratic_2011], but findings from empirical analyses still remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011, see @Claassen2020a for a review in this literature].
+A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @norris_democratic_2011], but findings from empirical analyses still remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review in this literature, see @Claassen2020a].
 
-One reason for the mixed results is the difficulities in measuring comparative public democratic support.
+One reason for the mixed results is the difficulties in measuring comparative public democratic support.
 Public support for democracy is a latent variable and the incorrect measurement of it may conceal the real relationship between public opinion and democratic institutional development.
 However, the sparsity and incomparability of public opinion data across countries over time have perplexed the study of comparative politics for a long time [@Solt2020a].
-Recently, a few pioneering studies are contributing to the latent public opinion measurement in comparative studies[@Caughey2019,@Claassen2019,@Solt2020a]. 
+Recently, a few pioneering studies are contributing to the latent public opinion measurement in comparative studies [@Caughey2019; @Claassen2019; @Solt2020a]. 
 
 A prominent study by @Claassen2020a applied an advanced Bayesian Item Response Model to measure dynamic public democratic support for 135 countries for up to 29 years.
 It found that mass democratic support had a positive impact on democratic change, especially the endurance of democracy.
-The analysis models he used do not accout, though, for measurement uncertainty.
+The analysis models he used do not account, though, for measurement uncertainty.
 The latent constructs are inherently accompanied by amount of measurement uncertainty due to the unobservability of variables.
-Left unacknowledged, with a strong assumption that latent variables are measured perfectly, measurement error could distort both statistical and substantive inference [@Crabtree2015,@Juhl2019].
+Left unacknowledged, with a strong assumption that latent variables are measured perfectly, measurement error could distort both statistical and substantive inference [@Crabtree2015; @juhl_measurement_2019].
 
 In this paper, we reexamined the relationship between public support for democracy and democratic changes thoroughly, by using a superior measurement, bigger data, and incorporating uncertainty.
-To reduce the uncertainty, we used a superior measurement, the Dynamic Comparative Public Opinion (DCPO) model developed by@Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
-Surprisingly, our study revealed that the significant relationship between public support and democratic change disappeared when uncertainty was included in the replication analysis of @Claassen2020a modelwith his original data and the DCPO analysis with more data.
+To reduce the uncertainty, we used a superior measurement, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
+Surprisingly, our study revealed that the significant relationship between public support and democratic change disappeared when uncertainty was included in the replication analysis of @Claassen2020a model with his original data and the DCPO analysis with more data.
 
-The underlying reasons for the uncertainty could be the ineffectiveness of survey questions in capturing public attitude compared to rich indicators for other concept,like gender egalitarianism [Solt, 2021??], the shortage of indicators for public support worldwide, or the gap between self-reported democratic attitude and behaviorally democratic commitments [@graham_democracy_2020,@nyhan_who_2020,@mccoy_democratic_2020].
-There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding [@weingast_political_1997,@levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020,@graham_democracy_2020,@mccoy_democratic_2020].
+The underlying reasons for the uncertainty could be the ineffectiveness of survey questions in capturing public attitude compared to rich indicators for other concept, like gender egalitarianism [Solt, 2021??], the shortage of indicators for public support worldwide, or the gap between self-reported democratic attitude and behaviorally democratic commitments [@graham_democracy_2020; @Carey2020; @McCoy2020].
+There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding [@weingast_political_1997; @levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020; @graham_democracy_2020; @McCoy2020].
 
-Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt (2020)'s suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
+Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt's [-@Solt2020a] suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
 
 
 ```{r setup, include=FALSE}
@@ -87,8 +87,8 @@ p_load(
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
-  broom, tidyverse, # data wrangling
-  dotwhisker, # visualization
+  broom, tidyverse, janitor, # data wrangling
+  dotwhisker # visualization
 ) 
 
 # Functions preload
@@ -103,36 +103,36 @@ get_legend<-function(myggplot){
 
 # Theme setup
 theme_set(theme_minimal())
-source("../R/uiowa_palette.R")
+source(here::here("R", "uiowa_palette.R"))
 ```
 
 # Model Specification 
 To examine the influence of empirical uncertainty, we conducted a three-step test. 
-The first step we made is to reproduced @Claassen2019.
+The first step we made is to reproduce @Claassen2020a.
 Then applying the method he described in the article, we replicated his IRT-based measurement of democratic mood and maintained the entire distribution of the predicted outcome, instead of aggregating to a single point estimate.
 Utilizing the estimated distribution, we involved uncertainty to the analysis of the influence of democratic mood on institutional democracy cross-nationally.
 In the third step, we applied an advanced method and added one-third more data to the analysis to reduce potential effects of measurement biases and data spareness.
 We compared the outcomes of the three steps and showed as below that uncertainty is an critical factor in the studies of mass democratic attitude, which may alter the analytic conclusions. 
-We further showed that accounting for uncertainty is at least equivalently important when the latent-variable estimates plays as the dependent variable in a study by replicating Claassen2020b.
+We further showed that accounting for uncertainty is at least equivalently important when the latent-variable estimates plays as the dependent variable in a study by replicating @Claassen2020b.
 
 ## Incorporating Uncertainty
-Given the measurement uncertainty caused by the inherent trail of latent constructs and the consequential (propagated) effects of measurement uncertainty on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models [@treier_democracy_2008,@Crabtree2015].
-Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies [@Schnakenberg2014,@caughey_policy_2018], and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures [@solis_measuring_2020,@gandhi_measuring_2020]. 
+Given the measurement uncertainty caused by the inherent trail of latent constructs and the consequential (propagated) effects of measurement uncertainty on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models [@treier_democracy_2008; @Crabtree2015].
+Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies [@Schnakenberg2014; @caughey_policy_2018], and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures [@solis_measuring_2020; @gandhi_measuring_2020]. 
 However, in the comparative public opinion field, previous efforts on measuring comparative public opinion didn’t account for measurement uncertainty in their analyses.
 
 In our reexamination, instead of employing the point estimates, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures, such as the Standardized World Income Inequality Database [@Solt2020].
-Specifically, in our replication of Claassen2020a's analysis models, we incorporated uncertainty by using random draws from the posterior distributions. 
+Specifically, in our replication of Claassen's [-@Claassen2020a] analysis models, we incorporated uncertainty by using random draws from the posterior distributions. 
 We generated 1,000 duplicate versions of the analysis dataset, assigned to each a different random draw from the posterior distributions of public democratic support, performed the analyses repeatedly on each of these 1,000 versions of the dataset, and then combined the results following the rules set out in @Rubin1987.
 
 
-```{r dcpo_input_raw, eval = FALSE}
-dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv("data-raw/mood_dem.csv",
+```{r dcpo_input_raw}
+dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
                                                           col_types = "cccccc"),
                                           file = "data/dcpo_input_raw.csv")
 ```
 
-```{r dcpo_input, eval = FALSE}
-dcpo_input_raw1 <- read_csv("data/dcpo_input_raw.csv", col_types = "cdcddcd") %>% 
+```{r dcpo_input, eval=TRUE}
+dcpo_input_raw1 <- read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>% 
   filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
                  ((country=="Albania" & year==1998) |
                       (country=="Indonesia" & (year==2001 | year==2006)) |
@@ -157,17 +157,17 @@ dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
 save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 ```
 
-```{r compare_n, eval = FALSE}
-if (!file.exists("data/supdem raw survey marginals.tab")) {
+```{r compare_n, eval=TRUE}
+if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
     read_csv(col_types = "cdcddcdc") %>% 
     write_csv("data/supdem raw survey marginals.tab")
 }
 
-supdem <- read_csv("data/supdem raw survey marginals.tab",
+supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"),
                    col_types = "cdcddcdc") %>% 
   janitor::clean_names() %>% 
-  with_min_yrs(2)
+  DCPOtools::with_min_yrs(2)
 
 supdem_ncy <- supdem %>%
   dplyr::select(country, year) %>% 
@@ -200,15 +200,15 @@ The flexibility of the DCPO model in treating the data as their original scales,
 For example, our data consists of 20,885 national responses as the result of measuring public attitude at ordinal scales, which has the potential to give us more nuances about public democratic support. 
 Second, to reduce the uncertainty in estimating countries which lie at the extreme ends of the public opinion spectrum [@Linzer2015], the estimates of mean public opinion are bounded and the extent of polarization is included in the DCPO model.
 Third, to address the differences in item response across countries, caused by factors other than public attitude or preference, a country-specific item bias is modelled as "a country-specific bias in the difficulty of each question" [@Solt2020a, 6]. 
-In short, the DCPO model has methodological advantages in keeping as much available information as possible, reducing uncertainty by bounding scales and capturing the extent of polarization. 
+In short, the DCPO model has methodological advantages in keeping as much available information as possible, reducing uncertainty by bounding scales, and in capturing the extent of polarization in the public. 
 
 In addition to applying the advanced measurement, we also collected as much available data as possible. We collected data on 62 items from 17 survey projects in 159 countries covering years from 1988 to 2020.
-Survey data was extracted automatically through the `DCPO` package for R [@Solt2020a].
+Survey data was extracted automatically through the `DCPO` package for R [@Solt2020b].
 The DCPO package also automatically identifies the year in which the survey was conducted, which contributes to the capture of the real relationship between public opinion and the level of democracy.
-Our data consists of 1,465 country-years and 1,861 national surveys, which is a 24.4% and 33.9% increase respectively over 1,178 country-years and 1,390 national surveys used in Claassen's studies [-@Claassen2020a; -@Claassen2020b].
+Our data consists of `r dcpo_input_ncy` country-years and 1,861 national surveys, which is a `r increase_cy`% and 33.9% increase respectively over `r supdem_ncy` country-years and 1,390 national surveys used in Claassen's studies [-@Claassen2020a; -@Claassen2020b].
 Finally, using the DCPO model in the `DCPO` package, we attained 4,752 estimates for mass support for democracy, drawn from 144 countries with at least 2 country-years observed.
 
-```{r dcpo, eval=FALSE}
+```{r dcpo}
 iter <- 3000
 
 dcpo_output <- dcpo(dcpo_input,
@@ -271,7 +271,7 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 
 # Results
 
-The results are presented in Figure \@ref(fig:visualizeAJPS) (and numerically in Appendix \@ref(replicateAJPS)).
+The results are presented in Figure&nbsp;\ref{fig:visualizeAJPS} (and numerically in Appendix Table&nbsp;[A1](#AJPSreplication)).
 In the pooled model (left panel), the aggregated measurement of democratic mood shows a positive effect on the institutional democratization in Claassen's original model, and the effect is statistically significant at the 0.05 level.
 
 
@@ -539,17 +539,17 @@ save(df_result_dcpoAJPS, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 ```
 
 
-```{r visualizeAJPS, fig.cap= "The Effect of Democratic Mood on Institutional Democratization", eval = TRUE}
+```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Democratic Support on Democratic Institutions", eval = TRUE, fig.width=7.5, fig.height=5}
 
 load(here::here("output", "estimates_clsMeanAJPS.RDS"))
 load(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
 df_plot <- df_result_cls[[1]] %>% 
-  mutate(model = "Claassen 2019") 
+  mutate(model = "Claassen 2020a") 
 
 df_plot <- df_result_clsUncertain[[1]] %>% 
-  mutate(model = "Claassen w. Uncertainty") %>%  
+  mutate(model = "Claassen w/ Uncertainty") %>%  
   bind_rows(df_plot)
 
 df_plot <- df_result_dcpoAJPS[[1]] %>% 
@@ -562,14 +562,30 @@ df_plotS <- df_plot %>%
     term = rep(
       c("Democracy\n (t-1)",
         "Democracy\n (t-2)",
-      "Democratic\n Mood\n (t-1)",
-      "Log GDP\n per capita\n (t−1)",
-      "GDP per\n capita Growth\n (t−1)",
-      "Regional\n Democracy\n (t−1)",
+      "Support\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
       "Percent\n Muslim\n (t-1)",
-      "Resource\n Dependence\n (t−1)"),
-    time = 3)
-  )
+      "Resource\n dependence\n (t-1)"),
+    time = 3))
+
+terms <- factor(rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")), levels =
+      rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")))
 
 df_tableAJPS <- df_plotS %>% mutate(
   conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
@@ -579,7 +595,9 @@ df_tableAJPS <- df_plotS %>% mutate(
   fill(n, .direction = "up")
 
 plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_color_uiowa(name = "", palette = "digitMixed") +
+  scale_y_discrete(labels = parse(text = levels(terms))) +
+  # scale_color_uiowa(name = "", palette = "digitMixed") +
+  scale_color_grey(start = 0.4, end = 0.8) +
   labs(
     title = "DV: Institutional Democratization",
     subtitle = "Pooled"
@@ -587,12 +605,13 @@ plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
   theme(legend.position = "none")
 
 # the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
+# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
 
 df_plot <- df_result_cls[[2]] %>% 
-  mutate(model = "Claassen 2019") 
+  mutate(model = "Claassen 2020a") 
 
 df_plot <- df_result_clsUncertain[[2]] %>% 
-  mutate(model = "Claassen w. Uncertainty") %>%  
+  mutate(model = "Claassen w/ Uncertainty") %>%  
   bind_rows(df_plot)
 
 df_plot <- df_result_dcpoAJPS[[2]] %>% 
@@ -605,15 +624,34 @@ df_plotS <- df_plot %>%
     term = rep(
       c("Democracy\n (t-1)",
         "Democracy\n (t-2)",
-      "Democratic\n Demo Only\n (t-1)",
-      "Democratic\n Auto Only\n (t-1)",
-      "Log GDP\n per capita\n (t−1)",
-      "GDP per\n capita Growth\n (t−1)",
-      "Regional\n Democracy\n (t−1)",
+      "Support\n demo only\n (t-1)",
+      "Support\n auto only\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
       "Percent\n Muslim\n (t-1)",
-      "Resource\n Dependence\n (t−1)"),
+      "Resource\n dependence\n (t-1)"),
     time = 3)
   )
+
+terms2 <- factor(rev(c("Democracy[t-1]",
+                       "Democracy[t-2]",
+                       "Support[t-1] (democracies~only)",
+                       "Support[t-1] (autocracies~only)",
+                       "Log~GDP~per~capita[t-1]",
+                       "GDP~per~capita~growth[t-1]",
+                       "Regional~democracy[t-1]",
+                       "Percent~Muslim[t-1]",
+                       "Resource~dependence[t-1]")), levels =
+                   rev(c("Democracy[t-1]",
+                         "Democracy[t-2]",
+                         "Support[t-1] (democracies~only)",
+                         "Support[t-1] (autocracies~only)",
+                         "Log~GDP~per~capita[t-1]",
+                         "GDP~per~capita~growth[t-1]",
+                         "Regional~democracy[t-1]",
+                         "Percent~Muslim[t-1]",
+                         "Resource~dependence[t-1]")))
 
 df_tableAJPS <- df_plotS %>% mutate(
   conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
@@ -625,12 +663,15 @@ df_tableAJPS <- df_plotS %>% mutate(
   mutate(estimate = round(estimate, digits = 3))
 
 plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_color_uiowa(name = "", palette = "digitMixed") +
+    scale_y_discrete(labels = parse(text = levels(terms2))) +
+  # scale_color_uiowa(name = "", palette = "digitMixed") +
+  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
   labs(
     title = "",
     subtitle = "Regime Specific"
   ) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())
 
 legend <- get_legend(plot_AJPS2)
 
@@ -663,16 +704,16 @@ plot_pooled <- filter(df_plot, model != "Claassen 2019") %>%
       `plm::lag(Libdem_VD, 1:2)2` = "Democracy(t-2)",
       `plm::lag(theta, 1)` = "Democratic Mood(t-1)",
       `plm::lag(SupDem_trim, 1)` = "Democratic Mood(t-1)",
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(lnGDP_imp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(GDP_imp_grth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
-      `plm::lag(Libdem_regUN, 1)` = "Regional democracy(t−1)",
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
+      `plm::lag(lnGDP_imp, 1)` = "Log GDP per capita(t-1)",
+      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t-1)",
+      `plm::lag(GDP_imp_grth, 1)` = "GDP per capita Growth(t-1)",
+      `plm::lag(Region_libdem, 1)` = "Regional democracy(t-1)",
+      `plm::lag(Libdem_regUN, 1)` = "Regional democracy(t-1)",
       `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
       `plm::lag(Pr_Muslim, 1)` = "Percent Muslim (t-1)",
-      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)",
-      `plm::lag(Res_cp_WDI_di, 1)` = "Resource Dependence(t−1)"
+      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t-1)",
+      `plm::lag(Res_cp_WDI_di, 1)` = "Resource Dependence(t-1)"
     )
   ) +
   geom_vline(xintercept = 0,
@@ -703,11 +744,11 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
       `plm::lag(Vdem_libdem, 1:2)2` = "Democracy(t-2)",
       `plm::lag(theta_dem, 1)` = "Mood Democracy(t-1)",
       `plm::lag(theta_aut, 1)` = "Mood Autocracy(t-1)",
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t−1)",
-      `plm::lag(Region_libdem, 1)` = "Regional democracy(t−1)",
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
+      `plm::lag(mdprgdp_grwth, 1)` = "GDP per capita Growth(t-1)",
+      `plm::lag(Region_libdem, 1)` = "Regional democracy(t-1)",
       `plm::lag(muslism_prop_2010, 1)` = "Percent Muslim (t-1)",
-      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t−1)"
+      `plm::lag(dependence_pc_di, 1)` = "Resource Dependence(t-1)"
     )
   ) +
   geom_vline(xintercept = 0,
@@ -729,7 +770,7 @@ However, when accounting for the uncertainty of the latent variable measurement 
 We added one-third more data and applied a more efficient measurement (DCPO), resulting a saliently shrink of the range of measurement uncertainty, but the confidence intervals still cut zero---that is, remaining statistically insignificant.^[The point estimates also alters. We attribute it to additional more information and better measuring method by DCPO.]
 Similar phenomenon also happens on the estimates of, for example, the second-time-unit lag of democratization and resouce dependency.
 
-We further examined Claassen's regime specific model [@Claassen2019: Model 2].
+We further examined Claassen's regime specific model [@Claassen2020a: Model 2].
 The originally significant contribution of democratic mood in democratic regimes disappears as well, regardless whether more information and better method are applied.
 
 ```{r claassenAPSR}
@@ -915,17 +956,17 @@ df_result_dcpoAPSR <- map(estimate_dcpo, function(aModel){
 save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
 
-```{r visualizedAPSR, fig.cap= "Effects of Democracy on Change in Mood", eval = TRUE}
+```{r visualizedAPSR, fig.cap= "\\label{fig:visualizedAPSR} Effects of Democracy on Change in Mood", eval = TRUE, fig.width=7, fig.height=5}
 
 load(here::here("output", "estimates_clsMeanAPSR.RDS"))
 load(here::here("output", "estimates_clsAPSR.RDS"))
 load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
 df_plot <- df_result_clsAPSR[[1]] %>% 
-  mutate(model = "Claassen 2020") 
+  mutate(model = "Claassen 2020b") 
 
 df_plot <- df_result_clsUncertainAPSR[[1]] %>% 
-  mutate(model = "Claassen w. Uncertainty") %>%  
+  mutate(model = "Claassen w/ Uncertainty") %>%  
   bind_rows(df_plot)
 
 df_plot <- df_result_dcpoAPSR[[1]] %>% 
@@ -941,9 +982,22 @@ df_plotS <- df_plot %>%
       "Liberal Democracy\n (Difference)",
       "Liberal Democracy\n (t-1)",
       "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t−1)"),
+      "Log GDP\n (t-1)"),
     time = 3)
   )
+
+terms <- factor(rev(c("Support[t-1]",
+                      "Support[t-2]",
+                      "Delta~Liberal~democracy",
+                      "Liberal~democracy[t-1]",
+                      "Delta~Log~GDP~per~capita",
+                      "Log~GDP[t-1]")),
+                levels = rev(c("Support[t-1]",
+                               "Support[t-2]",
+                               "Delta~Liberal~democracy",
+                               "Liberal~democracy[t-1]",
+                               "Delta~Log~GDP~per~capita",
+                               "Log~GDP[t-1]")))
 
 df_tableAPSR <- df_plotS %>% mutate(
   conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
@@ -953,7 +1007,9 @@ df_tableAPSR <- df_plotS %>% mutate(
   fill(n, .direction = "up")
 
 plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_color_uiowa(name = "", palette = "digitMixed") +
+  scale_y_discrete(labels = parse(text = levels(terms))) +
+  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
+  # scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
     title = "DV: Democratic Mood",
     subtitle = "Basic"
@@ -965,7 +1021,7 @@ df_plot <- df_result_clsAPSR[[2]] %>%
   mutate(model = "Claassen 2020") 
 
 df_plot <- df_result_clsUncertainAPSR[[2]] %>% 
-  mutate(model = "Claassen w. Uncertainty") %>%  
+  mutate(model = "Claassen w/ Uncertainty") %>%  
   bind_rows(df_plot)
 
 df_plot <- df_result_dcpoAPSR[[2]] %>% 
@@ -981,11 +1037,28 @@ df_plotS <- df_plot %>%
       "Liberal\n Democracy\n (Difference)",
       "Liberal\n Democracy\n (t-1)",
       "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t−1)",
+      "Log GDP\n (t-1)",
       "Corruption\n (Difference)",
-      "Corruption\n (t−1)"
+      "Corruption\n (t-1)"
       ),time = 3)
   )
+
+terms2 <- factor(rev(c("Support[t-1]",
+                      "Support[t-2]",
+                      "Delta~Liberal~democracy",
+                      "Liberal~democracy[t-1]",
+                      "Delta~Log~GDP~per~capita",
+                      "Log~GDP[t-1]",
+                      "Delta~Corruption",
+                      "Corruption[t-1]")),
+                levels = rev(c("Support[t-1]",
+                               "Support[t-2]",
+                               "Delta~Liberal~democracy",
+                               "Liberal~democracy[t-1]",
+                               "Delta~Log~GDP~per~capita",
+                               "Log~GDP[t-1]",
+                               "Delta~Corruption",
+                               "Corruption[t-1]")))
 
 df_tableAPSR <- df_plotS %>% mutate(
   conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
@@ -997,12 +1070,14 @@ df_tableAPSR <- df_plotS %>% mutate(
   mutate(estimate = round(estimate, digits = 3))
 
 plot_APSR2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_color_uiowa(name = "", palette = "digitMixed") +
+  scale_y_discrete(labels = parse(text = levels(terms2))) +
+  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
+  # scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
     title = "",
-    subtitle = "w. Corruption"
+    subtitle = "w/ Corruption"
   ) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", legend.title = element_blank())
 
 legend <- get_legend(plot_APSR2)
 
@@ -1035,7 +1110,7 @@ plot_pooled <- filter(df_plot, model != "Claassen 2019") %>%
       `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
       `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
       `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
       `plm::lag(mdprgdp_grwth, 1)` = "Corruption (Difference)"
     )
   ) +
@@ -1068,7 +1143,7 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
       `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
       `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
       `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t−1)",
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
       `diff(cpi_sd, lag = 1)` = "Corruption (Difference)",
       `plm::lag(cpi_sd, 1)` = "Corruption (t-1)"
     )
@@ -1089,7 +1164,7 @@ gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
-In Figure \@ref(fig:visualizedAPSR), we examine the thermostatic model of democratic mood [@Claassen2020b]. 
+In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic mood [@Claassen2020b]. 
 The estimates without taking uncertainty into account imply that democatic mood decreases along with the progress of democratization. 
 Nevertheless, this effect no longer holds when the measurement uncertainty is involved. 
 
@@ -1122,7 +1197,7 @@ Furthermore, @Carey2020 found that rather than only tolerate anti-democratic pol
 
 
 # Conclusion
-In this note, we reexamined the findings from Claassens'[-@Claassen2019,-@Claassen2020b] paper that public support helps the survival of democarcy and democratic development has a thermostatic effect on public support for democracy.
+In this note, we reexamined the findings from Claassens'[-@Claassen2019; -@Claassen2020b] paper that public support helps the survival of democracy and democratic development has a thermostatic effect on public support for democracy.
 We demonstrated that the relationships between public support and democratic development depends on the incorporation of uncertainty in the measurement of latent variables.
 Even using more data and a sophisticated DCPO model, the measurement uncertainty made the relationships irreplicable irrespective of whether public support is an independent variable or dependent variable.
 
@@ -1133,12 +1208,13 @@ Although we could not exclude any one of these, a basic lesson from this reexami
 
 \pagebreak
 
+\newpage
+# APPENDIX A: Tabular Results
 
-# (APPENDIX) Appendix {-},
+# Table A1. Democratic Support on Democratic Institutions{#AJPSreplication}
+<!-- ## Models of Effect of Democratic Support on Institutional Democratization {#replicateAJPS} -->
 
-## Models of Effect of Democratic Mood on Institutional Democratization {#replicateAJPS}
-
-```{r tableAJPS}
+```{r tableAJPS, eval=TRUE}
 df_tableAJPS %>% 
   mutate(estimate = paste0(estimate, "\n ", conf),
          group = paste0(group, "\n (n: ", n, ")")) %>% 
@@ -1153,14 +1229,13 @@ df_tableAJPS %>%
                     term = "Variable") %>% 
   merge_v(j = c("group")) %>% 
   hline(i = 8, border = officer::fp_border()) %>% 
-  autofit() %>% 
-  add_header_lines(values = paste0("Number of Observations: ", unique(df_tableAJPS$n)))
+  add_header_lines(values = paste0("Number of Observations: ", unique(df_tableAJPS$n))) %>% 
+  autofit() 
 ```
 
+# Table A2. Democratic Institutions on Democratic Support{#APSRreplication}
 
-## Models of Effects of Democracy on Change in Mood
-
-```{r table APSR}
+```{r table APSR, eval=TRUE}
 df_tableAPSR %>% 
   mutate(estimate = paste0(estimate, "\n ", conf),
          group = paste0(group, "\n (n: ", n, ")")) %>% 
@@ -1176,5 +1251,6 @@ df_tableAPSR %>%
   merge_v(j = c("group")) %>% 
   hline(i = 8, border = officer::fp_border()) %>% 
   autofit() 
+
 ```
 
