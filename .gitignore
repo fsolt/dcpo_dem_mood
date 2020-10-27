@@ -17,6 +17,7 @@ data/church*.rda
 data/claassen_m5*.rda
 data/dcpo_output.rda
 data/*/claassen_m5*.rda
+data/df_dcpo.rda
 data/supdem raw survey marginals.tab
 paper/*cache/
 paper/figures/old/
