@@ -1018,7 +1018,7 @@ plot_APSR1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
 
  
 df_plot <- df_result_clsAPSR[[2]] %>% 
-  mutate(model = "Claassen 2020") 
+  mutate(model = "Claassen 2020b") 
 
 df_plot <- df_result_clsUncertainAPSR[[2]] %>% 
   mutate(model = "Claassen w/ Uncertainty") %>%  
@@ -1163,6 +1163,11 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
+```{r save_tables, eval=TRUE}
+save(df_tableAJPS, df_tableAPSR, file = here::here("output", "df_tables.rda"))
+
+```
+
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
 In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic mood [@Claassen2020b]. 
 The estimates without taking uncertainty into account imply that democatic mood decreases along with the progress of democratization. 
@@ -1208,49 +1213,8 @@ Although we could not exclude any one of these, a basic lesson from this reexami
 
 \pagebreak
 
-\newpage
-# APPENDIX A: Tabular Results
+# References
 
-# Table A1. Democratic Support on Democratic Institutions{#AJPSreplication}
-<!-- ## Models of Effect of Democratic Support on Institutional Democratization {#replicateAJPS} -->
+<div id="refs"></div>
 
-```{r tableAJPS, eval=TRUE}
-df_tableAJPS %>% 
-  mutate(estimate = paste0(estimate, "\n ", conf),
-         group = paste0(group, "\n (n: ", n, ")")) %>% 
-  arrange(group, model) %>% 
-  select(group, model, term, estimate) %>% 
-  group_by(group) %>% 
-  pivot_wider(names_from = model, values_from = estimate) %>% 
-  mutate(term = str_replace_all(term, "\\n", " ")) %>% 
-  arrange(group) %>% 
-  flextable %>% 
-  set_header_labels(group = "Model",
-                    term = "Variable") %>% 
-  merge_v(j = c("group")) %>% 
-  hline(i = 8, border = officer::fp_border()) %>% 
-  add_header_lines(values = paste0("Number of Observations: ", unique(df_tableAJPS$n))) %>% 
-  autofit() 
-```
-
-# Table A2. Democratic Institutions on Democratic Support{#APSRreplication}
-
-```{r table APSR, eval=TRUE}
-df_tableAPSR %>% 
-  mutate(estimate = paste0(estimate, "\n ", conf),
-         group = paste0(group, "\n (n: ", n, ")")) %>% 
-  arrange(group, model) %>% 
-  select(group, model, term, estimate) %>% 
-  group_by(group) %>% 
-  pivot_wider(names_from = model, values_from = estimate) %>% 
-  mutate(term = str_replace_all(term, "\\n", " ")) %>% 
-  arrange(group) %>% 
-  flextable %>% 
-  set_header_labels(group = "Model",
-                    term = "Variable") %>% 
-  merge_v(j = c("group")) %>% 
-  hline(i = 8, border = officer::fp_border()) %>% 
-  autofit() 
-
-```
 
