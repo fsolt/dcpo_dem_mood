@@ -6,7 +6,7 @@ output:
     fig_caption: true
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
-title: "[dcpo_demsupport]"
+title: "Public Support for Democracy, Regime Change, and the Importance of Incorporating Measurement Uncertainty"
 thanks: "The authors contributed equally to this work.  Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
 - name: Yuehong 'Cassandra' Tai
@@ -15,7 +15,7 @@ author:
   affiliation: Tsinghua University
 - name: Frederick Solt
   affiliation: University of Iowa
-abstract: "Public opinion’s effect on democratic institutions is important and long-studied topic.  Claassen (2020) renewed attention to this question by using a Bayesian latent variable approach to measure mass democratic support from survey data and concluded such support has a positive effect on subsequent democratic change and especially on democracy’s endurance once in place.  In this article, we reexamine the question, bringing more survey data on democratic support; a superior measure, Dynamic Comparative Public Opinion (DCPO); and an improved methodological approach that takes the uncertainty in this measure into account.  Our results [further reinforce/contradict] the long-held view that democracies depend on public support to survive."
+abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in regime? Two recent prominent studies (Claassen 2020a, 2020b) have reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival--and challenged its reciprocal counterpart--by using a Bayesian latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this error into its analyses. Here we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis."
 keywords: ""
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
@@ -896,7 +896,7 @@ mods[[2]] <-
     model = "pooling"
   )
 
-df_result_dcpoMeanAPSR <- map(mods, function(aMod){
+df_result_dcpoMeanAPSR <- map(mods, function(aMod) {
   aMod %>% 
     tidy %>%
     mutate(std.error = vcovHC_se(aMod),
@@ -1170,7 +1170,7 @@ save(df_tableAJPS, df_tableAPSR, file = here::here("output", "df_tables.rda"))
 
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
 In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic mood [@Claassen2020b]. 
-The estimates without taking uncertainty into account imply that democatic mood decreases along with the progress of democratization. 
+The estimates without taking uncertainty into account imply that democratic mood decreases along with the progress of democratization. 
 Nevertheless, this effect no longer holds when the measurement uncertainty is involved. 
 
 As previous operation, we tested if this alteration is caused by the data scarcity or estimating inefficiency. 
