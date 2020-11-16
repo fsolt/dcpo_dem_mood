@@ -7,7 +7,7 @@ output:
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
 title: "Public Support for Democracy, Regime Change, and the Importance of Incorporating Measurement Uncertainty"
-thanks: "The authors contributed equally to this work.  Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
+thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
 - name: Yuehong 'Cassandra' Tai
   affiliation: University of Iowa
@@ -15,7 +15,7 @@ author:
   affiliation: Tsinghua University
 - name: Frederick Solt
   affiliation: University of Iowa
-abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in regime? Two recent prominent studies (Claassen 2020a, 2020b) have reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival--and challenged its reciprocal counterpart--by using a Bayesian latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this error into its analyses. Here we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis."
+abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in regime? Two prominent recent studies (Claassen 2020_a_, Claassen 2020_b_) have reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival--and challenged its reciprocal counterpart--by using a Bayesian latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. Here we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis. [142/150 words]"
 keywords: ""
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
@@ -38,13 +38,11 @@ header-includes:
       - \usepackage{tabularx}
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
-nocite: |
-  @Solt2020a
 ---
 # Introduction
 
 One of the classic but disputable questions in comparative politics is the relationship between mass democratic support and countries' level of democracy.
-A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @norris_democratic_2011], but findings from empirical analyses still remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review in this literature, see @Claassen2020a].
+A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @norris_democratic_2011], but findings from empirical analyses still remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review of this literature, see @Claassen2020a].
 
 One reason for the mixed results is the difficulties in measuring comparative public democratic support.
 Public support for democracy is a latent variable and the incorrect measurement of it may conceal the real relationship between public opinion and democratic institutional development.
@@ -120,7 +118,7 @@ Given the measurement uncertainty caused by the inherent trail of latent constru
 Many scholars have taken the account for measurement error in analyses as a final crucial part in their empirical studies [@Schnakenberg2014; @caughey_policy_2018], and recent studies on latent variable measurement emphasized the incorporation of measurement uncertainty when using their measures [@solis_measuring_2020; @gandhi_measuring_2020]. 
 However, in the comparative public opinion field, previous efforts on measuring comparative public opinion didn’t account for measurement uncertainty in their analyses.
 
-In our reexamination, instead of employing the point estimates, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015] and other measures, such as the Standardized World Income Inequality Database [@Solt2020].
+In our reexamination, instead of employing the point estimates, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015].
 Specifically, in our replication of Claassen's [-@Claassen2020a] analysis models, we incorporated uncertainty by using random draws from the posterior distributions. 
 We generated 1,000 duplicate versions of the analysis dataset, assigned to each a different random draw from the posterior distributions of public democratic support, performed the analyses repeatedly on each of these 1,000 versions of the dataset, and then combined the results following the rules set out in @Rubin1987.
 
@@ -1175,7 +1173,7 @@ Nevertheless, this effect no longer holds when the measurement uncertainty is in
 
 As previous operation, we tested if this alteration is caused by the data scarcity or estimating inefficiency. 
 When more data and better method are applied, the confidence intervals do shrink yet remaining statistically insignificant. 
-We observed the similar changes after adjusting the effect of domestic corruption [@Claassen2020b: 41]. 
+We observed the similar changes after adjusting the effect of domestic corruption [@Claassen2020b, 41]. 
 
 # Discussion
 In short, the main empirical findings about the estimated effect of public democratic support on democracy or vice versa are not replicable when measurement uncertainty is accounted, even using better measurement and more data.
@@ -1189,7 +1187,7 @@ Methodologically, given the nature trail of latent variables and specific charac
 In addition to the potentially methodological cause (the measurement errors), there are some potentially substantive causes for the disappearing relationship.
 First, democratic backsliding might be mainly caused by elites.
 Elites are thought to play a critical role in preserving democratic stability by respecting the limits on their behaviors [@weingast_political_1997].
-After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that [@bermeo_democratic_2016,@levitsky_how_2018, @waldner_unwelcome_2018].
+After the Cold War, many democracies backslid and were imperiled worldwide because elected leaders lack commitment to democratic norms when the public even did not notice that [@bermeo_democratic_2016; @levitsky_how_2018; @waldner_unwelcome_2018].
 
 Second, there has been a gulf between public perception and elites’ perception on important democratic principles [@mcclosky_consensus_1964].
 A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved [@carey_searching_2019].
@@ -1202,7 +1200,7 @@ Furthermore, @Carey2020 found that rather than only tolerate anti-democratic pol
 
 
 # Conclusion
-In this note, we reexamined the findings from Claassens'[-@Claassen2019; -@Claassen2020b] paper that public support helps the survival of democracy and democratic development has a thermostatic effect on public support for democracy.
+In this note, we reexamined the findings from Claassens' [-@Claassen2020a; -@Claassen2020b] paper that public support helps the survival of democracy and democratic development has a thermostatic effect on public support for democracy.
 We demonstrated that the relationships between public support and democratic development depends on the incorporation of uncertainty in the measurement of latent variables.
 Even using more data and a sophisticated DCPO model, the measurement uncertainty made the relationships irreplicable irrespective of whether public support is an independent variable or dependent variable.
 
