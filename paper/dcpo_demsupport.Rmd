@@ -59,8 +59,11 @@ In this paper, we reexamined the relationship between public support for democra
 To reduce the uncertainty, we used a superior measurement, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
 Surprisingly, our study revealed that the significant relationship between public support and democratic change disappeared when uncertainty was included in the replication analysis of @Claassen2020a model with his original data and the DCPO analysis with more data.
 
-The underlying reasons for the uncertainty could be the ineffectiveness of survey questions in capturing public attitude compared to rich indicators for other concept, like gender egalitarianism [Solt, 2021??], the shortage of indicators for public support worldwide, or the gap between self-reported democratic attitude and behaviorally democratic commitments [@graham_democracy_2020; @Carey2020; @McCoy2020].
-There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding [@weingast_political_1997; @levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020; @graham_democracy_2020; @McCoy2020].
+The underlying reasons for the uncertainty could be the ineffectiveness of survey questions in capturing public attitude.
+For example, compared to rich indicators for other concept, like gender egalitarianism [Solt, 2021??], there is a shortage of indicators for public support worldwide.
+Also, the existing standard questions are not sufficient to capture either the multi-faceted democratic support [@wuttke2020have] or behaviorally democratic commitments [@graham_democracy_2020; @Carey2020; @McCoy2020].
+There could be some potentially substantive explanations for the disappearing relationship: the elite-driven democratic backsliding [@weingast_political_1997; @levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020; @graham_democracy_2020; @McCoy2020;@prothro_fundamental_1960;@van2017myth
+].
 
 Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt's [-@Solt2020a] suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
 
@@ -1180,7 +1183,10 @@ In short, the main empirical findings about the estimated effect of public democ
 
 There are potential causes for the null results.
 First, the survey items we used might not capture real public democratic support, given the complexity of this concept and limited indicators compared to other concepts like gender egalitarian (Solt, 2021??).
-Second, these survey items do capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to high uncertainty.
+Second, the standard questions capture the support for the generic concept of democracy, but
+are not sophisticated to capture the multi-faceted feature of democratic support due to the variation in understanding the concept across countries or over time or within country [@wuttke2020have;@van2017myth]. 
+As @van2017myth pointed out, without considering the varying understanding of democracy due to political and social development, the unchanged survey questions decrease the comparability of time series data. 
+Third, these survey items might capture public democratic support, but we still don’t have enough data to compensate the fragmentation and incomparability of the available comparative public opinion data, which is doomed to high uncertainty.
 Methodologically, given the nature trail of latent variables and specific characters of comparative public opinion, performing analyses based on the strong assumption that comparative public attitudes are perfectly measured might exaggerate scholars' certainty methodologically and obscure a proper substantive evaluation of theoretical claims.
 
 
@@ -1193,7 +1199,10 @@ Second, there has been a gulf between public perception and elites’ perception
 A recent study showed that polarized public cannot get a consensus on democratic erosion which experts preserved [@carey_searching_2019].
 Given that the measures for democratic development are from experts, there could be a gap between public perception on democracy and the measures of the levels of democracy.
 
-Third, since there is a difference between the public support for democracy in the abstract and under specific propositions [@bartels_ethnic_2020], recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
+Third, the study of democratic support is suffered from "inputism" ignoring the output-side, however, the output-side better predicts democratic support [@van2017myth]. 
+
+Lastly, verbal support in pro-democratic stance is usually higher than behavioral commitments [@prothro_fundamental_1960]. 
+since there is a difference between the public support for democracy in the abstract and under specific propositions [@bartels_ethnic_2020], recent studies questioned whether conventional measures of public support for democracy could capture public realistic commitment to democracy. 
 By using survey experiments, @graham_democracy_2020 pointed out a "fundamental blind spot" in traditional measures of public democratic support: the questions regarding the support for an abstract democracy cannot capture public willingness and behavioral commitment to democratic principles when voters have to choose between democratic norms and their partisan identification or policy preference. 
 It turned out that voters subordinated democratic norms to their partisan preference by not electorally penalizing their candidates who endorse measures that violate norms.
 Furthermore, @Carey2020 found that rather than only tolerate anti-democratic policies, voters support/encourage democratic norm-eroding policies when their co-partisans are in power. 
