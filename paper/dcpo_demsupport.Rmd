@@ -41,16 +41,17 @@ header-includes:
 ---
 # Introduction
 
-One classic but disputable question in comparative politics is the relationship between mass democratic support and countries' level of democracy.
-A long-standing and widely accepted theory is that the level of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @easton1965systems; @norris_democratic_2011], but empirical findings remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review of this literature, see @Claassen2020a].
+One classic but unresolved question in comparative politics is the relationships between mass democratic support and countries' levels of democracy.
+A long-standing and widely accepted theory is that the extent of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @easton1965systems; @norris_democratic_2011], but empirical findings remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review of this literature, see @Claassen2020a].
 
-One reason for the mixed results is the difficulties in measuring comparative public democratic support.
-Public support for democracy is a latent variable, and the incorrect measurement of it may limit inferences about relationship between public opinion and democratic institutional development.
-However, the sparsity and incomparability of public opinion data across countries over time have always been perplexing comparative studies for a long time [@Solt2020a].
-Recently, a few pioneering studies have contributed to comparative public opinion studies using advanced latent variable measurement [@Caughey2019; @Claassen2019; @Solt2020a]. 
+One important reason for these mixed results is the difficulty in measuring comparative public democratic support.
+Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationship between public opinion and democratic institutional development.
+However, the survey data available across countries and over time on support for democracy--or indeed nearly any topic in public opinion---are sparse and incomparable, greatly hindering the broadly comparative research needed to reach sound conclusions.
+Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data and further broadly comparative research by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
+One prominent study, @Claassen2020a took advantage of this approach to measure dynamic public democratic support for 135 countries for up to 29 years and to then assess its relationship to democratic change.
 
-A prominent study by @Claassen2020a applied an advanced Bayesian Item Response Model to measure dynamic public democratic support for 135 countries for up to 29 years.
 It found that mass support had a positive impact on democratic change, especially the endurance of democracy.
+
 The analysis models he used do not account, though, for measurement uncertainty.
 The latent constructs are inherently accompanied by a quantity  of measurement uncertainty due to the unobservability of variables.
 Left unacknowledged, with a strong assumption that latent variables are measured perfectly, measurement error could distort both statistical and substantive inference [@Crabtree2015; @juhl_measurement_2019].
