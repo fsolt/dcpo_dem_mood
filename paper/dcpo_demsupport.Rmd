@@ -6,7 +6,7 @@ output:
     fig_caption: true
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
-title: "Public Support for Democracy, Regime Change, and the Importance of Incorporating Measurement Uncertainty"
+title: "Democracy, Public Support, and Measurement Uncertainty"
 thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
 author:
 - name: Yuehong 'Cassandra' Tai
@@ -15,7 +15,7 @@ author:
   affiliation: Tsinghua University
 - name: Frederick Solt
   affiliation: University of Iowa
-abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in regime? Two prominent recent studies (Claassen 2020_a_, Claassen 2020_b_) have reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival--and challenged its reciprocal counterpart--by using a Bayesian latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. Here we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis. [142/150 words]"
+abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, Claassen 2020b) have reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival--and challenged its reciprocal counterpart--by using a Bayesian latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. Here we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis. [142/150 words]"
 keywords: ""
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
@@ -41,22 +41,23 @@ header-includes:
 ---
 # Introduction
 
-One classic but unresolved question in comparative politics is the relationships between mass democratic support and countries' levels of democracy.
-A long-standing and widely accepted theory is that the extent of mass democratic support determines the stability of a democratic system [e.g., @lipset_social_1959; @easton1965systems; @norris_democratic_2011], but empirical findings remain inconclusive [@inglehart_modernization_2005; @fails_changing_2010; @qi_how_2011; for a review of this literature, see @Claassen2020a].
+It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
+But the evidence for either side of this claim has been decidedly mixed.
+Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, 251-254] and just the opposite [@Fails2010, 182-183].
+Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183; @Wuttke2020a, 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Denemark2016; @Foa2017].
 
-One important reason for these mixed results is the difficulty in measuring comparative public democratic support.
-Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationship between public opinion and democratic institutional development.
-However, the survey data available across countries and over time on support for democracy--or indeed nearly any topic in public opinion---are sparse and incomparable, greatly hindering the broadly comparative research needed to reach sound conclusions.
-Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data and further broadly comparative research by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
-One prominent study, @Claassen2020a took advantage of this approach to measure dynamic public democratic support for 135 countries for up to 29 years and to then assess its relationship to democratic change.
+One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
+Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
+Further, the survey data available across countries and over time on support for democracy--or indeed most topics in public opinion---are sparse and incomparable, greatly hindering the broadly comparative research needed to reach sound conclusions.
+Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data and advance broadly comparative research by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
+A pair of prominent recent works took advantage of this latent variable approach to measure dynamic public democratic support for 135 countries for up to 29 years and to then assess its consequences for democratic change.
+It concluded that mass support had a positive impact on democratic change, especially the endurance of democracy.
 
-It found that mass support had a positive impact on democratic change, especially the endurance of democracy.
+The models employed in this study's analyses, though, do not account for measurement uncertainty.
+Because they are unobserved, latent variables are inherently accompanied by a quantity of measurement uncertainty.
+To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [@Crabtree2015; @juhl_measurement_2019].
 
-The analysis models he used do not account, though, for measurement uncertainty.
-The latent constructs are inherently accompanied by a quantity  of measurement uncertainty due to the unobservability of variables.
-Left unacknowledged, with a strong assumption that latent variables are measured perfectly, measurement error could distort both statistical and substantive inference [@Crabtree2015; @juhl_measurement_2019].
-
-This paper reexamined the classic claim about public democratic attitude and democratic changes thoroughly through both sophisticated methods and bigger data.
+This paper reexamines the classic claim about public democratic attitude and democratic changes thoroughly through both sophisticated methods and bigger data.
 In addition to incorporating uncertainty, we employed a more sophisticated measurement, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, to estimate democratic support for a larger dataset with 144 countries for up to 33 years between 1988 and 2020.
 Surprisingly, our study revealed that the significant relationship between public support and democratic change disappeared once uncertainty was included in the replication analysis of @Claassen2020a model with his original data and the DCPO analysis with more data.
 To be cautious, we then also reexamined @Claassen2020b analyses by following the same operations. 
@@ -64,7 +65,7 @@ Again, when uncertainty was incorporated, the significant relationship between d
 
 The disappearing relationship might be caused by theoretical, methodological reasons, or both.
 Methodologically, the existing survey questions might not be able to capture mass democratic attitude due to a shortage of indicators [Solt, 2021??] and the ineffectiveness of indicators in measuring the multi-faceted democratic support [@wuttke2020have] and behaviorally democratic commitments [@graham_democracy_2020; @Carey2020; @McCoy2020].
-Substantive explanations might also account for the insignificant relationship: the elite-driven democratic backsliding [@weingast_political_1997; @levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020; @graham_democracy_2020; @McCoy2020;@prothro_fundamental_1960;@van2017myth
+Substantive explanations might also account for the insignificant relationship: the elite-driven democratic backsliding [@weingast_political_1997; @levitsky_how_2018], the lack of a consensus on democratic erosion between the public and experts [@carey_searching_2019], and the difference between the public support in abstract and public commitments in context [@bartels_ethnic_2020; @graham_democracy_2020; @McCoy2020; @prothro_fundamental_1960; @van2017myth
 ].
 
 Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt's [-@Solt2020a] suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
