@@ -39,7 +39,6 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
 ---
-# Introduction
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either side of this claim has been decidedly mixed.
@@ -48,10 +47,10 @@ Similarly, studies have alternately found that more experience with democracy yi
 
 One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
 Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
-Further, the survey data available across countries and over time on support for democracy--or indeed most topics in public opinion---are sparse and incomparable, greatly hindering broadly comparative research.
+Further, the survey data available across countries and over time on support for democracy---or indeed most topics in public opinion---are sparse and incomparable, greatly hindering broadly comparative research.
 Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
 A pair of prominent recent works took advantage of this latent variable approach to measure democratic support for over one hundred countries for up to nearly three decades and to then assess, respectively, its consequences for and roots in democratic change [@Claassen2020a; @Claassen2020b].
-These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating their own support, deepening democracies provoke a backlash and it is instead the erosion of democracy that calls forth greater public support [@Claassen2020b, 46-50].
+These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating their own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
 
 The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
 Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
@@ -59,23 +58,23 @@ To leave this uncertainty unacknowledged is to make the implausible assumption t
 
 In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
 In addition to incorporating the measurement uncertainty, we also sought to reduce it by employing a superior model of public opinion, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, and more data to estimate democratic support for 144 countries for up to 33 years between 1988 and 2020.
-Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications of @Claassen2020a and @Claassen2020b with the studies' original data and in our extension DCPO analyses that incorporate additional data.
-That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two pieces: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
+Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and in our extension DCPO analyses that incorporate additional data.
+That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
   
 There are many plausible explanations for these null results, both methodological and theoretical.
-One possible methodological issue is that support for democracy is multidimensional, and the survey questions used to measure it---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---simply do not capture all of the dimensions relevant to democratic change, such as commitments to political equality and freedom of expression [see @Schedler2007; @Wuttke2020].
-Another is that the relationships among these survey items have varied substantially over time [see @wuttke2020have]; this would violate the assumptions of the public opinion models used and would yield faulty estimates of democratic support.
-A third is that these survey questions do not ask respondents to prioritize democracy with regard to other values with which it may come into conflict, such as their partisanship, and so miss capturing the actual extent of support democracy would find among the public when it actually needed public support [see @Carey2020; @graham_democracy_2020; @McCoy2020].
+Methodologically, one possible issue is that support for democracy is multidimensional, and the survey questions used to measure it---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---simply do not capture all of the dimensions relevant to democratic change, such as commitments to political equality and freedom of expression [see @Schedler2007; @Wuttke2020].
+Another is that the relationships among these survey items have varied substantially over time [see @Wuttke2021]; this would violate the assumptions of the public opinion models used and would yield faulty estimates of democratic support.
+A third is that these survey questions do not ask respondents how they prioritize democracy relative to other values with which it may come into conflict, such as their partisanship, and so miss capturing the true extent of support democracy would find among the public when public support was actually needed [see @Carey2020; @graham_democracy_2020; @McCoy2020].
 
 From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see, e.g., @Magalhaes2014] and particularly with regard to redistribution [see, e.g., @Krieckhaus2014].
 Similarly, the effect of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see, e.g., @Qi2011].
-Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all, but rather is an elite-driven phenomenon [see, e.g., Przeworski1991, @levitsky_how_2018].
+Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
 
-Although we could not exclude or identify any of them in this study, our reexamination reaffirmed @fariss_respect_2014, @juhl_measurement_2019, and Solt's [-@Solt2020a] suggestion that given the latent character of variables in political science, scholars should be vigilant in measurement uncertainty.
-
-At a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen (2020_a_,_b_) send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
-Both of these conclusions may well be true, but the evidence we have, properly assessed, does not provide support for them.
-There can be no room for complacency.
+We draw two conclusions.
+First, as latent variable measurement models become more commonly used, that it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
+Second, at a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen (2020$a$,_b_) send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
+Both of these assertions may well be true, but the evidence we have, properly assessed, does not provide support for them.
+There is no room for complacency.
 
 
 ```{r setup, include=FALSE}
@@ -117,7 +116,7 @@ theme_set(theme_minimal())
 source(here::here("R", "uiowa_palette.R"))
 ```
 
-# Model Specification 
+# Method
 To examine the influence of empirical uncertainty, we conducted a three-step test. 
 The first step we made is to reproduce @Claassen2020a.
 Then, applying the method he described in the article, we replicated his IRT-based measurement of democratic mood and maintained the entire distribution of the predicted outcome instead of aggregating it to a single point estimate.
@@ -1196,7 +1195,7 @@ In short, the main empirical findings about the estimated effect of public democ
 
 There are several potential causes for the null results.
 First, the survey items we used might not capture real public democratic attitudes since the number of indicators of democratic support is limited compared to indicators of other concepts like gender-egalitarianism (Solt, 2021??).
-Second, even if survey questions capture the support for the generic concept of democracy, they might still not be sufficient to capture the multi-faceted feature of democratic support due to the variation in understanding the concept across countries or over time or within country [@wuttke2020have;@van2017myth]. 
+Second, even if survey questions capture the support for the generic concept of democracy, they might still not be sufficient to capture the multi-faceted feature of democratic support due to the variation in understanding the concept across countries or over time or within country [@Wuttke2021;@van2017myth]. 
 As @van2017myth pointed out, without considering the varying understanding of democracy due to political and social development, the unchanged survey questions decrease the comparability of time series data. 
 Third, these survey items might capture public democratic support, but we do not have enough data to compensate for the fragmentation and sparseness of available comparative public opinion data, which is doomed to high uncertainty.
 Given the nature trail of latent variables and specific characters of comparative public opinion data, performing analyses based on the strong assumption that comparative public attitudes are perfectly measured might exaggerate scholars' certainty methodologically and obscure a proper substantive evaluation of theoretical claims.
