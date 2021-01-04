@@ -70,9 +70,9 @@ From a theoretical perspective, the effect of democracy on public support may de
 Similarly, the effect of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see, e.g., @Qi2011].
 Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
 
-We draw two conclusions.
-First, as latent variable measurement models become more commonly used, that it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-Second, at a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen (2020$a$,_b_) send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
+We draw two conclusions, one methodological, and one substantive.
+As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
+And, at a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen (2020$a$,$b$) send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not provide support for them.
 There is no room for complacency.
 
@@ -118,7 +118,7 @@ source(here::here("R", "uiowa_palette.R"))
 
 # Method
 We proceed in three steps.
-In our first step, we reproduce the original analyses of Claassen (2020$a$,_b_), which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
+In our first step, we reproduce the original analyses of Claassen (2020$a$,$b$), which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 In the second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
 As our third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate democratic support using the superior DCPO measurement model, then conduct the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
 
@@ -224,12 +224,12 @@ increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 ## A Better Measure of Democratic Support and More Data
 As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
 The DCPO model has several advantages over the @Claassen2019 model used in Claassen (2020$a$,$b$).
-First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen (2020$a$,_b_), the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
+First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen (2020$a$,$b$), the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
 Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, 3-4; see also @McGann2014].
 Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
 Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
 
-In addition to applying the superior DCPO model, we also assembled as much available data on democratic support as possible. We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen (2020$a$,_b_).^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen (2020$a$,_b_), countries for which two separate years of survey data were not available were excluded.]
+In addition to applying the superior DCPO model, we also assembled as much available data on democratic support as possible. We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen (2020$a$,$b$).^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen (2020$a$,$b$), countries for which two separate years of survey data were not available were excluded.]
 We used the `DCPO` package for R [@Solt2020b] to estimate the DCPO model on this expanded dataset.
 
 
