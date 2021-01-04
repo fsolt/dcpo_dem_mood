@@ -117,25 +117,19 @@ source(here::here("R", "uiowa_palette.R"))
 ```
 
 # Method
-To examine the influence of empirical uncertainty, we conducted a three-step test. 
-The first step we made is to reproduce @Claassen2020a.
-Then, applying the method he described in the article, we replicated his IRT-based measurement of democratic mood and maintained the entire distribution of the predicted outcome instead of aggregating it to a single point estimate.
-Utilizing the estimated distribution, we involved uncertainty in the analysis of the influence of democratic mood on institutional democracy cross-nationally.
-In the third step, we applied the DCPO measurement and added one-third more data to the analysis to reduce potential effects of measurement biases and data spareness.
-We compared the outcomes of the three steps and showed as below that uncertainty is a critical factor in the studies of mass democratic attitude, which may alter the analytic conclusions. 
-We further showed that accounting for uncertainty is equivalently important when the latent-variable estimates play as a dependent variable in a study by replicating @Claassen2020b.
+We proceed in three steps.
+In our first step, we reproduce the original analyses of Claassen (2020$a$,_b_), which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
+In the second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
+As our third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate democratic support using the superior DCPO measurement model, then conduct the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
+
 
 ## Incorporating Uncertainty
-Given the measurement uncertainty derived by the inherent trail of latent constructs and its propagated effects on inferences about the relationship of substantive interests, it is strongly recommended to incorporate the measurement uncertainty in analysis models [@treier_democracy_2008; @Crabtree2015].
-Many scholars have accounted for measurement error in analyses as a final crucial part in their empirical studies [@Schnakenberg2014; @caughey_policy_2018].
-Moreover, recent studies on latent variable measurement highlighted the incorporation of measurement uncertainty when using their measures [@solis_measuring_2020; @gandhi_measuring_2020]. 
-However, measurement uncertainty has not attracted attention in the comparative public opinion field.
-Previous efforts on measuring dynamic comparative public opinion did not account for measurement uncertainty in analyses.
+Although measurement uncertainty has yet not attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
+In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey_policy_2018, 254]. 
 
-Instead of employing the point estimates, we followed the recommendation and the approach of incorporating uncertainty in using latent variables [e.g., @Schnakenberg2014; @Crabtree2015].
-Specifically, in our replication of Claassen's [-@Claassen2020a] analysis models, we incorporated uncertainty using random draws from the posterior distributions. 
-We generated 1,000 duplicate versions of the analysis dataset, assigned to each a different random draw from the posterior distributions of public democratic support, performed the analyses repeatedly on each of these 1,000 versions of the dataset, and then combined the results following the rules set out in @Rubin1987.
-
+Therefore, after we replicate the original analyses that used only the point estimates of democratic support, we incorporate the full distribution of the latent variable estimates.
+To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
+Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
 
 ```{r dcpo_input_raw}
 dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
@@ -183,43 +177,61 @@ supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"),
 
 supdem_ncy <- supdem %>%
   dplyr::select(country, year) %>% 
-  unique() %>% 
+  distinct() %>% 
+  nrow()
+
+supdem_surv <- supdem %>%
+  dplyr::select(country, year, project) %>%
+  distinct() %>%
   nrow()
 
 supdem_ncyi <- supdem %>%
   dplyr::select(country, year, item) %>% 
-  unique() %>% 
+  distinct() %>% 
+  nrow()
+
+dcpo_input_nc <- dcpo_input_raw1 %>% 
+  dplyr::select(country) %>% 
+  distinct() %>% 
+  nrow()
+
+dcpo_input_surv <- dcpo_input_raw1 %>%
+  dplyr::select(country, year, survey) %>%
+  distinct() %>%
+  separate(survey, c("surv1", "surv2"), sep=",", fill = "left") %>%
+  pivot_longer(cols = starts_with("surv")) %>%
+  filter(!is.na(value)) %>% 
   nrow()
 
 dcpo_input_ncy <- dcpo_input_raw1 %>% 
   dplyr::select(country, year) %>% 
-  unique() %>% 
+  distinct() %>% 
   nrow()
 
 dcpo_input_ncyi <- dcpo_input_raw1 %>% 
-  dplyr::select(country, year, item) %>% 
-  unique() %>% 
+  dplyr::select(country, year, item, survey) %>% 
+  distinct() %>% 
+  separate(survey, c("surv1", "surv2"), sep=",", fill = "left") %>%
+  pivot_longer(cols = starts_with("surv")) %>%
+  filter(!is.na(value)) %>% 
   nrow()
 
 increase_cy <- sprintf("%2.1f", (dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
 increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
+increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 ```
 
 ## A Better Measure of Democratic Support and More Data
-To reduce the uncertainty, we applied a more valid measurement, the DCPO model, to a bigger data set.
-The validation tests in @Solt2020a's paper corroborate that the DCPO model yields more accurate results than other latent variable measurements, either of @Claassen2019 Model 5 and @Caughey2019 model.
-The DCPO is superior to other measurements in several ways.
-The flexibility of the DCPO model in treating the data as their original scales, either dichotomous or ordinal, decreases information missing due to the potential scale change.
-For example, our data consists of 20,885 national responses as the result of measuring public attitude at ordinal scales, which can give us more nuances about public democratic support. 
-Second, to reduce the uncertainty in estimating countries that lie at the extreme ends of the public opinion spectrum [@Linzer2015], the estimates of mean public opinion are bounded, and the extent of polarization is included in the DCPO model.
-Third, to address the differences in item response across countries caused by factors other than public attitude or preference, a country-specific item bias is modelled as "a country-specific bias in the difficulty of each question" [@Solt2020a, 6]. 
-In short, the DCPO model has methodological advantages in keeping as much available information as possible, reducing uncertainty by bounding scales, and capturing the extent of polarization in public. 
+As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
+The DCPO model has several advantages over the @Claassen2019 model used in Claassen (2020$a$,$b$).
+First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen (2020$a$,_b_), the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
+Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, 3-4; see also @McGann2014].
+Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
+Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
 
-In addition to applying the advanced DCPO measurement, we also collected as much available data as possible. We collected data on 62 items from 17 survey projects in 159 countries covering years from 1988 to 2020.
-Survey data was extracted automatically through the `DCPO` package for R [@Solt2020b].
-The DCPO package also automatically identifies the year in which the survey was conducted, which contributes to capturing the real relationship between public opinion and the level of democracy.
-Our data consists of `r dcpo_input_ncy` country-years and 1,861 national surveys, which is a `r increase_cy`% and 33.9% increase respectively over `r supdem_ncy` country-years and 1,390 national surveys used in Claassen's studies [-@Claassen2020a; -@Claassen2020b].
-Finally, using the DCPO model in the `DCPO` package, we attained 4,752 estimates for mass support for democracy, drawn from 144 countries with at least 2 country-years observed.
+In addition to applying the superior DCPO model, we also assembled as much available data on democratic support as possible. We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen (2020$a$,_b_).^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen (2020$a$,_b_), countries for which two separate years of survey data were not available were excluded.]
+We used the `DCPO` package for R [@Solt2020b] to estimate the DCPO model on this expanded dataset.
+
 
 ```{r dcpo}
 iter <- 3000
