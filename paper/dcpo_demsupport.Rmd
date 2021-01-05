@@ -39,7 +39,7 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
 ---
-Word count: 3920
+Word count: 3923
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
@@ -981,8 +981,8 @@ save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
 In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic support per @Claassen2020b [, 47, Models 1.1 and 1.2]. 
 The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
-However, the middle results demonstrate that this thermostatic effect, too, no longer holds after the measurement uncertainty is accounted for. 
-And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not recover the original finding.
+However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
+And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not provide support for the original conclusion.
 
 ```{r visualizedAPSR, fig.cap= "\\label{fig:visualizedAPSR} The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=5}
 
@@ -1198,7 +1198,7 @@ save(df_tableAJPS, df_tableAPSR, file = here::here("output", "df_tables.rda"))
 
 
 # Discussion
-In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when a superior estimate of public support and more data are used.
+In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported when measurement uncertainty is correctly taken into account, even when a superior estimate of public support and more data are used.
 
 There are several potential methodological explanations for these null results.
 One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
