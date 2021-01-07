@@ -39,7 +39,7 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
 ---
-Word count: 3920
+Word count: 3923
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
@@ -981,8 +981,8 @@ save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
 In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic support per @Claassen2020b [, 47, Models 1.1 and 1.2]. 
 The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
-However, the middle results demonstrate that this thermostatic effect, too, no longer holds after the measurement uncertainty is accounted for. 
-And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not recover the original finding.
+However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
+And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not provide support for the original conclusion.
 
 ```{r visualizedAPSR, fig.cap= "\\label{fig:visualizedAPSR} The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=5}
 
