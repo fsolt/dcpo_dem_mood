@@ -16,7 +16,7 @@ author:
 - name: Frederick Solt
   affiliation: University of Iowa
 abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [149/150 words]"
-keywords: ""
+keywords: "Democratization, public support, regime survival, measurement uncertainty, IRT"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
 spacing: double
@@ -297,7 +297,7 @@ df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
 
 # Results
 
-Figure&nbsp;\ref{fig:visualizeAJPS} presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries (Claassen's 2020$a$, 128, Model 1) in the right panel and democratic support separated by regime type (Model 2) on the left.
+Figure&nbsp;\ref{fig:visualizeAJPS} presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries (Claassen's 2020$a$, 128, Model 1) in the left panel and democratic support separated by regime type (Model 2) on the right.
 The uppermost set of results replicate @Claassen2020a, including by excluding measurement uncertainty, and reproduce that article's findings.
 The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
 In both models, the positive coefficients for democratic support are no longer statistically significant.
@@ -1198,7 +1198,7 @@ save(df_tableAJPS, df_tableAPSR, file = here::here("output", "df_tables.rda"))
 
 
 # Discussion
-In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when a superior estimate of public support and more data are used.
+In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and that democracy has a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when a superior estimate of public support and more data are used.
 
 There are several potential methodological explanations for these null results.
 One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
