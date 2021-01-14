@@ -1,8 +1,10 @@
 ---
-title: "[dcpo_demsupport] Appendix"
+title: "Democracy, Public Support, and Measurement Uncertainty: Appendix"
 classoption: landscape
 output:
   pdf_document
+
+  
 ---
 
 ```{r setup, include=FALSE}
@@ -51,8 +53,10 @@ df_tableAJPS %>%
                     term = "Variable") %>% 
   merge_v(j = c("group")) %>% 
   hline(i = 8, border = officer::fp_border()) %>% 
-  add_header_lines(values = paste0("Number of Observations: ", unique(df_tableAJPS$n))) %>% 
-  autofit() 
+  add_header_lines(values = "Estimates of Democratic Support on Democratic Institutions") %>% 
+  autofit() %>% 
+  fit_to_width(8.5)
+
 ```
 
 # Table A2. Estimates of Democratic Institutions on Democratic Support{#APSRreplication}
@@ -72,7 +76,9 @@ df_tableAPSR %>%
                     term = "Variable") %>% 
   merge_v(j = c("group")) %>% 
   hline(i = 6, border = officer::fp_border()) %>% 
-  autofit() 
+  add_header_lines(values = "Estimates of Democratic Institutions on Democratic Support") %>% 
+  autofit() %>% 
+  fit_to_width(8.5)
 
 ```
 
