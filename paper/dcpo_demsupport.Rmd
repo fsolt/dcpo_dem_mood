@@ -39,7 +39,8 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
 ---
-Word count: 3923
+
+(Word count: 3628)
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
