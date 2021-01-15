@@ -2,9 +2,9 @@
 title: "Democracy, Public Support, and Measurement Uncertainty: Appendix"
 classoption: landscape
 output:
-  pdf_document
-
-  
+  pdf_document:
+    fig_caption: true
+    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
@@ -31,10 +31,7 @@ theme_set(theme_minimal())
 ```
 
 \renewcommand{\thepage}{A\arabic{page}}
-# APPENDIX A: Tabular Results
 
-# Table A1. Estimates of Democratic Support on Democratic Institutions{#AJPSreplication}
-<!-- ## Models of Effect of Democratic Support on Institutional Democratization {#replicateAJPS} -->
 
 ```{r tableAJPS, eval=TRUE}
 load(here::here("output", "df_tables.rda"))
@@ -53,13 +50,12 @@ df_tableAJPS %>%
                     term = "Variable") %>% 
   merge_v(j = c("group")) %>% 
   hline(i = 8, border = officer::fp_border()) %>% 
-  add_header_lines(values = "Estimates of Democratic Support on Democratic Institutions") %>% 
   autofit() %>% 
-  fit_to_width(8.5)
+  fit_to_width(8.5) %>% 
+  set_caption("Estimates of Democratic Support on Democratic Institutions")
 
 ```
 
-# Table A2. Estimates of Democratic Institutions on Democratic Support{#APSRreplication}
 
 ```{r table APSR, eval=TRUE}
 df_tableAPSR %>% 
@@ -76,9 +72,9 @@ df_tableAPSR %>%
                     term = "Variable") %>% 
   merge_v(j = c("group")) %>% 
   hline(i = 6, border = officer::fp_border()) %>% 
-  add_header_lines(values = "Estimates of Democratic Institutions on Democratic Support") %>% 
   autofit() %>% 
-  fit_to_width(8.5)
+  fit_to_width(8.5) %>% 
+  set_caption("Estimates of Democratic Institutions on Democratic Support")
 
 ```
 
