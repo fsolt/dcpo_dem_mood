@@ -7,16 +7,16 @@ output:
     latex_engine: pdflatex
     template: svm-latex-ms2.tex
 title: "Democracy, Public Support, and Measurement Uncertainty"
-thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
-author:
-- name: Yuehong 'Cassandra' Tai
-  affiliation: University of Iowa
-- name: Yue Hu
-  affiliation: Tsinghua University
-- name: Frederick Solt
-  affiliation: University of Iowa
+# thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
+# author:
+# - name: Yuehong 'Cassandra' Tai
+#   affiliation: University of Iowa
+# - name: Yue Hu
+#   affiliation: Tsinghua University
+# - name: Frederick Solt
+#   affiliation: University of Iowa
 abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [149/150 words]"
-keywords: "Democratization, public support, regime survival, measurement uncertainty, IRT"
+keywords: "Democratization, public support, regime survival, measurement uncertainty, IRT."
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
 spacing: double
@@ -39,7 +39,8 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
 ---
-Word count: 3923
+
+(Word count: 3628)
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
@@ -165,11 +166,11 @@ save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
 ```
 
 ```{r compare_n, eval=TRUE}
-if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
-  dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
-    read_csv(col_types = "cdcddcdc") %>% 
-    write_csv("data/supdem raw survey marginals.tab")
-}
+# if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
+#   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
+#     read_csv(col_types = "cdcddcdc") %>% 
+#     write_csv("data/supdem raw survey marginals.tab")
+# }
 
 supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"),
                    col_types = "cdcddcdc") %>% 
