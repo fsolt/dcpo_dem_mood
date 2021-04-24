@@ -25,5 +25,6 @@ paper/cda/
 data/kfold/*fold*
 data/kfold/*/*fold*
 reference/
+paper/submission
 
 
