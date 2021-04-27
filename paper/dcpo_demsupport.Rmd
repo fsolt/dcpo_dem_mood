@@ -4,7 +4,7 @@ output:
     citation_package: natbib
     keep_tex: true
     fig_caption: true
-    latex_engine: pdflatex
+    latex_engine: xelatex
     template: svm-latex-ms2.tex
 title: "Democracy, Public Support, and Measurement Uncertainty"
 thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
@@ -99,12 +99,16 @@ p_load(
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
-  broom, tidyverse, janitor, # data wrangling
+  glue,
+  broomExtra, tidyverse, janitor, # data wrangling
+  drhutools,
   dotwhisker # visualization
 ) 
 
 # Functions preload
 set.seed(313)
+
+source("../R/tidy_pgmm.r")
 
 get_legend<-function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
@@ -113,9 +117,10 @@ get_legend<-function(myggplot){
   return(legend)
 }
 
+
+
 # Theme setup
 theme_set(theme_minimal())
-source(here::here("R", "uiowa_palette.R"))
 ```
 
 # Method
@@ -134,29 +139,48 @@ To do this, we replicate the latent variable estimation from the original survey
 Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
 
 ```{r dcpo_input_raw}
-dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
-                                                          col_types = "cccccc"),
-                                          file = "data/dcpo_input_raw.csv")
+dcpo_input_raw <-
+  DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
+                                        col_types = "cccccc"),
+                        file = "data/dcpo_input_raw.csv")
 ```
 
-```{r dcpo_input,  eval=TRUE}
-dcpo_input_raw1 <- read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>% 
-  filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
-                 ((country=="Albania" & year==1998) |
-                      (country=="Indonesia" & (year==2001 | year==2006)) |
-                      (country=="Iran" & year==2000) |
-                      (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                      (country=="Vietnam" & year==2001)) |
-                 (str_detect(item, "strong_wvs") &
-                      ((country=="Egypt" & year==2012) |
-                           (country=="Iran" & (year==2000 | year==2007)) | # 2005 in Claassen
-                           (country=="India") |
-                           (country=="Pakistan" & (year==1997 | year==2001)) | # 1996 in Claassen
-                           (country=="Kyrgyzstan" & (year==2003 | year==2011)) |
-                           (country=="Romania" & (year==1998 | year==2005 | year==2012)) |
-                           (country=="Vietnam" & year==2001))) |
-                 (country %in% c("Puerto Rico", "Northern Ireland", 
-                                 "SrpSka Republic", "Hong Kong SAR China")))) %>%
+```{r dcpo_input, eval=TRUE}
+dcpo_input_raw1 <-
+  read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>%
+  filter(!(
+    str_detect(survey, "army_wvs") &
+      # WVS obs identified as problematic by Claassen
+      ((country == "Albania" & year == 1998) |
+         (country == "Indonesia" &
+            (year == 2001 | year == 2006)) |
+         (country == "Iran" & year == 2000) |
+         (country == "Pakistan" &
+            (year == 1997 | year == 2001)) | # 1996 in Claassen
+         (country == "Vietnam" & year == 2001)
+      ) |
+      (str_detect(item, "strong_wvs") &
+         ((country == "Egypt" & year == 2012) |
+            (country == "Iran" &
+               (year == 2000 | year == 2007)) | # 2005 in Claassen
+            (country == "India") |
+            (country == "Pakistan" &
+               (year == 1997 | year == 2001)) | # 1996 in Claassen
+            (country == "Kyrgyzstan" &
+               (year == 2003 | year == 2011)) |
+            (country == "Romania" &
+               (year == 1998 | year == 2005 | year == 2012)) |
+            (country == "Vietnam" & year == 2001)
+         )) |
+      (
+        country %in% c(
+          "Puerto Rico",
+          "Northern Ireland",
+          "SrpSka Republic",
+          "Hong Kong SAR China"
+        )
+      )
+  )) %>%
   with_min_yrs(2)
 
 dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
@@ -259,8 +283,6 @@ dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
 save(dcpo_input, dcpo_y_r_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
 ```
 
-
-
 ```{r country-years}
 path_df <-
   list.files(
@@ -328,7 +350,7 @@ vcovBK_se <- function(x) {
 
 
 vcovHC_se <-  function(x) {
-  plm::vcovHC(x, method="arellano", cluster="group") %>% 
+  plm::vcovHC(x, method="arellano", cluster="group") %>%  #default setting
     diag() %>% 
     sqrt()
 }
@@ -361,11 +383,34 @@ ls_mod <-
     "+ plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)"
   )
 
-df_result_cls <- map(ls_mod, function(mod){
-  result <- plm(mod, model = "pooling", data = sd.plm)
-  df_result <- tidy(result, conf.int = TRUE) %>%
-    mutate(std.error = vcovBK_se(result),
-           n = nobs(result))
+
+ls_iv <- c("plm::lag(SupDem_trim, 1)",
+           "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)")
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)") 
+
+ls_mod <- c(
+  glue("plm({ls_eq}, model = 'pooling', data = sd.plm)"),
+  glue(
+    "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = sd.plm, effect='individual', model='onestep', transformation='ld', indexes=c('Country', 'Year'))"
+  )
+)
+
+df_result_cls <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
+  
+  if (class(result) == "plm") {
+    tidy(result, conf.int = TRUE) %>%
+      mutate(std.error = vcovBK_se(result),
+             n = nobs(result))
+  } else{
+    tidy(result, conf.int = TRUE) %>%
+      mutate(std.error = vcovHC_se(result),
+             n = nobs(result))
+  }
+
 })
 
 save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
