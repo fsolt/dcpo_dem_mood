@@ -363,7 +363,7 @@ reformat_dcpo_output <- function(x, parameter_name) {
     pivot_longer(cols = all_of(ls_country),
                  names_to = "country",
                  values_to = parameter_name) %>%
-    arrange(country, year)
+    dplyr::arrange(country, year)
   return(df_temp)
 }
 ```
@@ -434,8 +434,8 @@ df_cls <- purrr::map(1:1000, function(anEntry) {
     reformat_dcpo_output("theta") %>% 
     # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
     #           by = c("year", "country")) %>%
-    left_join(sd_control, by = c("country", "year")) %>% 
-    mutate(theta_dem = theta * regime,
+    dplyr::left_join(sd_control, by = c("country", "year")) %>% 
+    dplyr::mutate(theta_dem = theta * regime,
            theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
