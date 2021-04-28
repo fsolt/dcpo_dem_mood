@@ -1,26 +1,36 @@
 ---
 output: 
-  pdf_document:
-    citation_package: natbib
-    keep_tex: true
-    fig_caption: true
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: yes
+    toc: FALSE
     latex_engine: xelatex
-    template: svm-latex-ms2.tex
+    # template: svm-latex-ms2.tex
+    
 title: "Democracy, Public Support, and Measurement Uncertainty"
 thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
-author:
-- name: Yuehong 'Cassandra' Tai
-  affiliation: University of Iowa
-- name: Yue Hu
-  affiliation: Tsinghua University
-- name: Frederick Solt
-  affiliation: University of Iowa
+
+# author:
+# - name: Yuehong 'Cassandra' Tai
+#   affiliation: University of Iowa
+# - name: Yue Hu
+#   affiliation: Tsinghua University
+# - name: Frederick Solt
+#   affiliation: University of Iowa
+  
 abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [149/150 words]"
 keywords: "Democratization, public support, regime survival, measurement uncertainty, IRT."
+
 date: "`r format(Sys.time(), '%B %d, %Y')`"
+editor_options: 
+  markdown: 
+    wrap: sentence
+tables: true # enable longtable and booktabs
+citation_package: natbib
 fontsize: 11pt
-spacing: double
-bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
+linestretch: 1.5 # double spacing using linestretch 1.5
+bibliography: dcpo_demsupport.bib
+# bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
 # csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
 biblio-style: apsr
 citecolor: black
@@ -82,7 +92,13 @@ There is no room for complacency.
 ```{r setup, include=FALSE}
 options(tinytex.verbose = TRUE)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, dpi = 300)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE,
+  dpi = 300
+)
 
 # If you haven't install `DCPOtools`
 # remotes::install_github("fsolt/DCPOtools")
@@ -99,8 +115,7 @@ p_load(
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
-  glue,
-  broomExtra, tidyverse, janitor, # data wrangling
+  broomExtra, tidyverse, janitor, glue, # data wrangling
   drhutools,
   dotwhisker # visualization
 ) 
@@ -116,8 +131,6 @@ get_legend<-function(myggplot){
   legend <- tmp$grobs[[leg]]
   return(legend)
 }
-
-
 
 # Theme setup
 theme_set(theme_minimal())
@@ -327,7 +340,7 @@ In both models, the positive coefficients for democratic support are no longer s
 The bottom results also incorporate uncertainty but additionally replace the @Claassen2019 estimates of support with those based on DCPO and the expanded dataset; this change works to increase the number of observations analyzed as well.
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
-```{r dataInput}
+```{r dataInput, eval=TRUE}
 
 supdem <- read.csv("../data/Support_democracy_ajps.csv")
 v_dem <- read.csv("../data/vdem15.csv")
@@ -363,13 +376,13 @@ reformat_dcpo_output <- function(x, parameter_name) {
     pivot_longer(cols = all_of(ls_country),
                  names_to = "country",
                  values_to = parameter_name) %>%
-    dplyr::arrange(country, year)
+    arrange(country, year)
   return(df_temp)
 }
 ```
 
 
-```{r claassenAJPS}
+```{r claassenAJPS, eval=TRUE}
 # Pooled model -----
 # regime = ifelse(sd2$Regime_VD > 1, 1, 0)
 
@@ -400,20 +413,22 @@ ls_mod <- c(
 
 df_result_cls <- map(ls_mod, function(mod) {
   result <- eval(parse(text = mod))
-  
-  if (class(result) == "plm") {
-    tidy(result, conf.int = TRUE) %>%
-      mutate(std.error = vcovBK_se(result),
-             n = nobs(result))
-  } else{
-    tidy(result, conf.int = TRUE) %>%
-      mutate(std.error = vcovHC_se(result),
-             n = nobs(result))
-  }
-
 })
 
-save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
+tidy_result_cls <- map(df_result_cls, function(result) {
+  df_result <- tidy(result, conf.int = TRUE)
+  
+  if (class(result) == "plm") {
+     mutate(df_result, std.error = vcovBK_se(result))
+  } else{
+    mutate(df_result, std.error = vcovHC_se(result))
+  }
+  
+})
+
+glance_result_cls <- map(df_result_cls, glance)
+
+#save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
 
@@ -434,8 +449,8 @@ df_cls <- purrr::map(1:1000, function(anEntry) {
     reformat_dcpo_output("theta") %>% 
     # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
     #           by = c("year", "country")) %>%
-    dplyr::left_join(sd_control, by = c("country", "year")) %>% 
-    dplyr::mutate(theta_dem = theta * regime,
+    left_join(sd_control, by = c("country", "year")) %>% 
+    mutate(theta_dem = theta * regime,
            theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
@@ -1279,10 +1294,51 @@ All of these could and should be explored in future research, though there are a
 In any event, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their publics will rally to them---is not supported by the current evidence.
 Those who would defend democracy have no grounds to be complacent.
 
+
+# References  {-}
+
+<div id = 'refs'></div>
+
 \pagebreak
 
-# References
+# Online Supplementary Materials {-}
+# (APPENDIX) Appendix {-}
+# Numeric Results for Replicating @Claassen2020a
 
-<div id="refs"></div>
+```{r cls2020a, results='asis', eval = TRUE}
+ls_result_cls <-
+  map2(tidy_result_cls, glance_result_cls, function(aTidy, aGlance) {
+    ls_sum <- list(tidy = aTidy,
+                   glance = aGlance)
+    
+    class(ls_sum) <- "modelsummary_list"
+    
+    return(ls_sum)
+  })
 
+names(ls_result_cls) <- c("Pooled OLS 1", "Pooled OLS 2", "GMM 1", "GMM 2")
+
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(Libdem_VD, 1:2)1" = "Democracy[t-1]",
+  "plm::lag(Libdem_VD, 1:2)2"  = "Democracy[t-2]",
+  "plm::lag(SupDem_trim, 1)" = "Support[t-1]",
+  "plm::lag(lnGDP_imp, 1)" = "Log~GDP~per~capita[t-1]",
+  "plm::lag(GDP_imp_grth, 1)"  = "GDP~per~capita~growth[t-1]",
+  "plm::lag(Libdem_regUN, 1)" = "Regional~democracy[t-1]",
+  "plm::lag(Pr_Muslim, 1)" = "Percent~Muslim[t-1]",
+  "plm::lag(Res_cp_WDI_di, 1)" = "Resource~dependence[t-1]"
+)
+
+modelsummary(ls_result_cls, 
+             stars = TRUE,
+             coef_map = names_coef, 
+             output = "latex") %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+
+\pagebreak
+
+# Numeric Results for Replicating @Claassen2020b
 

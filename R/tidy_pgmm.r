@@ -31,13 +31,17 @@ tidy.pgmm <- function(x,
 glance.pgmm <- function(x, ...) {
     s <- summary(x)
     as_glance_tibble(
-        chisq.sargan = unname(s$sargan$statistic),
-        df.sargan = unname(s$sargan$parameter),
-        p.sargan = unname(s$sargan$p.value),
-        chisq.wald = unname(s$wald.coef$statistic),
-        df.wald = unname(s$wald.coef$parameter),
-        p.wald = unname(s$wald.coef$p.value),
+        # chisq.sargan = unname(s$sargan$statistic),
+        # df.sargan = unname(s$sargan$parameter),
+        # p.sargan = unname(s$sargan$p.value),
+        # chisq.wald = unname(s$wald.coef$statistic),
+        # df.wald = unname(s$wald.coef$parameter),
+        # p.wald = unname(s$wald.coef$p.value),
+        # arellano.bond1 = unname(x$m1$statistic[1,]),
+        # arellano.bond2 = unname(x$m2$statistic[1,]),
         nobs = stats::nobs(x),
-        na_types = "rrrrrii"
+        # n.country = length(x$residuals),
+        n.inst = dim(x$W[[1]])[2],
+        na_types = "ii"
     )
 }
