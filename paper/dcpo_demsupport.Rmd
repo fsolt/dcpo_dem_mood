@@ -422,9 +422,12 @@ glance_result_cls <- map(df_result_cls, glance)
 
 
 ```{r claassenUncertaintyAJPS}
-claassen_replication_input$data <- claassen_replication_input$data %>% 
+claassen_replication <- read_csv(here::here("data", "claassen_replication.csv"),
+                   col_types = "cdcddcdc") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
+
+length(unique(claassen_replication$country))
 
 ls_country <- unique(claassen_replication_input$data$country)
 first_year <- min(claassen_replication_input$data$year)
