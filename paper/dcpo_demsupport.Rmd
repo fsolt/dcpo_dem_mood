@@ -386,17 +386,6 @@ reformat_dcpo_output <- function(x, parameter_name) {
 # Pooled model -----
 # regime = ifelse(sd2$Regime_VD > 1, 1, 0)
 
-ls_mod <-
-  paste0(
-    "Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + ",
-    c(
-      "plm::lag(SupDem_trim, 1)",
-      "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)"
-    ),
-    "+ plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)"
-  )
-
-
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
            "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)")
 
@@ -433,6 +422,9 @@ glance_result_cls <- map(df_result_cls, glance)
 
 
 ```{r claassenUncertaintyAJPS}
+claassen_replication_input$data <- claassen_replication_input$data %>% 
+  janitor::clean_names() %>% 
+  DCPOtools::with_min_yrs(2)
 
 ls_country <- unique(claassen_replication_input$data$country)
 first_year <- min(claassen_replication_input$data$year)
@@ -509,6 +501,9 @@ save(df_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"
 
 
 ```{r dcpoPointAJPS}
+
+
+
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
 
@@ -857,23 +852,81 @@ gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
 ```{r claassenAPSR}
+df_result_cls <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
+})
+
+
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
-mods <- vector(mode = "list")
+ls_mods <- vector(mode = "list")
 
-mods[[1]] <- plm(
+ls_mods[["ECM1.1"]] <- plm(
   diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
   + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
-  sd.plm,
+  data = sd.plm,
   model = "pooling"
 )
-mods[[2]] <- plm(
+
+ls_mods[["ECM1.2"]] <- plm(
   diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
   + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)
   + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1),
-  sd.plm,
+  data = sd.plm,
   model = "pooling"
 )
+
+ls_mods[["FD1.1"]] <-
+  plm(
+    SupDem_trim ~ Libdem_z + lnGDP_imp,
+    model = "fd",
+    data = sd.plm,
+    index = "Country"
+  )
+
+ls_mods[["FD1.2"]] <-
+  plm(
+    SupDem_trim ~ Libdem_z + lnGDP_imp + Corrup_TI_z,
+    model = "fd",
+    data = sd.plm,
+    index = "Country"
+  )
+
+
+ls_mods[["ECM2.1"]] <-
+  plm(
+    diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Polyarchy_z, lag = 1)
+    + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)
+    + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
+    sd.plm,
+    model = "pooling"
+  )
+ls_mods[["FD2.1"]] <-
+  plm(
+    diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Polyarchy_z, lag = 1)
+    + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)
+    + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1) + diff(Corrup_TI_z, lag = 1)
+    + plm::lag(Corrup_TI_z, 1),
+    sd.plm,
+    model = "pooling"
+  )
+
+# FD models
+
+ls_mods[["ECM2.2"]] <-
+  plm(
+    SupDem_trim ~ Polyarchy_z + Liberal_z + lnGDP_imp,
+    model = "fd",
+    data = sd.plm,
+    index = "Country"
+  )
+ls_mods[["FD2.2"]] <-
+  plm(
+    SupDem_trim ~ Polyarchy_z + Liberal_z + lnGDP_imp + Corrup_TI_z,
+    model = "fd",
+    data = sd.plm,
+    index = "Country"
+  )
 
 df_result_clsAPSR <- map(mods, function(aMod){
   tidy(aMod, conf.int = TRUE) %>%
@@ -881,7 +934,7 @@ df_result_clsAPSR <- map(mods, function(aMod){
            n = nobs(aMod))
 })
 
-save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
+#save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
 ```
 
 ```{r claassenAPSRUncertainty}
