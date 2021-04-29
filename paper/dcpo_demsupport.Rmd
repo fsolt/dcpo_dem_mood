@@ -851,11 +851,7 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
-```{r claassenAPSR}
-df_result_cls <- map(ls_mod, function(mod) {
-  result <- eval(parse(text = mod))
-})
-
+```{r claassenAPSR, eval = TRUE}
 
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
@@ -901,7 +897,7 @@ ls_mods[["ECM2.1"]] <-
     sd.plm,
     model = "pooling"
   )
-ls_mods[["FD2.1"]] <-
+ls_mods[["ECM2.2"]] <-
   plm(
     diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Polyarchy_z, lag = 1)
     + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)
@@ -913,7 +909,7 @@ ls_mods[["FD2.1"]] <-
 
 # FD models
 
-ls_mods[["ECM2.2"]] <-
+ls_mods[["FD2.1"]] <-
   plm(
     SupDem_trim ~ Polyarchy_z + Liberal_z + lnGDP_imp,
     model = "fd",
@@ -928,10 +924,11 @@ ls_mods[["FD2.2"]] <-
     index = "Country"
   )
 
-df_result_clsAPSR <- map(mods, function(aMod){
+
+
+df_result_clsAPSR <- map(ls_mods, function(aMod){
   tidy(aMod, conf.int = TRUE) %>%
-    mutate(std.error = vcovHC_se(aMod),
-           n = nobs(aMod))
+    mutate(std.error = vcovHC_se(aMod))
 })
 
 #save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
@@ -1358,7 +1355,7 @@ Those who would defend democracy have no grounds to be complacent.
 # (APPENDIX) Appendix {-}
 # Numeric Results for Replicating @Claassen2020a
 
-```{r cls2020a, results='asis', eval = TRUE}
+```{r num-cls2020a, results='asis', eval = TRUE}
 ls_result_cls <-
   map2(tidy_result_cls, glance_result_cls, function(aTidy, aGlance) {
     ls_sum <- list(tidy = aTidy,
@@ -1394,4 +1391,33 @@ modelsummary(ls_result_cls,
 \pagebreak
 
 # Numeric Results for Replicating @Claassen2020b
+
+```{r num-cls2020b, results='asis', eval = TRUE}
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(SupDem_trim, 1:2)1" = "Democratic\n Mood\n (t-1)",
+  "plm::lag(SupDem_trim, 1:2)2" = "Democratic\n Mood\n (t-2)",
+  "diff(Libdem_z, lag = 1)" = "Liberal\n Democracy\n (Difference)",
+  "Libdem_z" = "Liberal\n Democracy\n (Difference)",
+  "plm::lag(Libdem_z, 1)" = "Liberal\n Democracy\n (t-1)",
+  "diff(Polyarchy_z, lag = 1)" = "Electoral\n Democracy\n (Difference)",
+  "Polyarchy_z" = "Electoral\n Democracy\n (Difference)",
+  "plm::lag(Polyarchy_z, 1)" = "Electoral\n Democracy\n (t-1)",
+  "diff(Liberal_z, lag = 1)" = "Minoritarian\n Democracy\n (Difference)",
+  "Liberal_z" = "Minoritarian\n Democracy\n (Difference)",
+  "plm::lag(Liberal_z, 1)" = "Minoritarian\n Democracy\n (t-1)",
+  "diff(lnGDP_imp, lag = 1)" = "Log GDP\n per capita\n (Difference)",
+  "lnGDP_imp" = "Log GDP\n per capita\n (Difference)",
+  "plm::lag(lnGDP_imp, 1)" = "Log GDP\n (t-1)",
+  "diff(Corrup_TI_z, lag = 1)" = "Corruption\n (Difference)",
+  "Corrup_TI_z" = "Corruption\n (Difference)",
+  "plm::lag(Corrup_TI_z, 1)" = "Corruption\n (t-1)"
+)
+
+modelsummary(ls_mods, 
+             stars = TRUE,
+             coef_map = names_coef, 
+             output = "latex") %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
 
