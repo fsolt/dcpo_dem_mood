@@ -48,6 +48,8 @@ header-includes:
       - \usepackage{tabularx}
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
+      - \usepackage{fullpage}
+      - \usepackage{lscape} #better for printing, page displayed vertically, content in landscape mode, \usepackage{pdflscape} better for screen, page displayed horizontally, content in landscape mode
 ---
 
 (Word count: 3628)
@@ -427,10 +429,13 @@ claassen_replication <- read_csv(here::here("data", "claassen_replication.csv"),
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
 
-length(unique(claassen_replication$country))
+# length(unique(claassen_replication$country))
+# 
+# ls_country <- unique(claassen_replication_input$data$country)
+# first_year <- min(claassen_replication_input$data$year)
 
-ls_country <- unique(claassen_replication_input$data$country)
-first_year <- min(claassen_replication_input$data$year)
+ls_country <- unique(claassen_replication$country)
+first_year <- min(claassen_replication$year)
 
 sd_control <- sd.plm %>%
   mutate(
@@ -1356,7 +1361,7 @@ Those who would defend democracy have no grounds to be complacent.
 
 # Online Supplementary Materials {-}
 # (APPENDIX) Appendix {-}
-# Numeric Results for Replicating @Claassen2020a
+# Numeric Results for Replicating Claassen 2020a
 
 ```{r num-cls2020a, results='asis', eval = TRUE}
 ls_result_cls <-
@@ -1393,7 +1398,11 @@ modelsummary(ls_result_cls,
 
 \pagebreak
 
-# Numeric Results for Replicating @Claassen2020b
+# Numeric Results for Replicating Claassen 2020b
+
+\begin{landscape}
+
+
 
 ```{r num-cls2020b, results='asis', eval = TRUE}
 names_coef <- c(
@@ -1424,3 +1433,4 @@ modelsummary(ls_mods,
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
+\end{landscape}
