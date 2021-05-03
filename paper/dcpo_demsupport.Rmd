@@ -419,20 +419,16 @@ tidy_result_cls <- map(df_result_cls, function(result) {
 
 glance_result_cls <- map(df_result_cls, glance)
 
+names(tidy_result_cls) <- names(glance_result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
 #save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
 
 ```{r claassenUncertaintyAJPS}
-claassen_replication <- read_csv(here::here("data", "claassen_replication.csv"),
-                   col_types = "cdcddcdc") %>% 
+claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
-
-# length(unique(claassen_replication$country))
-# 
-# ls_country <- unique(claassen_replication_input$data$country)
-# first_year <- min(claassen_replication_input$data$year)
 
 ls_country <- unique(claassen_replication$country)
 first_year <- min(claassen_replication$year)
@@ -502,9 +498,41 @@ mod_ls <- paste0(
   " + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)"
 )
 
-df_result_clsUncertain <- map(mod_ls, estimate_cls)
 
-save(df_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
+ls_iv <- c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)") 
+
+ls_mod <- c(
+    glue("plm({ls_eq}, model = 'pooling', data = aData)"),
+    glue(
+        "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('Country', 'Year'))"
+    )
+)
+
+tidy_result_clsUncertain <- map(ls_mod, possibly(function(aMod){ # reading a model
+  result <- map(df_cls, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_vars <- ifelse(class(result[[1]])[1] == "plm", 
+                        mitools::MIextract(result, fun = vcovBK_se),
+                        mitools::MIextract(result, fun = vcovHC_se))
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+}, otherwise = NA_real_))
+  
+save(tidy_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
 
