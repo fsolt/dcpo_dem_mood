@@ -513,15 +513,17 @@ ls_mod <- c(
     )
 )
 
-tidy_result_clsUncertain <- map(ls_mod, possibly(function(aMod){ # reading a model
+tidy_result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
   result <- map(df_cls, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
-  result_vars <- ifelse(class(result[[1]])[1] == "plm", 
-                        mitools::MIextract(result, fun = vcovBK_se),
-                        mitools::MIextract(result, fun = vcovHC_se))
   result_betas <- mitools::MIextract(result, fun = coef)
+  
+  ## Not work with ifelse
+  result_vars <- ifelse(class(result[[1]])[1] == "plm", 
+                        eval(mitools::MIextract(result, fun = vcovBK_se)),
+                        eval(mitools::MIextract(result, fun = vcovHC_se)))
   
   summary(mitools::MIcombine(results = result_betas, 
                              variance = result_vars)) %>% 
@@ -530,7 +532,7 @@ tidy_result_clsUncertain <- map(ls_mod, possibly(function(aMod){ # reading a mod
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
-}, otherwise = NA_real_))
+})
   
 save(tidy_result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
