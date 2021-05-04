@@ -505,7 +505,7 @@ result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
    
-save(result_clsUncertain, file = "estimates_clsAJPS.RDS")
+save(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
 
