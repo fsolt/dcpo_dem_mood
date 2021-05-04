@@ -58,7 +58,7 @@ glance.plm <- function(x, ...) {
         # arellano.bond1 = unname(x$m1$statistic[1,]),
         # arellano.bond2 = unname(x$m2$statistic[1,]),
         nobs = stats::nobs(x),
-        n.country = attr(x$residuals, "index")$Country %>% nlevels,
+        n.country = attr(x$residuals, "index")[,1] %>% nlevels,
         # n.inst = dim(x$W[[1]])[2],
         na_types = "ii"
     )

@@ -386,9 +386,6 @@ reformat_dcpo_output <- function(x, parameter_name) {
 
 
 ```{r claassenAJPS, eval=TRUE}
-# Pooled model -----
-# regime = ifelse(sd2$Regime_VD > 1, 1, 0)
-
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
            "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)")
 
@@ -407,7 +404,7 @@ df_result_cls <- map(ls_mod, function(mod) {
   result <- eval(parse(text = mod))
 })
 
-tidy_result_cls <- map(df_result_cls, function(result) {
+tidy_cls <- map(df_result_cls, function(result) {
   df_result <- tidy(result, conf.int = TRUE)
   
   if (class(result) == "plm") {
@@ -418,7 +415,7 @@ tidy_result_cls <- map(df_result_cls, function(result) {
   
 })
 
-glance_result_cls <- map(df_result_cls, function(aResult){
+glance_cls <- map(df_result_cls, function(aResult){
   if(class(aResult) == "plm"){ 
     glance.plm(aResult) # using the customized glance function
   }else{
@@ -426,9 +423,10 @@ glance_result_cls <- map(df_result_cls, function(aResult){
     }
 })
 
-names(tidy_result_cls) <- names(glance_result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+result_cls <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
+names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-save(tidy_result_cls, glance_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDA"))
+save(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
 
@@ -468,11 +466,11 @@ ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_i
 ls_mod <- c(
     glue("plm({ls_eq}, model = 'pooling', data = aData)"),
     glue(
-        "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('Country', 'Year'))"
+        "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
     )
 )
 
-tidy_result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
+result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
   result <- map(df_cls, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
@@ -487,35 +485,46 @@ tidy_result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
   }
   
   
-  summary(mitools::MIcombine(results = result_betas, 
+  tidy_clsUncertain <- summary(mitools::MIcombine(results = result_betas, 
                              variance = result_vars)) %>% 
     rownames_to_column(var = "term") %>%
         rename(conf.low = `(lower`,
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
-})
   
-save(tidy_result_clsUncertain, file = "estimates_clsAJPS.RDS")
+  if(class(result[[1]]) == "plm"){ 
+    glance_clsUncertain <- glance.plm(result[[1]]) # using the customized glance function
+  }else{
+    glance_clsUncertain <- glance(result[[1]])
+  }
+  
+  result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
+})
+
+
+names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+   
+save(result_clsUncertain, file = "estimates_clsAJPS.RDS")
 ```
 
 
-```{r dcpoPointAJPS}
-# Not showing in the final result
-ls_country <- levels(dcpo_input$data$kk)
-first_year <- min(dcpo_input$data$year)
-
-df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
-  dcpo_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-              by = c("year", "country"))
-}) %>% 
-  group_by(country, year) %>% 
-  summarise(theta = mean(theta), 
-            sigma = mean(sigma))
-
-save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
+```{r dcpoPointAJPS, eval = TRUE}
+# ls_country <- levels(dcpo_input$data$kk)
+# first_year <- min(dcpo_input$data$year)
+# 
+# df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
+#   dcpo_theta$theta[anEntry,,] %>% 
+#     reformat_dcpo_output("theta") %>% 
+#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+#               by = c("year", "country"))
+# }) %>% 
+#   group_by(country, year) %>% 
+#   summarise(theta = mean(theta), 
+#             sigma = mean(sigma))
+# 
+# save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
+df_dcpoMean <- readRDS(here::here("output", "estimates_dcpoMean.RDS"))
 
 df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
                         col_types = cols(.default = col_double(),
@@ -534,23 +543,47 @@ df_dcpoMeanAJPS <- df_dcpoMean %>%
          theta_aut = theta * (1 - regime)) %>% 
     plm::pdata.frame(index = c("country", "year"))
 
-ls_mod <- paste0(
-  "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
-  c("plm::lag(theta, 1)", 
-    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
-  " + plm::lag(lg_imp_mdpgdp, 1) +
-             plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
-             plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
+ls_iv <- c("plm::lag(theta, 1)", 
+           "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ")
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
+
+ls_mod <- c(
+  glue("plm({ls_eq}, model = 'pooling', data = df_dcpoMeanAJPS)"),
+  glue(
+    "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = df_dcpoMeanAJPS, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+  )
 )
 
-df_result_dcpoMeanAJPS <- map(ls_mod, function(mod){
-  result <- plm(mod, model = "pooling", data = df_dcpoMeanAJPS)
-  df_result <- tidy(result) %>%
-    mutate(std.error = vcovBK_se(result),
-           n = nobs(result))
+df_result_dcpo <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
 })
 
-save(df_result_dcpoMeanAJPS, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
+tidy_dcpo <- map(df_result_cls, function(result) {
+  df_result <- tidy(result, conf.int = TRUE)
+  
+  if (class(result) == "plm") {
+     mutate(df_result, std.error = vcovBK_se(result))
+  } else{
+    mutate(df_result, std.error = vcovHC_se(result))
+  }
+  
+})
+
+glance_dcpo <- map(df_result_cls, function(aResult){
+  if(class(aResult) == "plm"){ 
+    glance.plm(aResult) # using the customized glance function
+  }else{
+      glance(aResult)
+    }
+})
+
+result_dcpo <- map2(tidy_dcpo, glance_dcpo, ~ list(.x, .y))
+names(result_dcpo) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
+save(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 ```
 
 
@@ -576,11 +609,11 @@ ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_
 ls_mod <- c(
     glue("plm({ls_eq}, model = 'pooling', data = aData)"),
     glue(
-        "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('Country', 'Year'))"
+        "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
     )
 )
 
-tidy_result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
+result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
   result <- map(df_dcpo, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
@@ -595,35 +628,41 @@ tidy_result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
   }
   
   
-  summary(mitools::MIcombine(results = result_betas, 
+  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas, 
                              variance = result_vars)) %>% 
     rownames_to_column(var = "term") %>%
         rename(conf.low = `(lower`,
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
+  
+  if(class(result[[1]]) == "plm"){ 
+    glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
+  }else{
+    glance_dcpoUncertain <- glance(result[[1]])
+  }
+  
+  result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
 })
 
-save(tidy_result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
+names(result_dcpoUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
+save(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 ```
 
 
 ```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=5}
 
-load(here::here("output", "estimates_clsMeanAJPS.RDA"))
+load(here::here("output", "estimates_clsMeanAJPS.RDS"))
 load(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
-df_plot <- df_result_cls[[1]] %>% 
-  mutate(model = "Claassen 2020a") 
-
-df_plot <- df_result_clsUncertain[[1]] %>% 
-  mutate(model = "Claassen w/ Uncertainty") %>%  
-  bind_rows(df_plot)
-
-df_plot <- df_result_dcpoAJPS[[1]] %>% 
-  mutate(model = "DCPO") %>%  
-  bind_rows(df_plot)
+result_pooled <- bind_rows(
+  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$pooled[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$pooled[[1]], model = "DCPO")
+)
+  
 
 df_plotS <- df_plot %>%
   filter(term != "(Intercept)") %>%
