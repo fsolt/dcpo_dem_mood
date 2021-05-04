@@ -111,14 +111,14 @@ library(pacman)
 # load all the packages you will use below 
 p_load(
   dataverse, # data scraping
-  DCPOtools,
+  DCPOtools, mitools,
   boot, plm, # analysis
   flextable, 
-  kableExtra, modelsummary, # tabulation
+  broomExtra, kableExtra, modelsummary, # tabulation
   gridExtra,
   latex2exp, # visualization
   rstan, # Bayesian estimation
-  broomExtra, tidyverse, janitor, glue, # data wrangling
+  tidyverse, janitor, glue, # data wrangling
   drhutools,
   dotwhisker # visualization
 ) 
@@ -418,11 +418,17 @@ tidy_result_cls <- map(df_result_cls, function(result) {
   
 })
 
-glance_result_cls <- map(df_result_cls, glance)
+glance_result_cls <- map(df_result_cls, function(aResult){
+  if(class(aResult) == "plm"){ 
+    glance.plm(aResult) # using the customized glance function
+  }else{
+      glance(aResult)
+    }
+})
 
 names(tidy_result_cls) <- names(glance_result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-#save(df_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
+save(tidy_result_cls, glance_result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDA"))
 ```
 
 
@@ -560,58 +566,6 @@ df_dcpo <- purrr::map(1:1000, function(anEntry) {
     plm::pdata.frame(index = c("country", "year"))
 })
 
-# estimate_dcpo <- function(aModel, aType = "pooling") {
-#   if (aType == "gmm") {
-#     result_dcpo_1k <- map(df_dcpo, function(aDataset) {
-#       pgmm(
-#         as.formula(aModel),
-#         effect = "individual",
-#         model = "onestep",
-#         transformation = "ld",
-#         indexes = c("Country", "Year"),
-#         data = aDataset
-#       )
-#     })
-#     
-#     result_vars_dcpo_1k <-
-#       mitools::MIextract(result_dcpo_1k, fun = vcovHC_se)
-#     
-#   } else {
-#     result_dcpo_1k <- map(df_dcpo, function(aDataset) {
-#       plm::plm(aModel,
-#                model = "pooling",
-#                data = aDataset)
-#     })
-#     
-#     result_vars_dcpo_1k <-
-#       mitools::MIextract(result_dcpo_1k, fun = vcovBK_se)
-#   }
-#   
-#   result_betas_dcpo_1k <-
-#     mitools::MIextract(result_dcpo_1k, fun = coef)
-#   
-#   df_result_dcpo <-
-#     summary(
-#       mitools::MIcombine(results = result_betas_dcpo_1k, variance = result_vars_dcpo_1k)
-#     ) %>% rownames_to_column(var = "term") %>%
-#     rename(conf.low = `(lower`,
-#            conf.high = `upper)`,
-#            estimate = results) %>%
-#     filter(!str_detect(term, "(Intercept)"))
-# }
-# 
-# mod_ls <- paste0(
-#   "Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + ", 
-#   c("plm::lag(theta, 1)", 
-#     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) "), 
-#   " + plm::lag(lg_imp_mdpgdp, 1) +
-#              plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) +
-#              plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)"
-# )
-# 
-# df_result_dcpoAJPS <- map(mod_ls, estimate_dcpo)
-
-
 ls_iv <- c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
 
@@ -656,7 +610,7 @@ save(tidy_result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.
 
 ```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=5}
 
-load(here::here("output", "estimates_clsMeanAJPS.RDS"))
+load(here::here("output", "estimates_clsMeanAJPS.RDA"))
 load(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
