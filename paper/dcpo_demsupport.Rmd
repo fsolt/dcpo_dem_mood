@@ -510,21 +510,22 @@ save(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 
 
 ```{r dcpoPointAJPS, eval = TRUE}
-# ls_country <- levels(dcpo_input$data$kk)
-# first_year <- min(dcpo_input$data$year)
-# 
-# df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
-#   dcpo_theta$theta[anEntry,,] %>% 
-#     reformat_dcpo_output("theta") %>% 
-#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-#               by = c("year", "country"))
-# }) %>% 
-#   group_by(country, year) %>% 
-#   summarise(theta = mean(theta), 
-#             sigma = mean(sigma))
-# 
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta") %>%
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country"))
+}) %>%
+  group_by(country, year) %>%
+  summarise(theta = mean(theta),
+            sigma = mean(sigma))
+
+# the readRDS produced "unknown format" error, very weild
 # save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
-df_dcpoMean <- readRDS(here::here("output", "estimates_dcpoMean.RDS"))
+# df_dcpoMean <- readRDS(here::here("output", "estimates_dcpoMean.RDS"))
 
 df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
                         col_types = cols(.default = col_double(),
@@ -561,7 +562,7 @@ df_result_dcpo <- map(ls_mod, function(mod) {
   result <- eval(parse(text = mod))
 })
 
-tidy_dcpo <- map(df_result_cls, function(result) {
+tidy_dcpo <- map(df_result_dcpo, function(result) {
   df_result <- tidy(result, conf.int = TRUE)
   
   if (class(result) == "plm") {
@@ -572,7 +573,7 @@ tidy_dcpo <- map(df_result_cls, function(result) {
   
 })
 
-glance_dcpo <- map(df_result_cls, function(aResult){
+glance_dcpo <- map(df_result_dcpo, function(aResult){
   if(class(aResult) == "plm"){ 
     glance.plm(aResult) # using the customized glance function
   }else{
