@@ -349,7 +349,10 @@ supdem <- read.csv("../data/Support_democracy_ajps.csv")
 v_dem <- read.csv("../data/vdem15.csv")
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
-load(here::here("data", "claassen_replication_input.rda"))
+claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
+  janitor::clean_names() %>% 
+  DCPOtools::with_min_yrs(2)
+
 load(here::here("data", "claassen_m5_theta.rda"))
 load(here::here("data", "dcpo_input.rda"))
 load(here::here("data", "dcpo_theta.rda"))
@@ -431,10 +434,6 @@ save(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 
 
 ```{r claassenUncertaintyAJPS}
-claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
-  janitor::clean_names() %>% 
-  DCPOtools::with_min_yrs(2)
-
 ls_country <- unique(claassen_replication$country)
 first_year <- min(claassen_replication$year)
 
@@ -876,91 +875,53 @@ gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 ```
 
 ```{r claassenAPSR, eval = TRUE}
-
+load(here::here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
-ls_mods <- vector(mode = "list")
+ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)", 
+              "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
 
-ls_mods[["ECM1.1"]] <- plm(
-  diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
-  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
-  data = sd.plm,
-  model = "pooling"
+ls_eqECM <- glue("diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Libdem_z",
+             "Polyarchy_z + Liberal_z")
+
+ls_ctrlFD <- c("", " + Corrup_TI_z")
+
+ls_eqFD <- glue("SupDem_trim ~ {ls_ivFD} + lnGDP_imp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = sd.plm)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = sd.plm)")
 )
 
-ls_mods[["ECM1.2"]] <- plm(
-  diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
-  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)
-  + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1),
-  data = sd.plm,
-  model = "pooling"
-)
-
-ls_mods[["FD1.1"]] <-
-  plm(
-    SupDem_trim ~ Libdem_z + lnGDP_imp,
-    model = "fd",
-    data = sd.plm,
-    index = "Country"
-  )
-
-ls_mods[["FD1.2"]] <-
-  plm(
-    SupDem_trim ~ Libdem_z + lnGDP_imp + Corrup_TI_z,
-    model = "fd",
-    data = sd.plm,
-    index = "Country"
-  )
-
-
-ls_mods[["ECM2.1"]] <-
-  plm(
-    diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Polyarchy_z, lag = 1)
-    + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)
-    + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
-    sd.plm,
-    model = "pooling"
-  )
-ls_mods[["ECM2.2"]] <-
-  plm(
-    diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Polyarchy_z, lag = 1)
-    + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)
-    + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1) + diff(Corrup_TI_z, lag = 1)
-    + plm::lag(Corrup_TI_z, 1),
-    sd.plm,
-    model = "pooling"
-  )
-
-# FD models
-
-ls_mods[["FD2.1"]] <-
-  plm(
-    SupDem_trim ~ Polyarchy_z + Liberal_z + lnGDP_imp,
-    model = "fd",
-    data = sd.plm,
-    index = "Country"
-  )
-ls_mods[["FD2.2"]] <-
-  plm(
-    SupDem_trim ~ Polyarchy_z + Liberal_z + lnGDP_imp + Corrup_TI_z,
-    model = "fd",
-    data = sd.plm,
-    index = "Country"
-  )
-
-
-
-df_result_clsAPSR <- map(ls_mods, function(aMod){
-  tidy(aMod, conf.int = TRUE) %>%
-    mutate(std.error = vcovHC_se(aMod))
+df_result_clsAPSR <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
 })
 
-#save(df_result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
+result_clsAPSR <- map(df_result_clsAPSR, function(aResult) {
+  tidy_result <- tidy(aResult, conf.int = TRUE) %>% 
+    mutate(std.error = vcovHC_se(aResult))
+  
+  glance_result <- glance.plm(aResult)
+  
+  ls_result <- list(tidy_result, glance_result)
+})
+
+names(result_clsAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", 
+                           "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+#save(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
 ```
 
 ```{r claassenAPSRUncertainty}
-ls_country <- unique(claassen_replication_input$data$country)
-first_year <- min(claassen_replication_input$data$year)
+ls_country <- unique(claassen_replication$country)
+first_year <- min(claassen_replication$year)
 
 sd_control <- sd.plm %>%
   mutate(
@@ -977,47 +938,54 @@ df_clsAPSR <- purrr::map(1:1000, function(anEntry) {
     plm::pdata.frame(index = c("country", "year"))
 })
 
+ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)", 
+              "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
 
-estimate_cls <- vector(mode = "list")
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
 
-estimate_cls[[1]] <- function(aDataset) {
-  plm(
-      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Libdem_z, lag = 1)
-  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1),
-      model = "pooling",
-      data = aDataset
-    )
-}
+ls_ivFD <- c("Libdem_z",
+             "Polyarchy_z + Liberal_z")
 
-estimate_cls[[2]] <- function(aDataset) {
-  plm(
-      diff(theta, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + diff(Libdem_z, lag = 1)
-  + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)
-  + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1),
-      model = "pooling",
-      data = aDataset
-    )
-}
+ls_ctrlFD <- c("", " + Corrup_TI_z")
 
+ls_eqFD <- glue("diff(theta, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
 
-df_result_clsUncertainAPSR <- map(estimate_cls, function(aModel){
-  aFit <- map(df_clsAPSR, aModel)
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = aData)")
+)
+
+result_clsUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(df_clsAPSR, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
   
-  result_vars_cls_1k <- mitools::MIextract(aFit, fun = vcovHC_se)
-  result_betas_cls_1k <- mitools::MIextract(aFit, fun = coef)
+  result_betas <- mitools::MIextract(result, fun = coef)
   
-  summary(
-      mitools::MIcombine(results = result_betas_cls_1k, 
-                         variance = result_vars_cls_1k)
-    ) %>% rownames_to_column(var = "term") %>%
-    rename(conf.low = `(lower`,
-           conf.high = `upper)`,
-           estimate = results) %>%
-    filter(!str_detect(term, "(Intercept)"))
-
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_clsUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_clsUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
 })
 
-save(df_result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+names(result_clsUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+save(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+
 ```
 
 ```{r dcpoPointAPSR}
@@ -1037,34 +1005,52 @@ df_dcpoMeanAPSR <- df_dcpoMean %>%
   left_join(df_controls, by = c("country", "year")) %>% 
   plm::pdata.frame(index = c("country", "year"))
 
-mods <- vector(mode = "list")
-mods[[1]] <-
-  plm(
-    diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1)
-    + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1),
-    data = df_dcpoMeanAPSR,
-    model = "pooling"
-  )
 
-mods[[2]] <-
-  plm(
-    diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1),
-    data = df_dcpoMeanAPSR,
-    model = "pooling"
-  )
+ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
+              "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
 
-df_result_dcpoMeanAPSR <- map(mods, function(aMod) {
-  aMod %>% 
-    tidy %>%
-    mutate(std.error = vcovHC_se(aMod),
-           n = nobs(aMod`))
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Vdem_libdem_z",
+             "Vdem_polyarchy_z + Vdem_liberal_z")
+
+ls_ctrlFD <- c("", " + corruption_z")
+
+ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = df_dcpoMeanAPSR)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = df_dcpoMeanAPSR)")
+)
+
+df_result_dcpoMeanAPSR <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
 })
 
-save(df_result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
+result_dcpoMeanAPSR <- map(df_result_dcpoMeanAPSR, function(aResult) {
+  tidy_result <- tidy(aResult, conf.int = TRUE) %>% 
+    mutate(std.error = vcovHC_se(aResult))
+  
+  glance_result <- glance.plm(aResult)
+  
+  ls_result <- list(tidy_result, glance_result)
+})
+
+names(result_dcpoMeanAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+save(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
 ```
 
 ```{r dcpoUncertaintyAPSR}
-df_dcpo <- purrr::map(1:1000, function(anEntry) {
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
   dcpo_theta$theta[anEntry,,] %>% 
     reformat_dcpo_output("theta") %>% 
     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
@@ -1073,44 +1059,58 @@ df_dcpo <- purrr::map(1:1000, function(anEntry) {
     plm::pdata.frame(index = c("country", "year"))
 })
 
-estimate_dcpo <- vector(mode = "list")
 
-estimate_dcpo[[1]] <- function(aDataset) {
-  plm(
-      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1)
-      + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1),
-      model = "pooling",
-      data = aDataset
-    )
-}
+## The same as in the previous chunk
 
-estimate_dcpo[[2]] <- function(aDataset) {
-  plm(
-      diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1) + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1) + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1),
-      model = "pooling",
-      data = aDataset
-    )
-}
+ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
+              "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
 
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
 
-df_result_dcpoAPSR <- map(estimate_dcpo, function(aModel){
-  aFit <- map(df_dcpo, aModel)
+ls_ivFD <- c("Vdem_libdem_z",
+             "Vdem_polyarchy_z + Vdem_liberal_z")
+
+ls_ctrlFD <- c("", " + corruption_z")
+
+ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+### Different datasets
+
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = df_dcpoUncertainAPSR)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = df_dcpoUncertainAPSR)")
+)
+
+result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(df_dcpoUncertainAPSR, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
   
-  result_vars_dcpo_1k <- mitools::MIextract(aFit, fun = vcovHC_se)
-  result_betas_dcpo_1k <- mitools::MIextract(aFit, fun = coef)
+  result_betas <- mitools::MIextract(result, fun = coef)
   
-  summary(
-      mitools::MIcombine(results = result_betas_dcpo_1k, 
-                         variance = result_vars_dcpo_1k)
-    ) %>% rownames_to_column(var = "term") %>%
-    rename(conf.low = `(lower`,
-           conf.high = `upper)`,
-           estimate = results) %>%
-    filter(!str_detect(term, "(Intercept)"))
-
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_dcpoUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_dcpoUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_dcpoUncertainAPSR <- list(tidy_dcpoUncertainAPSR, glance_dcpoUncertainAPSR)
 })
 
-save(df_result_dcpoAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
+names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+save(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
 
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
