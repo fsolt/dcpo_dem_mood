@@ -429,7 +429,7 @@ glance_cls <- map(df_result_cls, function(aResult){
 result_cls <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
 names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-save(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
+saveRDS(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
 
@@ -504,7 +504,7 @@ result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
    
-save(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
+saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
 
@@ -523,7 +523,7 @@ df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
             sigma = mean(sigma))
 
 # the readRDS produced "unknown format" error, very weild
-# save(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
+# saveRDS(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
 # df_dcpoMean <- readRDS(here::here("output", "estimates_dcpoMean.RDS"))
 
 df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
@@ -583,7 +583,7 @@ glance_dcpo <- map(df_result_dcpo, function(aResult){
 result_dcpo <- map2(tidy_dcpo, glance_dcpo, ~ list(.x, .y))
 names(result_dcpo) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-save(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
+saveRDS(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 ```
 
 
@@ -647,7 +647,7 @@ result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_dcpoUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-save(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
+saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 ```
 
 
@@ -916,7 +916,7 @@ result_clsAPSR <- map(df_result_clsAPSR, function(aResult) {
 names(result_clsAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", 
                            "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-#save(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
+#saveRDS(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
 ```
 
 ```{r claassenAPSRUncertainty}
@@ -984,7 +984,7 @@ result_clsUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_clsUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-save(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+saveRDS(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
 
 ```
 
@@ -1043,7 +1043,7 @@ result_dcpoMeanAPSR <- map(df_result_dcpoMeanAPSR, function(aResult) {
 
 names(result_dcpoMeanAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-save(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
+saveRDS(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
 ```
 
 ```{r dcpoUncertaintyAPSR}
@@ -1110,7 +1110,7 @@ result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-save(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
+saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 ```
 
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
