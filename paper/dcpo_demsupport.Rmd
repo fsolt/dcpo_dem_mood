@@ -651,20 +651,29 @@ saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RD
 ```
 
 
-```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=5}
+```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=8}
 
+# Very weird phenomenon that the same type of rds files needs different ways to read
+# Suggesting using the qs or csv data type in future.
 load(here::here("output", "estimates_clsMeanAJPS.RDS"))
-load(here::here("output", "estimates_clsAJPS.RDS"))
+result_clsUncertain <- readRDS(here::here("output", "estimates_clsAJPS.RDS"))
 load(here::here("output", "estimates_dcpoAJPS.RDS"))
 
 result_pooled <- bind_rows(
   mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
   mutate(result_clsUncertain$pooled[[1]], model = "Claassen w/ Uncertainty"),
   mutate(result_dcpoUncertain$pooled[[1]], model = "DCPO")
-)
-  
+) %>% 
+  mutate(type = "Pooled")
 
-df_plotS <- df_plot %>%
+result_gmm <- bind_rows(
+  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$gmm[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$gmm[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
+
+result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
   filter(term != "(Intercept)") %>%
   mutate(
     term = rep(
@@ -676,7 +685,9 @@ df_plotS <- df_plot %>%
       "Regional\n democracy\n (t-1)",
       "Percent\n Muslim\n (t-1)",
       "Resource\n dependence\n (t-1)"),
-    time = 3))
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
 
 terms <- factor(rev(c("Democracy[t-1]",
         "Democracy[t-2]",
@@ -695,38 +706,42 @@ terms <- factor(rev(c("Democracy[t-1]",
       "Percent~Muslim[t-1]",
       "Resource~dependence[t-1]")))
 
-df_tableAJPS <- df_plotS %>% mutate(
-  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
-  group = "Pooled"
-) %>% 
-  select(term, estimate, conf, n, model, group) %>% 
-  fill(n, .direction = "up")
+# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
+# What I've tried
+# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
+# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
+# 2. redefining the order of model in the dataframe or in dwplot 
+# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
+# 4. Every post online is to reverse 
 
-plot_AJPS1 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
+plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms))) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
   scale_color_grey(start = 0.4, end = 0.8) +
   labs(
     title = "DV: V-Dem Liberal Democracy Index",
-    subtitle = "Pooled"
+    subtitle = "Regime Compacted"
   ) +
+  facet_wrap(~type, scales = "free_x") + 
   theme(legend.position = "none")
 
 # the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
 # The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
 
-df_plot <- df_result_cls[[2]] %>% 
-  mutate(model = "Claassen 2020a") 
+result_regime <- bind_rows(
+  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$`pooled-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "Pooled")
 
-df_plot <- df_result_clsUncertain[[2]] %>% 
-  mutate(model = "Claassen w/ Uncertainty") %>%  
-  bind_rows(df_plot)
+result_regimeGmm <- bind_rows(
+  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$`gmm-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
 
-df_plot <- df_result_dcpoAJPS[[2]] %>% 
-  mutate(model = "DCPO") %>%  
-  bind_rows(df_plot)
-
-df_plotS <- df_plot %>%
+result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
   filter(term != "(Intercept)") %>%
   mutate(
     term = rep(
@@ -739,8 +754,9 @@ df_plotS <- df_plot %>%
       "Regional\n democracy\n (t-1)",
       "Percent\n Muslim\n (t-1)",
       "Resource\n dependence\n (t-1)"),
-    time = 3)
-  )
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
 
 terms2 <- factor(rev(c("Democracy[t-1]",
                        "Democracy[t-2]",
@@ -761,23 +777,14 @@ terms2 <- factor(rev(c("Democracy[t-1]",
                          "Percent~Muslim[t-1]",
                          "Resource~dependence[t-1]")))
 
-df_tableAJPS <- df_plotS %>% mutate(
-  conf = paste0("[", round(conf.low, digits = 2), ", ", round(conf.high, digits = 2), "]"),
-  group = "Regime Spec."
-) %>% 
-  select(term, estimate, conf, n, model, group) %>% 
-  fill(n, .direction = "up") %>% 
-  bind_rows(df_tableAJPS) %>% 
-  mutate(estimate = round(estimate, digits = 3))
-
-plot_AJPS2 <- dwplot(df_plotS, dodge_size = 0.8, by_2sd = FALSE) +
+plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
     scale_y_discrete(labels = parse(text = levels(terms2))) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
   scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
   labs(
     title = "",
     subtitle = "Regime Specific"
   ) +
+  facet_wrap(~type, scales = "free_x") +
   theme(legend.position = "bottom", 
         legend.title = element_blank())
 
@@ -785,9 +792,7 @@ legend <- get_legend(plot_AJPS2)
 
 plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
 
-grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol=2, nrow = 2, 
-             layout_matrix = rbind(c(1,2), c(3,3)),
-             widths = c(2.7, 2.7), heights = c(2.5, 0.2))
+grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 
 ```
 
@@ -1380,23 +1385,21 @@ Those who would defend democracy have no grounds to be complacent.
 # Numeric Results for Replicating Claassen 2020a
 
 ```{r num-cls2020a, results='asis', eval = TRUE}
-ls_result_cls <-
-  map2(tidy_result_cls, glance_result_cls, function(aTidy, aGlance) {
-    ls_sum <- list(tidy = aTidy,
-                   glance = aGlance)
-    
-    class(ls_sum) <- "modelsummary_list"
-    
-    return(ls_sum)
-  })
+tb_result_cls <- map(result_cls, ~ {
+  names(.) <- c("tidy", "glance")
+  class(.) <- "modelsummary_list"
+  return(.)})
 
-names(ls_result_cls) <- c("Pooled OLS 1", "Pooled OLS 2", "GMM 1", "GMM 2")
+names(tb_result_cls) <- c("Pooled", "Pooled-Regime", 
+                          "GMM", "GMM-Regime")
 
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
   "plm::lag(Libdem_VD, 1:2)1" = "Democracy[t-1]",
   "plm::lag(Libdem_VD, 1:2)2"  = "Democracy[t-2]",
   "plm::lag(SupDem_trim, 1)" = "Support[t-1]",
+  "plm::lag(SupDem_Democ, 1)" = "Support in Democracy",
+  "plm::lag(SupDem_Autoc, 1)" = "Support in Autocracy",
   "plm::lag(lnGDP_imp, 1)" = "Log~GDP~per~capita[t-1]",
   "plm::lag(GDP_imp_grth, 1)"  = "GDP~per~capita~growth[t-1]",
   "plm::lag(Libdem_regUN, 1)" = "Regional~democracy[t-1]",
@@ -1404,13 +1407,73 @@ names_coef <- c(
   "plm::lag(Res_cp_WDI_di, 1)" = "Resource~dependence[t-1]"
 )
 
-modelsummary(ls_result_cls, 
-             stars = TRUE,
+modelsummary(tb_result_cls,  
+             statistic = "conf.int",
              coef_map = names_coef, 
-             output = "latex") %>% 
+             output = "latex", 
+             title = "Original") %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
+```{r num-cls2020aUncertain, results='asis', eval = TRUE}
+tb_result_clsUncertain <- map(result_clsUncertain, ~ {
+  names(.) <- c("tidy", "glance")
+  class(.) <- "modelsummary_list"
+  return(.)})
+
+names(tb_result_cls) <- c("Pooled", "Pooled-Regime", 
+                          "GMM", "GMM-Regime")
+
+names_coef <- c(
+  "plm::lag(Libdem_VD, 1:2)1" = "Democracy[t-1]",
+  "plm::lag(Libdem_VD, 1:2)2"  = "Democracy[t-2]",
+  "plm::lag(theta, 1)" = "Support[t-1]",
+  "plm::lag(theta_dem, 1)" = "Support in Democracy",
+  "plm::lag(theta_aut, 1)" = "Support in Autocracy",
+  "plm::lag(lnGDP_imp, 1)" = "Log~GDP~per~capita[t-1]",
+  "plm::lag(GDP_imp_grth, 1)"  = "GDP~per~capita~growth[t-1]",
+  "plm::lag(Libdem_regUN, 1)" = "Regional~democracy[t-1]",
+  "plm::lag(Pr_Muslim, 1)" = "Percent~Muslim[t-1]",
+  "plm::lag(Res_cp_WDI_di, 1)" = "Resource~dependence[t-1]"
+)
+
+modelsummary(tb_result_clsUncertain, 
+             statistic = "conf.int",
+             coef_map = names_coef, 
+             output = "latex", 
+             title = "W. Uncertainty") %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+```{r num-cls2020aDCPO, results='asis', eval = TRUE}
+tb_result_DCPO <- map(result_dcpoUncertain, ~ {
+  names(.) <- c("tidy", "glance")
+  class(.) <- "modelsummary_list"
+  return(.)})
+
+names(tb_result_DCPO) <- c("Pooled", "Pooled-Regime", 
+                          "GMM", "GMM-Regime")
+
+names_coef <- c(
+  "plm::lag(Vdem_libdem, 1:2)1" = "Democracy[t-1]",
+  "plm::lag(Vdem_libdem, 1:2)2"  = "Democracy[t-2]",
+  "plm::lag(theta, 1)" = "Support[t-1]",
+  "plm::lag(theta_dem, 1)" = "Support in Democracy",
+  "plm::lag(theta_aut, 1)" = "Support in Autocracy",
+  "plm::lag(lg_imp_mdpgdp, 1)" = "Log~GDP~per~capita[t-1]",
+  "plm::lag(mdprgdp_grwth, 1)"  = "GDP~per~capita~growth[t-1]",
+  "plm::lag(Region_libdem, 1)" = "Regional~democracy[t-1]",
+  "plm::lag(muslism_prop_2010, 1)" = "Percent~Muslim[t-1]",
+  "plm::lag(dependence_pc_di, 1)" = "Resource~dependence[t-1]"
+)
+
+modelsummary(tb_result_DCPO, 
+             statistic = "conf.int",
+             coef_map = names_coef, 
+             output = "latex", 
+             title = "W. Uncertainty") %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
 
 \pagebreak
 
