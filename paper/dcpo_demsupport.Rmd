@@ -1751,4 +1751,41 @@ modelsummary(tb_result_dcpoAPSR,
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
+\pagebreak
+```{r datawitherrors}
+
+ls_country <- unique(claassen_replication$country)
+first_year <- min(claassen_replication$year)
+
+df_cls_errors <- purrr::map(1:900, function(anEntry) {
+  claassen_m5_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta")  %>%
+    mutate(iter = anEntry) 
+  }
+  )
+
+
+cls_theta_uncertainty <- bind_rows(df_cls_errors)
+saveRDS(cls_theta_uncertainty,"data/cls_theta_uncertainty.rds")
+
+
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpo <- purrr::map_df(1:900, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta") %>%
+    mutate(iter = anEntry) %>%
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country"))
+}) 
+
+saveRDS(df_dcpo,"dcpo_theta_uncertainty.rds")
+
+
+```
+
+
+
+
 \end{landscape}
