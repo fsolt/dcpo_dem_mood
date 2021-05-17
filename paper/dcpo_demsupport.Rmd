@@ -1787,11 +1787,21 @@ cntrl_ajps_uncertainty <- readRDS("data/cntrl_ajps_uncertainty.rds")
 dcpo_analysis <- left_join(df_dcpo,cntrl_ajps_uncertainty, by=c("country","year","iter"="iter_se") )
 saveRDS(dcpo_analysis, "data/dcpo_analysis_ajps.rds")
 
+dcpo_apsr_cntrl <- readRDS("data/cntrl_apsr_uncertainty.rds")
+dcpo_apsr_analysis <- left_join(df_dcpo,dcpo_apsr_cntrl, by=c("country","year","iter"="iter_se") )
+saveRDS(dcpo_apsr_analysis, "data/dcpo_analysis_apsr.rds")
+qsave(dcpo_apsr_analysis, "data/dcpo_analysis_apsr_compress")
+
+
+
+
 cls_ajps_uncertainty <- readRDS("data/cls_ajps_uncertainty.rds")
 
 
 cls_analysis <- left_join(cls_theta_uncertainty,cls_ajps_uncertainty, by=c("country","year"="Year","iter"="iter_se") )
 saveRDS(cls_analysis, "data/cls_analysis_ajps.rds")
+
+
 
 
 ```
