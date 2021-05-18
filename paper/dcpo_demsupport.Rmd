@@ -120,13 +120,15 @@ p_load(
   rstan, # Bayesian estimation
   tidyverse, janitor, glue, # data wrangling
   drhutools,
-  dotwhisker # visualization
+  dotwhisker, # visualization
+  qs
 ) 
 
 # Functions preload
 set.seed(313)
 
-source("../R/tidy_pgmm.r")
+source(here::here("R", "tidy_pgmm.r"))
+source(here::here("R", "moc_function.R")) 
 
 get_legend<-function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
@@ -352,13 +354,11 @@ sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
-
 load(here::here("data", "claassen_m5_theta.rda"))
-load(here::here("data", "dcpo_input.rda"))
-load(here::here("data", "dcpo_theta.rda"))
-load(here::here("data", "dcpo_sigma.rda"))
 load(here::here("data", "dem_mood_apsr.RData"))
-
+# load(here::here("data", "dcpo_input.rda"))
+# load(here::here("data", "dcpo_theta.rda"))
+# load(here::here("data", "dcpo_sigma.rda"))
 
 ## Beck-Katz panel-corrected standard errors
 vcovBK_se <- function(x) {
@@ -1810,3 +1810,9 @@ saveRDS(cls_analysis, "data/cls_analysis_ajps.rds")
 
 
 \end{landscape}
+# Replication with Alternative Methods Accounting for Uncertainty
+
+```{r moc}
+
+```
+
