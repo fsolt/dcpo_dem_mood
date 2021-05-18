@@ -32,7 +32,3 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
   }
   return(coefdf)
 }
-
-
-###for analysis
-iter <- sort(sample(unique(data$iter), min(900, length(unique(data$iter)))))
