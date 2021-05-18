@@ -55,7 +55,8 @@ write.csv(cntrl_ajps_poly_postse,"data/cntrl_ajps_polypost.csv",fileEncoding = "
 cntrl_ajps_error <- left_join(cntrl_ajps_postse,cntrl_ajps_poly_postse, by = c("country","year","iter_cn","iter_se"))
 
 cntrl_ajps_uncertainty <- left_join(cntrl_ajps_error,cntrl_ajps_se, by = c("country", "year")) %>%
-  select(country, year, ISO, starts_with("Vdem"),everything())
+  select(country, year, starts_with("Vdem"),everything())
+
 
 cntrl_ajps_uncertainty_region <- cntrl_ajps_uncertainty %>%
   group_by(country, iter_se) %>%
