@@ -24,6 +24,8 @@ paper/lit/
 paper/cda/
 data/kfold/*fold*
 data/kfold/*/*fold*
+data/*.csv
+data/*.qs
 reference/
 paper/submission
 
