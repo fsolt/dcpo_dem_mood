@@ -35,4 +35,4 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
 
 
 ###for analysis
-iter <- sort(sample(unique(data$iter_se), min(900, length(unique(data$iter)))))
+iter <- sort(sample(unique(data$iter), min(900, length(unique(data$iter)))))
