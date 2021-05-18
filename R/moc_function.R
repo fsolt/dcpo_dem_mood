@@ -12,7 +12,7 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
   for (s in seq_along(iter)) {
     ## (1) Sample from p(x)
     it <- iter[s]
-    data_sample <- subset(data, iter == it)
+    data_sample <- subset(data, iter_se == it)
     ## (2) Sample from p(B|x,y):
     ##     (a) Estimate B_s and Cov(B_s) conditional on x_s.
     mod_sample <- update(model, data=data_sample)
@@ -32,7 +32,3 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
   }
   return(coefdf)
 }
-
-
-###for analysis
-iter <- sort(sample(unique(data$iter), min(900, length(unique(data$iter)))))
