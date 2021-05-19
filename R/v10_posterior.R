@@ -7,6 +7,8 @@ set.seed(313)
 
 cntrl_ajps_se <- read.csv("data/cntrl_ajps_se_1985.csv",encoding = "UTF-8",stringsAsFactors  = F)
 
+
+##libdem
 pdist <- cntrl_ajps_se %>%
   select(Vdem_libdem,libdem_sd) %>%
 pmap(function(Vdem_libdem,libdem_sd,...) rnorm(900, Vdem_libdem, libdem_sd))  #posterior distribution 900 draws
@@ -24,13 +26,12 @@ cntrl_ajps_se_pdist <- cntrl_ajps_se %>% group_by(country, year) %>%
 
 cntrl_ajps_se_pdist <- data.frame(cntrl_ajps_se_pdist)
 
-
 cntrl_ajps_postse <- cbind(cntrl_ajps_se_pdist, pdist_df)
 identical(cntrl_ajps_postse$iter_cn,cntrl_ajps_postse$iter_se)
 cntrl_ajps_postse <- cntrl_ajps_postse %>%
   rename(Vdem_libdem_post = value)
-write.csv(cntrl_ajps_postse,"data/cntrl_ajps_libdempost.csv",fileEncoding = "UTF-8",row.names = F)
-#saveRDS(cntrl_ajps_postse, "data/cntrl_ajps_libdempost.rds")
+
+saveRDS(cntrl_ajps_postse, "data/cntrl_ajps_libdempost.rds")
 
 
 ###polyarchi
@@ -49,8 +50,8 @@ cntrl_ajps_poly_postse <- cbind(cntrl_ajps_se_pdist, pdist_poly_df)
 identical(cntrl_ajps_poly_postse$iter_cn,cntrl_ajps_poly_postse$iter_se)
 cntrl_ajps_poly_postse <- cntrl_ajps_poly_postse %>%
   rename(Vdem_polyarchy_post = value)
-write.csv(cntrl_ajps_poly_postse,"data/cntrl_ajps_polypost.csv",fileEncoding = "UTF-8",row.names = F)
-#saveRDS(cntrl_ajps_poly_postse, "data/cntrl_ajps_polypost.rds")
+
+saveRDS(cntrl_ajps_poly_postse, "data/cntrl_ajps_polypost.rds")
 
 cntrl_ajps_error <- left_join(cntrl_ajps_postse,cntrl_ajps_poly_postse, by = c("country","year","iter_cn","iter_se"))
 
@@ -78,8 +79,7 @@ cntrl_ajps_uncertainty_region <- cntrl_ajps_uncertainty %>%
   group_by(Region_UN,year, iter_cn)  %>%
   select(Region_UN, year, country, iter_se, Region_libdem_post,Region_libdem_postm1, starts_with("Vdem"),everything())
 
-write.csv(cntrl_ajps_uncertainty_region,"data/cntrl_ajps_uncertainty.csv",fileEncoding = "UTF-8",row.names = F)
-#saveRDS(cntrl_ajps_uncertainty_region, "data/cntrl_ajps_uncertainty.rds")
+saveRDS(cntrl_ajps_uncertainty_region, "data/cntrl_ajps_uncertainty.rds")
 
 
 
