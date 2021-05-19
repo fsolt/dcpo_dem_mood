@@ -21,11 +21,11 @@ list_temp <- theta_list %>%
         left_join(temp_df, by=c("country","year")) 
   )
 
-dcpo_ajps_rubin <- list()
+
 dcpo_ajps_rubin <- purrr::map(1:900, function(anEntry) {
-  dcpo_ajps_rubin[[anEntry]] <- list_temp[[anEntry]] %>%
-    left_join(libdem_list_temp[[anEntry]],by = c("year", "country"))
-  return(dcpo_ajps_rubin)
+  list_temp[[anEntry]] %>% 
+    left_join(libdem_list[[anEntry]],by = c("year", "country")) %>% 
+    list()
 }) 
 
 save(dcpo_ajps_rubin, file = "data/dcpo_ajps_rubin.rda")
