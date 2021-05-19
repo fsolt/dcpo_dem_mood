@@ -34,10 +34,13 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
 }
 
 methodComposition2 <- function (data, model, vcov=plmHC) {
+  aData <- data[[1]]
+  aMod <- eval(parse(text = model))
+  
   coefdf <- purrr::map(data, function(aData) {
     ## (2) Sample from p(B|x,y):
     ##     (a) Estimate B_s and Cov(B_s) conditional on x_s.
-    aMod <- update(model, data=aData)
+    aMod <- update(aMod, data = aData)
     hatB_sample <- coef(aMod)
     hatV_sample <- vcov(aMod)
     ##     (b) Sample \aData{B_s} from MV(\hat{B_sample}, \hat{Cov(B_sample)}).
