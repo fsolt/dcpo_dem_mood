@@ -32,3 +32,20 @@ methodComposition <- function (data, iter, model, vcov=plmHC, rsq=TRUE) {
   }
   return(coefdf)
 }
+
+methodComposition2 <- function (data, model, vcov=plmHC) {
+  coefdf <- purrr::map(data, function(data_sample) {
+    ## (2) Sample from p(B|x,y):
+    ##     (a) Estimate B_s and Cov(B_s) conditional on x_s.
+    mod_sample <- update(model, data=data_sample)
+    hatB_sample <- coef(mod_sample)
+    hatV_sample <- vcov(mod_sample)
+    ##     (b) Sample \data_sample{B_s} from MV(\hat{B_sample}, \hat{Cov(B_sample)}).
+    coefdf0 <- MASS::mvrnorm(n = 1, mu = hatB_sample, Sigma = hatV_sample)
+    return(coefdf0)
+  })
+  
+  
+  names(coefdf) <- names(coef(model))
+  return(coefdf)
+}
