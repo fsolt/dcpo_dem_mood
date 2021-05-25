@@ -68,12 +68,13 @@ cpi <- left_join(cpi_se, cpi_95_19_error,by =c("country","year"))
 
 cpi_clean <- cpi %>%
   select(-h_re,-relative_error) %>%
-  mutate(cpi_z = as.vector(scale(cpi_100*-1)), # reversed, positive--more corruption
+  mutate(cpi_post = cpi_post*-1,
+        cpi_z = as.vector(scale(cpi_100*-1)), # reversed, positive--more corruption
          cpi_m1_z = as.vector(scale(cpi_100_m1*-1)), 
-         cpi_post_z = as.vector(scale(cpi_post*-1))) %>%
+         cpi_post_z = as.vector(scale(cpi_post))) %>%
   group_by(country, iter_se) %>%
   arrange(year, .by_group = TRUE) %>% 
   mutate(cpi_postm1 = lag(cpi_post),
-         cpi_postm1_z = as.vector(scale(cpi_postm1)))
+         cpi_postz_m1 = lag(cpi_post_z))
 
 saveRDS(cpi_clean, "data/cpi_post.rds")
