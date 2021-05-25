@@ -22,6 +22,8 @@ load("data/dcpo_sigma.rda")
 load("data/dcpo_ajps_cntrl.rda")
 load("data/dcpo_apsr_cntrl.rda")
 cntrl_ajps_se <- readRDS("data/cntrl_ajps_se_1985.rds")
+load("data/country_regionUN.rda")  ##this file can be used when we need region variables
+
 #cpi_post <- readRDS("data/cpi_post.rds") created in R/cpi_error.R. 
 # For the convenience, create cpi_post here too.  
 
@@ -72,9 +74,6 @@ cntrl_ajps_se_pdist <- data.frame(cntrl_ajps_se_pdist)
 cntrl_ajps_libdem <- cbind(cntrl_ajps_se_pdist, pdist_df)
 identical(cntrl_ajps_libdem$iter_cn,cntrl_ajps_libdem$iter_se)
 
-cntrl_ajps_libdem <- cntrl_ajps_libdem %>%
-  rename(Vdem_libdem_post = value)
-
 #saveRDS(cntrl_ajps_libdem, "data/cntrl_ajps_libdem.rds")
 
 data_temp <- cntrl_ajps_libdem %>% 
@@ -88,31 +87,31 @@ for (i in 1:900) {
 }
 
 #save(libdem_list, file = "data/libdem_list.rda")
-
+#load("data/libdem_list.rda")
 
 #########libdem_cntrl_list
 
 libdem_cntrl_list <- libdem_list %>%
   map(~.x %>%
-        rename(Vdem_libdem = Vdem_libdem_post) %>%
+        rename(Vdem_libdem = value) %>%
         select(-iter_se) %>%
-        left_join(dcpo_ajps_cntrl,by=c("country","year")) %>%
+        left_join(cntry_regionUN,by=c("country")) %>%
         group_by(country) %>%
-        mutate(Vdem_libdem_m1 = dplyr::lag(Vdem_libdem),
-               Vdem_libdem_m2 = dplyr::lag(Vdem_libdem,2)) %>%
-        ungroup() %>%
+        arrange(year, .by_group =TRUE) %>%
+        mutate(Vdem_libdem_m1 = lag(Vdem_libdem),
+               Vdem_libdem_m2 = lag(Vdem_libdem,2)) %>%
         mutate(Chgdem = Vdem_libdem - Vdem_libdem_m1,
                upchgdem = ifelse(Chgdem > 0, Chgdem,0),
                downchgdem = ifelse(Chgdem < 0, Chgdem*(-1),0)) %>%
-        ungroup() %>%
         group_by(Region_UN,year) %>%
         mutate(Region_libdem = mean(Vdem_libdem, na.rm=TRUE)) %>%
         ungroup() %>%
         group_by(country) %>%
         mutate(Region_libdem_m1 = lag(Region_libdem)) %>%
-        ungroup() %>%
-        select(-iter_cn.x,-iter_cn.y,-iter_se)
+        ungroup()  %>%
+        select(-iter_cn)
   ) 
+
 
 #save(libdem_cntrl_list, file = "data/libdem_cntrl_list.rda")
 
@@ -133,7 +132,7 @@ cntrl_poly <- cbind(cntrl_ajps_se_pdist, pdist_poly_df)
 identical(cntrl_poly$iter_cn,cntrl_poly$iter_se)
 
 cntrl_poly <- cntrl_poly %>%
-  rename(Vdem_polyarchy = value)
+  rename(Vdem_polyarchy_post = value)
 
 #saveRDS(cntrl_poly, "data/cntrl_poly.rds")
 
@@ -164,7 +163,7 @@ libpdist_df <- data.frame(libpdist_df)
 cntrl_liberal <- cbind(cntrl_ajps_se_pdist, libpdist_df)
 identical(cntrl_liberal$iter_cn,cntrl_liberal$iter_se)
 cntrl_liberal <- cntrl_liberal %>%
-  rename(Vdem_liberal = value)
+  rename(Vdem_liberal_post = value)
 #saveRDS(cntrl_liberal, "data/cntrl_liberal.rds")
 
 data_temp <- cntrl_liberal %>% 
@@ -269,11 +268,22 @@ for (i in 1:900) {
 #####     Create analysis data for dcpo ajps  #######
 #####################################################
 #load("data/libdem_cntrl_list.rda")
-#load("data/theta_sigma_list.rda") #theta and sigma
+load("data/theta_sigma_list.rda") #theta and sigma
+load("data/dcpo_ajps_cntrl.rda")
+
+theta_cntrl <- theta_sigma_list %>%
+  map(~.x %>%
+        left_join(dcpo_ajps_cntrl, by=c("country","year")) 
+  )
+
 
 dcpo_ajps <- purrr::map(1:900, function(anEntry) {
-  theta_sigma_list[[anEntry]] %>% 
-    left_join(libdem_cntrl_list[[anEntry]],by = c("year", "country"))  
+  theta_cntrl[[anEntry]] %>% 
+    left_join(libdem_cntrl_list[[anEntry]],by = c("year", "country","Region_UN"))  %>% 
+    select(-iter_cn,-iter_se) %>% 
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime),
+           theta_trim = ifelse(year < first_year, NA, theta)) 
 }) 
 
 #save(dcpo_ajps, file = "data/dcpo_ajps.rda")
@@ -282,27 +292,31 @@ dcpo_ajps <- purrr::map(1:900, function(anEntry) {
 #####     Create analysis data for dcpo apsr  #######
 #####################################################
 
-#load("data/libdem_list.rda")
-#load("data/poly_list.rda")
-#load("data/lib_list.rda")
-#load("data/cpi_list.rda")
+load("data/libdem_list.rda")
+load("data/poly_list.rda")
+load("data/lib_list.rda")
+load("data/cpi_list.rda")
+load("data/dcpo_apsr_cntrl.rda")
+
 
 ## Standardize Vdem_libdem Vdem_libdem_z
 libdem_list_z <- libdem_list %>%
   map(~.x %>%
-        rename(Vdem_libdem = Vdem_libdem_post) %>%
+        rename(Vdem_libdem = value) %>%
         mutate(Vdem_libdem_z = as.vector(scale(Vdem_libdem)) 
         ))
 
 ## Standardize Vdem_polyarchy_z  Vdem_liberal_z
 polyarchy_list_z <- poly_list %>%
   map(~.x %>%
+        rename(Vdem_polyarchy = Vdem_polyarchy_post) %>%
         mutate(Vdem_polyarchy_z = as.vector(scale(Vdem_polyarchy))
         ))
 
 ## Standardize Vdem_liberal_z
 lib_list_z <- lib_list %>%
   map(~.x %>%
+        rename(Vdem_liberal = Vdem_liberal_post) %>%
         mutate(Vdem_liberal_z = as.vector(scale(Vdem_liberal))
         ))
 
@@ -313,11 +327,13 @@ cpi_list_z <- cpi_list %>%
         select(-cpi_post)
   )
 
+
 dcpo_apsr_vdemcpi <- purrr::map(1:900, function(anEntry) {
   libdem_list_z[[anEntry]] %>% 
     left_join(polyarchy_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>% 
     left_join(lib_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>% 
-    left_join(cpi_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se"))
+    left_join(cpi_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>%
+    select(-Vdem_libdem, -Vdem_polyarchy,-Vdem_liberal,-iter_se)
 }) 
 
 
@@ -330,7 +346,9 @@ theta_cntrl_list <- theta_sigma_list %>%
 dcpo_apsr <- purrr::map(1:900, function(anEntry) {
   theta_cntrl_list[[anEntry]] %>% 
     left_join(dcpo_apsr_vdemcpi[[anEntry]],by = c("year", "country")) %>%
-    select(-iter_cn,-iter_se)
+    select(-iter_cn) %>%
+    mutate(theta_trim = ifelse(year < first_year, NA, theta)) %>%
+    select(country, year, first_year,theta,sigma, theta_trim, contains("z"),everything())
 }) 
 
 #save(dcpo_apsr, file = "data/dcpo_apsr.rda")
