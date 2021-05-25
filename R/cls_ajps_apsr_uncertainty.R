@@ -6,6 +6,7 @@ set.seed(313)
 
 ################################################################
 ######## Create lists for elements in analysis data  ###########
+########### AJPS: cls_libdem_ajps_list,cls_ajps  ###############
 ################################################################
 load("data/cls_ajps_cntrl.rda")  #cls ajps variables without errors. 
 load("data/cls_theta_list.rda")  #cls's theta list
@@ -54,3 +55,76 @@ cls_ajps <- purrr::map(1:900, function(anEntry) {
 #merge with cls_theta and create trim variables. 
 
 save(cls_ajps, file = "data/cls_ajps.rda")
+
+################################################################
+######## Create lists for elements in analysis data  ###########
+########### APSR: cls_libdem_ajps_list,cls_ajps  ###############
+################################################################
+#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_ajps_cntrl.rda")
+#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_theta_list.rda")
+#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_libdem_list.rda")
+load("C:/Users/skywa/Dropbox/projects/dcpo_dem_mood/data/cls_apsr_cntrl.rda")
+load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_poly_list.rda")
+load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_liberal_list.rda")
+load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cpi_list.rda")
+
+## Standardize cls_libdem_list Libdem_z
+cls_libdem_z <- cls_libdem_list %>%
+    map(~.x %>%
+            mutate(Libdem_z = as.vector(scale(Vdem_libdem)) 
+            ))
+
+## Standardize cls_poly_list  Polyarchy_z
+cls_polyarchy_z <- cls_poly_list %>%
+    map(~.x %>%
+            mutate(Polyarchy_z = as.vector(scale(poly_post))) %>%
+            select(-poly_post)
+    )
+
+## Standardize cls_liberal_list Liberal_z
+cls_lib_z <- cls_liberal_list %>%
+    map(~.x %>%
+            mutate(Liberal_z = as.vector(scale(liberal_post))) %>%
+            select(-liberal_post)
+    )
+
+## corruption_z Corrup_TI_z
+cpi_list_z <- cpi_list %>%
+    map(~.x %>%
+            rename(Corrup_TI_z = cpi_post_z) %>%
+            select(-cpi_post)
+    )
+
+
+libdem_apsr_list <- cls_libdem_z %>%
+    map(~.x %>%
+            group_by(country) %>% 
+            arrange(year, .by_group = TRUE) %>% 
+            mutate(Libdem_m1 = lag(Libdem_z)) %>%
+            ungroup() %>%
+            mutate(ChgDem = Libdem_z - Libdem_m1) %>%
+            ungroup() 
+    ) 
+
+
+# then merge with poly, liberal, and  cls_apsr_cntrl variables. 
+cls_apsr_cntrl_list <-  purrr::map(1:900, function(anEntry) {
+    libdem_apsr_list[[anEntry]] %>% 
+        left_join(cls_apsr_cntrl,by = c("year"="Year", "country")) %>%
+        left_join(cls_polyarchy_z[[anEntry]],by = c( "country","year", "liter" ="piter")) %>%
+        left_join(cls_lib_z[[anEntry]],by = c("year", "country","liter" ="iter")) %>%
+        left_join(cpi_list_z[[anEntry]],by = c("year", "country","liter"= "iter_cn"))
+}) 
+
+
+# merge with theta variable and produce trim data. 
+cls_apsr <- purrr::map(1:900, function(anEntry) {
+    cls_theta_list[[anEntry]] %>% 
+        left_join(cls_apsr_cntrl_list[[anEntry]],by = c("year", "country"))  %>% 
+        mutate(SupDem_trim = ifelse(year< First_yr, NA, theta)) %>%
+        select(-Vdem_libdem,-liter,-iter_se) %>%
+        select(country, year, First_yr,theta, SupDem_trim,contains("z"),everything())
+}) 
+
+save(cls_apsr, file = "data/cls_apsr.rda")
+
