@@ -12,11 +12,16 @@ pNorm <- function (x) {
     p2side
 }
 
-MOCsumm <- function (moc, regex="Mass|Policy|Dem|rsq", digits=3,
+
+MOCsumm <- function (moc, digits=3,
                      ff=funs(est = mean, se = sd, z = mean(.)/sd(.),
                              pnorm = pNorm(.),
                              pemp = pEmp(.))) {
-    summarise_at(moc, .vars=vars(matches(regex)), .funs=ff) %>%
+    
+    var_names <- names(moc) %>% 
+        str_c(collapse = "|")
+    
+    summarise_at(moc, .vars=vars(matches(var_names)), .funs=ff) %>%
         mutate_all(funs(round(., digits=digits))) %>%
         reshape2::melt(measure.vars=names(.))
 }
