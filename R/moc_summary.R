@@ -6,20 +6,23 @@ pEmp <- function (x) {
     p2side <- 2 * min(p_pos, p_neg)
     p2side
 }
+
 pNorm <- function (x) {
     z <- abs(mean(x)/sd(x))
     p2side <- 2*(1 - pnorm(z))
     p2side
 }
 
-MOCsumm <- function (moc, regex="Mass|Policy|Dem|rsq", digits=3,
+
+MOCsumm <- function (moc, regex=var_names, digits=3,
                      ff=funs(est = mean, se = sd, z = mean(.)/sd(.),
                              pnorm = pNorm(.),
                              pemp = pEmp(.))) {
-    summarise_at(moc, .vars=vars(matches(regex)), .funs=ff) %>%
+    summarise_at(moc, .vars=var_names, .funs=ff) %>%
         mutate_all(funs(round(., digits=digits))) %>%
         reshape2::melt(measure.vars=names(.))
 }
+
 
 MOCmean <- function (mod.ls) {
     plyr::llply(mod.ls, function (x) apply(x, 2, mean))
