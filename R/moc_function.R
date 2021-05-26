@@ -74,7 +74,7 @@ methodComposition3 <- function (data, model, vcov=plmHC, rsq=TRUE) {
       R2$adjrsq[s] <- summary(mod_sample)$r.squared["adjrsq"]
     }
   }
-  names(coefdf) <- names(coef(model))
+  names(coefdf) <- names(coef(aMod))
   if (rsq) {
     coefdf$rsq <- R2$rsq
     coefdf$adjrsq <- R2$adjrsq
