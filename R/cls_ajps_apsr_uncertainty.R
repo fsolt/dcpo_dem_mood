@@ -60,13 +60,13 @@ save(cls_ajps, file = "data/cls_ajps.rda")
 ######## Create lists for elements in analysis data  ###########
 ########### APSR: cls_libdem_ajps_list,cls_ajps  ###############
 ################################################################
-#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_ajps_cntrl.rda")
-#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_theta_list.rda")
-#load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_libdem_list.rda")
-load("C:/Users/skywa/Dropbox/projects/dcpo_dem_mood/data/cls_apsr_cntrl.rda")
-load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_poly_list.rda")
-load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cls_liberal_list.rda")
-load("C:/Users/skywa/Dropbox/claassen/uncertainty_data/cpi_list.rda")
+#load("data/cls_ajps_cntrl.rda")
+#load("data/cls_theta_list.rda")
+#load("data/cls_libdem_list.rda")
+load("data/cls_apsr_cntrl.rda")
+load("data/cls_poly_list.rda")
+load("data/cls_liberal_list.rda")
+load("data/cpi_list.rda")
 
 ## Standardize cls_libdem_list Libdem_z
 cls_libdem_z <- cls_libdem_list %>%
