@@ -9,7 +9,7 @@ library(stringr)
 
 set.seed(313)
 
-cntrl_apsr_z <- readRds("data/cntrl_apsr_z.rds")
+cntrl_apsr_z <- readRDS("data/cntrl_apsr_z.rds")
 cpi_95_19_update <- readRDS("data/cpi95_19_update.rds")
 cpi_2012error <- read_excel("data/CPI2019.xlsx", sheet ="CPI Timeseries 2012 - 2019")
 
