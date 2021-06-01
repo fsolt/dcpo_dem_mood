@@ -2194,29 +2194,25 @@ names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "po
 saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoUncertainAPSR.RDS"))
 ```
 
-```{r visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = FALSE, fig.width=7, fig.height=10}
-
-result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsUncertainFull <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
-result_dcpoUncertainFull <- readRDS(here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
+```{r visualizedFullUncertainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-result_clsFullUncertainAPSR <- readRDS(here("output", "estimates_clsAPSRfullUncertain.RDS"))
-result_dcpoFullUncertainAPSR <- readRDS(here("output", "estimates_dcpoAPSRfullUncertain.RDS"))
+result_clsFullUncertainAPSR <- readRDS(here("output", "estimates_clsFullUncertainAPSR.RDS"))
+result_dcpoFullUncertainAPSR <- readRDS(here("output", "estimates_dcpoUncertainAPSR.RDS"))
 
 # Regime compacted ####
 
 result_ecm1 <- bind_rows(
   mutate(result_clsAPSR$pooled1[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$pooled1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$pooled1[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$pooled1[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$pooled1[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "ECM")
 
 result_fd1 <- bind_rows(
   mutate(result_clsAPSR$fd1[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$fd1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$fd1[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$fd1[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$fd1[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -2267,15 +2263,15 @@ plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
  
 result_ecm2 <- bind_rows(
   mutate(result_clsAPSR$pooled2[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$pooled2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$pooled2[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$pooled2[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$pooled2[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "ECM")
 
 result_fd2 <- bind_rows(
   mutate(result_clsAPSR$fd2[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$fd2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$fd2[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$fd2[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$fd2[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -2335,15 +2331,15 @@ plot_APSR2 <- dwplot(result_APSR2, dodge_size = 0.8, by_2sd = FALSE) +
 
 result_ecmReg1 <- bind_rows(
   mutate(result_clsAPSR$`pooled-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`pooled-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$`pooled-regime1`[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$`pooled-regime1`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$`pooled-regime1`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "ECM")
 
 result_fdReg1 <- bind_rows(
   mutate(result_clsAPSR$`fd-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`fd-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$`fd-regime1`[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$`fd-regime1`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$`fd-regime1`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -2401,15 +2397,15 @@ plot_RegAPSR1 <- dwplot(result_RegAPSR1, dodge_size = 0.8, by_2sd = FALSE) +
  
 result_ecmReg2 <- bind_rows(
   mutate(result_clsAPSR$`pooled-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`pooled-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$`pooled-regime2`[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$`pooled-regime2`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$`pooled-regime2`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "ECM")
 
 result_fdReg2 <- bind_rows(
   mutate(result_clsAPSR$`fd-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`fd-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoAPSR$`fd-regime2`[[1]], model = "DCPO")
+  mutate(result_clsFullUncertainAPSR$`fd-regime2`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoFullUncertainAPSR$`fd-regime2`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "First Difference")
 
