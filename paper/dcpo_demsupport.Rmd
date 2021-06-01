@@ -935,7 +935,7 @@ result_clsAPSR <- map(df_result_clsAPSR, function(aResult) {
 names(result_clsAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", 
                            "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-#saveRDS(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
+saveRDS(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
 ```
 
 ```{r claassenAPSRUncertainty}
@@ -1142,8 +1142,8 @@ And again, the bottom results reveal that the additional data and superior DCPO 
 
 ```{r visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
-load(here("output", "estimates_clsMeanAPSR.RDS"))
-result_clsUncertainAPSR <- readRDS(here("output", "estimates_clsAPSR.RDS"))
+result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
+load(here("output", "estimates_clsAPSR.RDS"))
 result_dcpoAPSR <- readRDS(here("output", "estimates_dcpoAPSR.RDS"))
 
 # Regime compacted ####
@@ -1938,7 +1938,7 @@ names(result_dcpoUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regi
 saveRDS(result_dcpoUncertainFull, file = here::here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
 ```
 
-```{r visualizeFullUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=10}
+```{r visualizeFullUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=7}
 
 # Very weird phenomenon that the same type of rds files needs different ways to read
 # Suggesting using the qs or csv data type in future.
@@ -2475,6 +2475,9 @@ plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
 
 grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
 ```
+
+
+\pagebreak
 
 # Replication with Alternative Methods Accounting for Uncertainty
 
