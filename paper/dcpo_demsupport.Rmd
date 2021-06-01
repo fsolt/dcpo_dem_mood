@@ -164,9 +164,9 @@ claassen_replication <- readRDS("../data/claassen_replication.rds") %>%
 load(here("data", "claassen_m5_theta.rda"))
 load(here("data", "dem_mood_apsr.RData"))
 load(here("data", "dcpo_input.rda"))
-# load(here::here("data", "dcpo_theta.rda"))
-# load(here::here("data", "dcpo_sigma.rda"))
-# load(here("data", "dcpo_ajps_rubin.rda"))
+load(here("data", "dcpo_theta.rda"))
+load(here("data", "dcpo_sigma.rda"))
+load(here("data", "dcpo_ajps_rubin.rda"))
 
 ## Beck-Katz panel-corrected standard errors
 vcovBK_se <- function(x) {
@@ -535,8 +535,6 @@ df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
             sigma = mean(sigma))
 
 # the readRDS produced "unknown format" error, very weild
-# saveRDS(df_dcpoMean, file = here::here("output", "estimates_dcpoMean.RDS"))
-# df_dcpoMean <- readRDS(here::here("output", "estimates_dcpoMean.RDS"))
 
 df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
                         col_types = cols(.default = col_double(),
@@ -544,10 +542,10 @@ df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
                                          country_name = col_character(),
                                          ISO = col_character(),
                                          Region_UN = col_character())) %>% 
-  mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
-         country = countrycode::countrycode(country0, "country.name", "country.name"),
+  mutate(
+         country = countrycode::countrycode(country, "country.name", "country.name"),
          regime = Vdem_regime > 1) %>% 
-  filter(year >= firstyear) # using trimmed data as Claassen 
+  filter(year >= first_year) # using trimmed data as Claassen 
 
 df_dcpoMeanAJPS <- df_dcpoMean %>% 
   right_join(df_controls, by = c("country", "year")) %>% 
@@ -568,6 +566,8 @@ ls_mod <- c(
     "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = df_dcpoMeanAJPS, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
   )
 )
+
+#There's a problem to run this part---------------------
 
 df_result_dcpo <- map(ls_mod, function(mod) {
   result <- eval(parse(text = mod))
@@ -600,6 +600,8 @@ saveRDS(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 
 
 ```{r dcpoUncertaintyAJPS}
+load(here("data", "dcpo_ajps_rubin.rda"))
+
 df_dcpo <- dcpo_ajps_rubin %>% map(~ .)
 
 # df_dcpo <- purrr::map(1:1000, function(anEntry) {
