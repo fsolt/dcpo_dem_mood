@@ -2134,7 +2134,7 @@ result_clsFullUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_clsFullUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
+saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsFullUncertainAPSR.RDS"))
 
 ```
 
@@ -2191,7 +2191,7 @@ result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
 
 names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
+saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoUncertainAPSR.RDS"))
 ```
 
 ```{r visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = FALSE, fig.width=7, fig.height=10}
