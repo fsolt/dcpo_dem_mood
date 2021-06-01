@@ -49,7 +49,9 @@ header-includes:
       - \usepackage{threeparttable}
       - \usepackage{wrapfig}
       - \usepackage{fullpage}
-      - \usepackage{lscape} #better for printing, page displayed vertically, content in landscape mode, \usepackage{pdflscape} better for screen, page displayed horizontally, content in landscape mode
+      - \usepackage{pdflscape} #\usepackage{lscape} better for printing, page displayed vertically, content in landscape mode, \usepackage{pdflscape} better for screen, page displayed horizontally, content in landscape mode
+      - \newcommand{\blandscape}{\begin{landscape}}
+      - \newcommand{\elandscape}{\end{landscape}}
 ---
 
 (Word count: 3628)
@@ -137,8 +139,8 @@ p_load(
 # Functions preload
 set.seed(313)
 
-source(here::here("R", "tidy_pgmm.r"))
-source(here::here("R", "moc_function.R")) 
+source(here("R", "tidy_pgmm.r"))
+source(here("R", "moc_function.R")) 
 
 get_legend<-function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
@@ -159,12 +161,12 @@ sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
-load(here::here("data", "claassen_m5_theta.rda"))
-load(here::here("data", "dem_mood_apsr.RData"))
-load(here::here("data", "dcpo_input.rda"))
+load(here("data", "claassen_m5_theta.rda"))
+load(here("data", "dem_mood_apsr.RData"))
+load(here("data", "dcpo_input.rda"))
 # load(here::here("data", "dcpo_theta.rda"))
 # load(here::here("data", "dcpo_sigma.rda"))
-load("../data/dcpo_ajps_rubin.rda")
+# load(here("data", "dcpo_ajps_rubin.rda"))
 
 ## Beck-Katz panel-corrected standard errors
 vcovBK_se <- function(x) {
@@ -663,7 +665,7 @@ saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RD
 ```
 
 
-```{r visualizeAJPS, fig.cap= "\\label{fig:visualizeAJPS}The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=10}
+```{r visualizeAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=10}
 
 # Very weird phenomenon that the same type of rds files needs different ways to read
 # Suggesting using the qs or csv data type in future.
@@ -1138,11 +1140,11 @@ The negative coefficient estimates of change in liberal democracy in the top set
 However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
 And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not provide support for the original conclusion.
 
-```{r visualizedAPSR, fig.cap= "\\label{fig:visualizedAPSR} The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
+```{r visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
-load(here::here("output", "estimates_clsMeanAPSR.RDS"))
-load(here::here("output", "estimates_clsAPSR.RDS"))
-result_dcpoAPSR <- readRDS(here::here("output", "estimates_dcpoAPSR.RDS"))
+load(here("output", "estimates_clsMeanAPSR.RDS"))
+result_clsUncertainAPSR <- readRDS(here("output", "estimates_clsAPSR.RDS"))
+result_dcpoAPSR <- readRDS(here("output", "estimates_dcpoAPSR.RDS"))
 
 # Regime compacted ####
 
@@ -1570,6 +1572,8 @@ modelsummary(tb_result_cls,
              coef_map = names_coef, 
              output = "latex", 
              title = "Original") %>% 
+  
+  kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
@@ -1633,11 +1637,11 @@ modelsummary(tb_result_DCPO,
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-\pagebreak
+\blandscape
 
 # Numeric Results for Replicating Claassen 2020b
 
-\begin{landscape}
+
 
 ```{r num-cls2020b, results='asis', eval = TRUE}
 tb_result_clsAPSR <- map(result_clsAPSR, ~ {
@@ -1647,7 +1651,7 @@ tb_result_clsAPSR <- map(result_clsAPSR, ~ {
   .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
       "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
 
-names(tb_result_clsAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM w. Corruption", "ECM w. Corruption-Regime", "FD w. Corruption", "FD w. Corruption-Regime")
+names(tb_result_clsAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
 
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
@@ -1674,10 +1678,13 @@ modelsummary(tb_result_clsAPSR,
              stars = TRUE,
              coef_map = names_coef, 
              output = "latex") %>% 
+  kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-\pagebreak
+\elandscape
+
+\blandscape
 
 ```{r num-cls2020bUncertain, results='asis', eval = TRUE}
 tb_result_clsUncertainAPSR <- map(result_clsUncertainAPSR, ~ {
@@ -1687,10 +1694,7 @@ tb_result_clsUncertainAPSR <- map(result_clsUncertainAPSR, ~ {
   .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
       "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
 
-names(tb_result_clsUncertainAPSR) <- c("ECM", "ECM-Regime", 
-                          "FD", "FD-Regime", 
-                          "ECM w. Corruption", "ECM w. Corruption-Regime", 
-                          "FD w. Corruption", "FD w. Corruption-Regime")
+names(tb_result_clsUncertainAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
 
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
@@ -1717,10 +1721,13 @@ modelsummary(tb_result_clsUncertainAPSR,
              statistic = "conf.int",
              coef_map = names_coef, 
              output = "latex") %>% 
+  kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-\pagebreak
+\elandscape
+
+\blandscape
 
 ```{r num-cls2020bDCPO, results='asis', eval = TRUE}
 tb_result_dcpoAPSR <- map(result_dcpoAPSR, ~ {
@@ -1730,10 +1737,7 @@ tb_result_dcpoAPSR <- map(result_dcpoAPSR, ~ {
   .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
       "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
 
-names(tb_result_dcpoAPSR) <- c("ECM", "ECM-Regime", 
-                          "FD", "FD-Regime", 
-                          "ECM w. Corruption", "ECM w. Corruption-Regime", 
-                          "FD w. Corruption", "FD w. Corruption-Regime")
+names(tb_result_dcpoAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
 
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
@@ -1762,10 +1766,12 @@ modelsummary(tb_result_dcpoAPSR,
              statistic = "conf.int",
              coef_map = names_coef, 
              output = "latex") %>% 
+  kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-\pagebreak
+\elandscape
+
 ```{r datawitherrors}
 
 ls_country <- unique(claassen_replication$country)
@@ -1819,9 +1825,6 @@ saveRDS(cls_analysis, "data/cls_analysis_ajps.rds")
 
 
 ```
-
-
-\end{landscape}
 
 # Results Accounting for the Uncertainty in Both the Outcome and Explanatory Variables
 
@@ -1935,6 +1938,153 @@ names(result_dcpoUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regi
 saveRDS(result_dcpoUncertainFull, file = here::here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
 ```
 
+```{r visualizeFullUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = FALSE, fig.width=7.5, fig.height=10}
+
+# Very weird phenomenon that the same type of rds files needs different ways to read
+# Suggesting using the qs or csv data type in future.
+result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
+result_clsUncertainFull <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
+result_dcpoUncertainFull <- readRDS(here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
+
+result_pooled <- bind_rows(
+  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertainFull$pooled[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertainFull$pooled[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "Pooled")
+
+result_gmm <- bind_rows(
+  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertainFull$gmm[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertainFull$gmm[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
+
+result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    term = rep(
+      c("Democracy\n (t-1)",
+        "Democracy\n (t-2)",
+      "Support\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
+      "Percent\n Muslim\n (t-1)",
+      "Resource\n dependence\n (t-1)"),
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
+
+terms <- factor(rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")), levels =
+      rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")))
+
+# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
+# What I've tried
+# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
+# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
+# 2. redefining the order of model in the dataframe or in dwplot 
+# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
+# 4. Every post online is to reverse 
+
+plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
+  scale_y_discrete(labels = parse(text = levels(terms))) +
+  scale_color_grey(start = 0.4, end = 0.8) +
+  labs(
+    title = "DV: V-Dem Liberal Democracy Index",
+    subtitle = "Regime Compacted"
+  ) +
+  facet_wrap(~type, scales = "free_x") + 
+  theme(legend.position = "none")
+
+# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
+# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
+
+result_regime <- bind_rows(
+  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertainFull$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertainFull$`pooled-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "Pooled")
+
+result_regimeGmm <- bind_rows(
+  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertainFull$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertainFull$`gmm-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
+
+result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    term = rep(
+      c("Democracy\n (t-1)",
+        "Democracy\n (t-2)",
+      "Support\n demo only\n (t-1)",
+      "Support\n auto only\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
+      "Percent\n Muslim\n (t-1)",
+      "Resource\n dependence\n (t-1)"),
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
+
+terms2 <- factor(rev(c("Democracy[t-1]",
+                       "Democracy[t-2]",
+                       "Support[t-1] (democracies~only)",
+                       "Support[t-1] (autocracies~only)",
+                       "Log~GDP~per~capita[t-1]",
+                       "GDP~per~capita~growth[t-1]",
+                       "Regional~democracy[t-1]",
+                       "Percent~Muslim[t-1]",
+                       "Resource~dependence[t-1]")), levels =
+                   rev(c("Democracy[t-1]",
+                         "Democracy[t-2]",
+                         "Support[t-1] (democracies~only)",
+                         "Support[t-1] (autocracies~only)",
+                         "Log~GDP~per~capita[t-1]",
+                         "GDP~per~capita~growth[t-1]",
+                         "Regional~democracy[t-1]",
+                         "Percent~Muslim[t-1]",
+                         "Resource~dependence[t-1]")))
+
+plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
+    scale_y_discrete(labels = parse(text = levels(terms2))) +
+  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
+  labs(
+    title = "",
+    subtitle = "Regime Specific"
+  ) +
+  facet_wrap(~type, scales = "free_x") +
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())
+
+legend <- get_legend(plot_AJPS2)
+
+plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
+
+grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
+
+```
+
+
+
 ```{r claassenFullUncertaintyAPSR}
 
 load(here("data", "cls_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
@@ -1989,7 +2139,7 @@ saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsA
 
 ```
 
-```{r dcpoUncertaintyAPSR}
+```{r dcpoFullUncertaintyAPSR}
 load(here("data", "dcpo_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
 
 ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
