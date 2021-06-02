@@ -519,8 +519,7 @@ names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
 ```
 
-
-```{r dcpoPointAJPS}
+```{r dcpoMean}
 ls_country <- levels(dcpo_input$data$kk)
 first_year <- min(dcpo_input$data$year)
 
@@ -534,16 +533,12 @@ df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
   summarise(theta = mean(theta),
             sigma = mean(sigma))
 
-# the readRDS produced "unknown format" error, very weild
+saveRDS(df_dcpoMean, file = here("data", "df_dcpoMean.RDS"))
+```
 
-df_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
-                        col_types = cols(.default = col_double(),
-                                         country = col_character(),
-                                         country_name = col_character(),
-                                         ISO = col_character(),
-                                         Region_UN = col_character())) %>% 
-  mutate(
-         country = countrycode::countrycode(country, "country.name", "country.name"),
+```{r dcpoPointAJPS}
+df_controls <- readRDS(here("data", "control_variables_ajps.rds")) %>% 
+  mutate(country = countrycode::countrycode(country, "country.name", "country.name"),
          regime = Vdem_regime > 1) %>% 
   filter(year >= first_year) # using trimmed data as Claassen 
 
@@ -600,9 +595,12 @@ saveRDS(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 
 
 ```{r dcpoUncertaintyAJPS}
-load(here("data", "dcpo_ajps_rubin.rda"))
-
-df_dcpo <- dcpo_ajps_rubin %>% map(~ .)
+df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
+  .x[[.y]] %>%
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime)) %>%
+    plm::pdata.frame(index = c("country", "year"))
+}) # The code is to fit the embedded format of dcpo_ajps_rubin
 
 # df_dcpo <- purrr::map(1:1000, function(anEntry) {
 #   dcpo_theta$theta[anEntry,,] %>% 
@@ -630,34 +628,34 @@ ls_mod <- c(
 )
 
 result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
-  result <- map(df_dcpo, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
+  mod_eval <- function(aData) eval(parse(text = aMod))
+  
+  result <- map(df_dcpo, mod_eval)
   
   result_betas <- mitools::MIextract(result, fun = coef)
-  
+
   ## Not work with ifelse
   if(class(result[[1]])[1] == "plm"){
       result_vars <- mitools::MIextract(result, fun = vcovBK_se)
   }else{
       result_vars <- mitools::MIextract(result, fun = vcovHC_se)
   }
-  
-  
-  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
+
+
+  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas,
+                             variance = result_vars)) %>%
     rownames_to_column(var = "term") %>%
         rename(conf.low = `(lower`,
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
-  
-  if(class(result[[1]]) == "plm"){ 
+
+  if(class(result[[1]]) == "plm"){
     glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
   }else{
     glance_dcpoUncertain <- glance(result[[1]])
   }
-  
+
   result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
 })
 
@@ -673,7 +671,7 @@ saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RD
 # Suggesting using the qs or csv data type in future.
 result_cls <- readRDS(here::here("output", "estimates_clsMeanAJPS.RDS"))
 result_clsUncertain <- readRDS(here::here("output", "estimates_clsAJPS.RDS"))
-load(here::here("output", "estimates_dcpoAJPS.RDS"))
+result_dcpoUncertain <- readRDS(here::here("output", "estimates_dcpoAJPS.RDS"))
 
 result_pooled <- bind_rows(
   mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
@@ -1010,17 +1008,13 @@ saveRDS(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.
 ```
 
 ```{r dcpoPointAPSR}
-df_controls <- read_csv(here::here("data", "control_variables_apsr.csv"),
-                        col_types = cols(.default = col_double(),
-                                         country = col_character(),
-                                         country_name = col_character(),
-                                         ISO = col_character(),
-                                         Region_UN = col_character())) %>% 
-  mutate(country0 = iconv(country, "latin1", "UTF-8", sub=''),
-         country = countrycode::countrycode(country0, "country.name", "country.name")) %>% 
-  filter(year >= firstyear)
 
-load(here::here("output", "estimates_dcpoMean.RDS"))
+df_dcpoMean <- readRDS(here("data", "df_dcpoMean.RDS"))
+
+df_controls <- readRDS(here("data", "control_variables_apsr.rds")) %>% 
+  mutate(country = countrycode::countrycode(country, "country.name", "country.name")) %>% 
+  filter(year >= first_year)
+
 
 df_dcpoMeanAPSR <- df_dcpoMean %>% 
   left_join(df_controls, by = c("country", "year")) %>% 
@@ -1067,20 +1061,24 @@ names(result_dcpoMeanAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-
 saveRDS(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
 ```
 
+```{r data-dcpoUncertainAPSR}
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta") %>%
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country")) %>%
+    left_join(df_controls, by = c("country", "year")) %>%
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+saveRDS(df_dcpoUncertainAPSR, here("data", "df_dcpoUncertainAPSR.rds"))
+```
+
+
 ```{r dcpoUncertaintyAPSR}
-# ls_country <- levels(dcpo_input$data$kk)
-# first_year <- min(dcpo_input$data$year)
-# 
-# df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
-#   dcpo_theta$theta[anEntry,,] %>% 
-#     reformat_dcpo_output("theta") %>% 
-#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-#               by = c("year", "country")) %>%
-#     left_join(df_controls, by = c("country", "year")) %>% 
-#     plm::pdata.frame(index = c("country", "year"))
-# })
-
-
 ## The same as in the previous chunk
 
 ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
@@ -1102,11 +1100,9 @@ ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>%
 
 ### Different datasets
 
-
-###Duble check the dataset--------------
 ls_mod <- c(
-  glue("plm({ls_eqECM}, model = 'pooling', data = df_dcpoUncertainAPSR)"),
-  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = df_dcpoUncertainAPSR)")
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
 )
 
 result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
@@ -1145,7 +1141,7 @@ And again, the bottom results reveal that the additional data and superior DCPO 
 ```{r visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-load(here("output", "estimates_clsAPSR.RDS"))
+result_clsUncertainAPSR <- readRDS(here("output", "estimates_clsAPSR.RDS"))
 result_dcpoAPSR <- readRDS(here("output", "estimates_dcpoAPSR.RDS"))
 
 # Regime compacted ####
