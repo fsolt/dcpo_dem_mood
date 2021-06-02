@@ -2513,12 +2513,12 @@ names(result_clsUncertain_gmm) <- c("gmm", "gmm-regime")
 
 result_clsUncertain_whole <- append(result_clsUncertain, result_clsUncertain_gmm)
 
-saveRDS(result_clsUncertain_whole, file ="output/clsAJPS_uncertainty.RDS")
+saveRDS(result_clsUncertain_whole, file =here("output","clsAJPS_uncertainty.RDS"))
 
 ```
 
 ```{r MocdcpoUncertaintyAJPS}
-load("data/dcpo_ajps.rda")
+load(here("data","dcpo_ajps.rda"))
 
 df_dcpo <- purrr::map(1:900, function(anEntry) {
   dcpo_ajps[[anEntry]] %>% 
@@ -2553,7 +2553,7 @@ names(result_dcpoUncertain_gmm) <- c("gmm", "gmm-regime")
 
 result_dcpoUncertain_whole <- append(result_dcpoUncertain, result_dcpoUncertain_gmm)
 
-saveRDS(result_dcpoUncertain_whole, file ="output/dcpoAJPS_uncertainty.RDS")
+saveRDS(result_dcpoUncertain_whole, file =here("output","dcpoAJPS_uncertainty.RDS"))
 
 
 ```
@@ -2567,7 +2567,7 @@ result_dcpoUncertain_whole <- readRDS(here("output", "dcpoAJPS_uncertainty.RDS")
 result_pooled <- bind_rows(
   mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Claassen 2020a"),
   mutate(MOCsumm(result_clsUncertain_whole[["pooled"]]), model = "Claassen w/uncertainty"),
-  mutate(MOCsumm(result_dcpoUncertain_whole[[1]]), model = "DCPO")
+  mutate(MOCsumm(result_dcpoUncertain_whole[["pooled"]]), model = "DCPO")
 ) %>% 
   mutate(type = "Pooled")
 
@@ -2628,7 +2628,7 @@ plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
 result_regime <- bind_rows(
   mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], model = "Claassen 2020a"),
   mutate(MOCsumm(result_clsUncertain_whole[["pooled-regime"]]), model = "Claassen w/uncertainty"),
-  mutate(MOCsumm(result_dcpoUncertain_whole[[2]]), model = "DCPO")
+  mutate(MOCsumm(result_dcpoUncertain_whole[["pooled-regime"]]), model = "DCPO")
 ) %>% 
   mutate(type = "Pooled")
 
@@ -2733,14 +2733,14 @@ names(result_clsUncertain) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-
 
 
 
-saveRDS(result_clsUncertain, file = "ouput/clsAPSR_uncertainty.RDS")
+saveRDS(result_clsUncertain, file = here("ouput","clsAPSR_uncertainty.RDS"))
 
 
 
 ```
 
 ```{r  dcpoMocUncertaintyAPSR}
-load("dcpo_apsr.rda")
+load(here("data","dcpo_apsr.rda"))
 df_dcpoUncertainAPSR <- purrr::map(1:900, function(anEntry) {
   dcpo_apsr[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
@@ -2774,7 +2774,7 @@ result_dcpoUncertain  <- map(ls_mod, function(aMod){
 names(result_dcpoUncertain) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
                                 "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(result_dcpoUncertain, file ="output/dcpoAPSR_uncertainty.RDS")
+saveRDS(result_dcpoUncertain, file =here("output","dcpoAPSR_uncertainty.RDS"))
 
 
 ```
