@@ -127,4 +127,3 @@ cls_apsr <- purrr::map(1:900, function(anEntry) {
 }) 
 
 save(cls_apsr, file = "data/cls_apsr.rda")
-
