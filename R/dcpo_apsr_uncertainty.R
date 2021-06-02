@@ -1,4 +1,5 @@
 ###cpi_uncertainty
+### The warning messages are ignorable.
 
 library(tidyverse)
 library(countrycode)

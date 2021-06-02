@@ -110,17 +110,27 @@ library(pacman)
 
 # load all the packages you will use below 
 p_load(
-  dataverse, # data scraping
+  # data scrapping
+  dataverse, 
   DCPOtools, mitools,
-  boot, plm, # analysis
+  boot, 
+  here,
+  # analysis
+  plm, 
+  rstan, 
+  # presentation
   flextable, 
-  broomExtra, kableExtra, modelsummary, # tabulation
+  broomExtra, 
+  kableExtra, 
+  modelsummary, 
   gridExtra,
-  latex2exp, # visualization
-  rstan, # Bayesian estimation
-  tidyverse, janitor, glue, # data wrangling
+  latex2exp,
   drhutools,
-  dotwhisker, # visualization
+  dotwhisker, 
+  # data wrangling
+  tidyverse, 
+  janitor, 
+  glue, 
   qs
 ) 
 
@@ -139,6 +149,48 @@ get_legend<-function(myggplot){
 
 # Theme setup
 theme_set(theme_minimal())
+
+# Data input
+
+supdem <- read.csv("../data/Support_democracy_ajps.csv")
+v_dem <- read.csv("../data/vdem15.csv")
+sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
+
+claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
+  janitor::clean_names() %>% 
+  DCPOtools::with_min_yrs(2)
+load(here::here("data", "claassen_m5_theta.rda"))
+load(here::here("data", "dem_mood_apsr.RData"))
+load(here::here("data", "dcpo_input.rda"))
+# load(here::here("data", "dcpo_theta.rda"))
+# load(here::here("data", "dcpo_sigma.rda"))
+load("../data/dcpo_ajps_rubin.rda")
+
+## Beck-Katz panel-corrected standard errors
+vcovBK_se <- function(x) {
+  plm::vcovBK(x, cluster = "time") %>% 
+    diag() %>% 
+    sqrt()
+}
+
+
+vcovHC_se <-  function(x) {
+  plm::vcovHC(x, method="arellano", cluster="group") %>%  #default setting
+    diag() %>% 
+    sqrt()
+}
+
+
+reformat_dcpo_output <- function(x, parameter_name) {
+  df_temp <- x %>% 
+    as_tibble(.name_repair = ~ls_country) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = all_of(ls_country),
+                 names_to = "country",
+                 values_to = parameter_name) %>%
+    arrange(country, year)
+  return(df_temp)
+}
 ```
 
 # Method
@@ -345,48 +397,6 @@ In both models, the positive coefficients for democratic support are no longer s
 The bottom results also incorporate uncertainty but additionally replace the @Claassen2019 estimates of support with those based on DCPO and the expanded dataset; this change works to increase the number of observations analyzed as well.
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
-```{r dataInput, eval=TRUE}
-
-supdem <- read.csv("../data/Support_democracy_ajps.csv")
-v_dem <- read.csv("../data/vdem15.csv")
-sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
-
-claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
-  janitor::clean_names() %>% 
-  DCPOtools::with_min_yrs(2)
-load(here::here("data", "claassen_m5_theta.rda"))
-load(here::here("data", "dem_mood_apsr.RData"))
-# load(here::here("data", "dcpo_input.rda"))
-# load(here::here("data", "dcpo_theta.rda"))
-# load(here::here("data", "dcpo_sigma.rda"))
-
-## Beck-Katz panel-corrected standard errors
-vcovBK_se <- function(x) {
-  plm::vcovBK(x, cluster = "time") %>% 
-    diag() %>% 
-    sqrt()
-}
-
-
-vcovHC_se <-  function(x) {
-  plm::vcovHC(x, method="arellano", cluster="group") %>%  #default setting
-    diag() %>% 
-    sqrt()
-}
-
-
-reformat_dcpo_output <- function(x, parameter_name) {
-  df_temp <- x %>% 
-    as_tibble(.name_repair = ~ls_country) %>% 
-    mutate(year = first_year + row_number() - 1) %>% 
-    pivot_longer(cols = all_of(ls_country),
-                 names_to = "country",
-                 values_to = parameter_name) %>%
-    arrange(country, year)
-  return(df_temp)
-}
-```
-
 
 ```{r claassenAJPS, eval=TRUE}
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
@@ -588,16 +598,18 @@ saveRDS(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
 
 
 ```{r dcpoUncertaintyAJPS}
-df_dcpo <- purrr::map(1:1000, function(anEntry) {
-  dcpo_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-              by = c("year", "country")) %>%
-    left_join(df_controls, by = c("country", "year")) %>% 
-    mutate(theta_dem = theta * regime,
-           theta_aut = theta * (1 - regime)) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
+df_dcpo <- dcpo_ajps_rubin %>% map(~ .)
+
+# df_dcpo <- purrr::map(1:1000, function(anEntry) {
+#   dcpo_theta$theta[anEntry,,] %>% 
+#     reformat_dcpo_output("theta") %>% 
+#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+#               by = c("year", "country")) %>%
+#     left_join(df_controls, by = c("country", "year")) %>% 
+#     mutate(theta_dem = theta * regime,
+#            theta_aut = theta * (1 - regime)) %>% 
+#     plm::pdata.frame(index = c("country", "year"))
+# })
 
 ls_iv <- c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
@@ -1052,17 +1064,17 @@ saveRDS(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR
 ```
 
 ```{r dcpoUncertaintyAPSR}
-ls_country <- levels(dcpo_input$data$kk)
-first_year <- min(dcpo_input$data$year)
-
-df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
-  dcpo_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-              by = c("year", "country")) %>%
-    left_join(df_controls, by = c("country", "year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
+# ls_country <- levels(dcpo_input$data$kk)
+# first_year <- min(dcpo_input$data$year)
+# 
+# df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
+#   dcpo_theta$theta[anEntry,,] %>% 
+#     reformat_dcpo_output("theta") %>% 
+#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+#               by = c("year", "country")) %>%
+#     left_join(df_controls, by = c("country", "year")) %>% 
+#     plm::pdata.frame(index = c("country", "year"))
+# })
 
 
 ## The same as in the previous chunk
@@ -1086,6 +1098,8 @@ ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>%
 
 ### Different datasets
 
+
+###Duble check the dataset--------------
 ls_mod <- c(
   glue("plm({ls_eqECM}, model = 'pooling', data = df_dcpoUncertainAPSR)"),
   glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = df_dcpoUncertainAPSR)")
@@ -1807,12 +1821,230 @@ saveRDS(cls_analysis, "data/cls_analysis_ajps.rds")
 ```
 
 
-
-
 \end{landscape}
-# Replication with Alternative Methods Accounting for Uncertainty
 
-```{r moc}
+# Results Accounting for the Uncertainty in Both the Outcome and Explanatory Variables
+
+```{r claassenFullUncertaintyAJPS}
+
+load(here("data", "cls_ajps.rda")) # produced by cls_ajps_apsr_uncertain.R
+
+ls_iv <- c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)") 
+
+ls_mod <- c(
+    glue("plm({ls_eq}, model = 'pooling', data = aData)"),
+    glue(
+        "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+    )
+)
+
+result_clsUncertainFull <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(cls_ajps, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  ## Not work with ifelse
+  if(class(result[[1]])[1] == "plm"){
+      result_vars <- mitools::MIextract(result, fun = vcovBK_se)
+  }else{
+      result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  }
+  
+  
+  tidy_clsUncertain <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  if(class(result[[1]]) == "plm"){ 
+    glance_clsUncertain <- glance.plm(result[[1]]) # using the customized glance function
+  }else{
+    glance_clsUncertain <- glance(result[[1]])
+  }
+  
+  result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
+})
+
+
+names(result_clsUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+   
+saveRDS(result_clsUncertainFull, file = here::here("output", "estimates_clsAJPSfullUncertain.RDS"))
+```
+
+```{r dcpoFullUncertaintyAJPS}
+load(here("data", "dcpo_ajps.rda")) # produced by dcpo_ajps_apsr_uncertain.R
+
+ls_iv <- c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
+
+ls_mod <- c(
+    glue("plm({ls_eq}, model = 'pooling', data = aData)"),
+    glue(
+        "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+    )
+)
+
+result_dcpoUncertainFull <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(dcpo_ajps, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  ## Not work with ifelse
+  if(class(result[[1]])[1] == "plm"){
+      result_vars <- mitools::MIextract(result, fun = vcovBK_se)
+  }else{
+      result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  }
+  
+  
+  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  if(class(result[[1]]) == "plm"){ 
+    glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
+  }else{
+    glance_dcpoUncertain <- glance(result[[1]])
+  }
+  
+  result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
+})
+
+names(result_dcpoUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
+saveRDS(result_dcpoUncertainFull, file = here::here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
+```
+
+```{r claassenFullUncertaintyAPSR}
+
+load(here("data", "cls_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
+
+ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)", 
+              "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
+
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Libdem_z",
+             "Polyarchy_z + Liberal_z")
+
+ls_ctrlFD <- c("", " + Corrup_TI_z")
+
+ls_eqFD <- glue("diff(theta, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
+)
+
+result_clsFullUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(cls_apsr, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_clsUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_clsUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
+})
+
+names(result_clsFullUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
 
 ```
+
+```{r dcpoUncertaintyAPSR}
+load(here("data", "dcpo_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
+
+ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
+              "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
+
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Vdem_libdem_z",
+             "Vdem_polyarchy_z + Vdem_liberal_z")
+
+ls_ctrlFD <- c("", " + corruption_z")
+
+ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+### Different datasets
+
+
+###Duble check the dataset--------------
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
+)
+
+result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(dcpo_apsr, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_dcpoUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_dcpoUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_dcpoUncertainAPSR <- list(tidy_dcpoUncertainAPSR, glance_dcpoUncertainAPSR)
+})
+
+names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
+```
+
+
+# Replication with Alternative Methods Accounting for Uncertainty
 
