@@ -1,99 +1,4 @@
----
-output: 
-  bookdown::pdf_document2:
-    fig_caption: yes
-    keep_tex: yes
-    toc: FALSE
-    latex_engine: xelatex
-    # template: svm-latex-ms2.tex
-    
-title: "Democracy, Public Support, and Measurement Uncertainty"
-thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
-
-# author:
-# - name: Yuehong 'Cassandra' Tai
-#   affiliation: University of Iowa
-# - name: Yue Hu
-#   affiliation: Tsinghua University
-# - name: Frederick Solt
-#   affiliation: University of Iowa
-  
-abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take this uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by bringing additional survey data and a superior model of public opinion. Even with these improvements, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [149/150 words]"
-keywords: "Democratization, public support, regime survival, measurement uncertainty, IRT."
-
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-editor_options: 
-  markdown: 
-    wrap: sentence
-tables: true # enable longtable and booktabs
-citation_package: natbib
-fontsize: 11pt
-linestretch: 1.5 # double spacing using linestretch 1.5
-bibliography: dcpo_demsupport.bib
-# bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
-# csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
-biblio-style: apsr
-citecolor: black
-linkcolor: black
-endnote: no
-header-includes:
-      - \usepackage{array}
-      - \usepackage{caption}
-      - \usepackage{graphicx}
-      - \usepackage{siunitx}
-      - \usepackage{colortbl}
-      - \usepackage{multirow}
-      - \usepackage{hhline}
-      - \usepackage{calc}
-      - \usepackage{tabularx}
-      - \usepackage{threeparttable}
-      - \usepackage{wrapfig}
-      - \usepackage{fullpage}
-      - \usepackage{pdflscape} #\usepackage{lscape} better for printing, page displayed vertically, content in landscape mode, \usepackage{pdflscape} better for screen, page displayed horizontally, content in landscape mode
-      - \newcommand{\blandscape}{\begin{landscape}}
-      - \newcommand{\elandscape}{\end{landscape}}
----
-
-(Word count: 3628)
-
-It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
-But the evidence for either part of this claim has been decidedly mixed.
-Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, 251-254] and just the opposite [@Fails2010, 182-183].
-Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183; @Wuttke2020a, 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Denemark2016; @Foa2017].
-
-One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
-Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
-Further, the survey data available across countries and over time on support for democracy---or indeed most topics in public opinion---are sparse and incomparable, greatly hindering broadly comparative research.
-Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
-A pair of prominent recent works took advantage of this latent variable approach to measure democratic support for over one hundred countries for up to nearly three decades and to then assess, respectively, its consequences for and roots in democratic change [@Claassen2020a; @Claassen2020b].
-These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating their own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
-
-The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
-Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
-To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
-
-In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
-In addition to incorporating the measurement uncertainty, we also sought to reduce it by employing a superior model of public opinion, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, and more data to estimate democratic support for 144 countries for up to 33 years between 1988 and 2020.
-Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and in our extension DCPO analyses that incorporate additional data.
-That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
-  
-There are many plausible explanations for these null results, both methodological and theoretical.
-Methodologically, one possible issue is that support for democracy is multidimensional, and the survey questions used to measure it simply do not capture all of the dimensions relevant to democratic change, such as commitments to political equality and freedom of expression [see @Schedler2007; @Wuttke2020].
-Another is that the relationships among these survey items have varied substantially over time [see @Wuttke2021]; this would violate the assumptions of the public opinion models used and would yield faulty estimates of democratic support.
-A third is that these survey questions do not ask respondents how they prioritize democracy relative to other values with which it may come into conflict, such as their partisanship, and so miss capturing the true extent of support democracy would find among the public when public support was actually needed [see @Carey2020; @graham_democracy_2020; @McCoy2020].
-
-From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
-Similarly, the effect of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
-Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
-
-We draw two conclusions, one methodological and one substantive.
-As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-And, at a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
-Both of these assertions may well be true, but the evidence we have, properly assessed, does not provide support for them.
-There is no room for complacency.
-
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE--------------------------
 options(tinytex.verbose = TRUE)
 
 knitr::opts_chunk$set(
@@ -142,24 +47,24 @@ set.seed(313)
 source(here("R", "tidy_pgmm.r"))
 source(here("R", "moc_function.R")) 
 source(here("R", "moc_summary.R")) 
-source(here("R", "customFunctions.R"))
+
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
 
 # Theme setup
 theme_set(theme_minimal())
 
 # Data input
 
-supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
-v_dem <- read.csv(here("data", "vdem15.csv"))
+supdem <- read.csv("../data/Support_democracy_ajps.csv")
+v_dem <- read.csv("../data/vdem15.csv")
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
-# produced by cls_ajps_apsr_uncertain.R and dcpo_ajps_apsr_uncertain.R
-load(here("data", "cls_ajps.rda")) 
-load(here("data", "dcpo_ajps.rda")) 
-load(here("data", "cls_apsr.rda"))
-load(here("data", "dcpo_apsr.rda")) 
-
-claassen_replication <- readRDS(here("data", "claassen_replication.rds")) %>% 
+claassen_replication <- readRDS("../data/claassen_replication.rds") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
 load(here("data", "claassen_m5_theta.rda"))
@@ -168,64 +73,86 @@ load(here("data", "dcpo_input.rda"))
 load(here("data", "dcpo_theta.rda"))
 load(here("data", "dcpo_sigma.rda"))
 load(here("data", "dcpo_ajps_rubin.rda"))
-df_dcpoUncertainAPSR <- readRDS(here("data", "df_dcpoUncertainAPSR.rds"))
 
-```
-
-# Method
-We proceed in three steps.
-In our first step, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
-In the second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
-As our third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate democratic support using the superior DCPO measurement model, then conduct the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
+## Beck-Katz panel-corrected standard errors
+vcovBK_se <- function(x) {
+  plm::vcovBK(x, cluster = "time") %>% 
+    diag() %>% 
+    sqrt()
+}
 
 
-## Incorporating Uncertainty
-Although measurement uncertainty has yet not attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
-In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey_policy_2018, 254]. 
-
-Therefore, after we replicate the original analyses that used only the point estimates of democratic support, we incorporate the full distribution of the latent variable estimates.
-To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
-Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
+vcovHC_se <-  function(x) {
+  plm::vcovHC(x, method="arellano", cluster="group") %>%  #default setting
+    diag() %>% 
+    sqrt()
+}
 
 
-```{r compare_n, eval = TRUE}
+reformat_dcpo_output <- function(x, parameter_name) {
+  df_temp <- x %>% 
+    as_tibble(.name_repair = ~ls_country) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = all_of(ls_country),
+                 names_to = "country",
+                 values_to = parameter_name) %>%
+    arrange(country, year)
+  return(df_temp)
+}
+
+
+## ----dcpo_input_raw--------------------------------
+dcpo_input_raw <-
+  DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
+                                        col_types = "cccccc"),
+                        file = "data/dcpo_input_raw.csv")
+
+
+## ----dcpo_input, eval=TRUE-------------------------
 dcpo_input_raw1 <-
-    read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>%
-    filter(!(
-        str_detect(survey, "army_wvs") &
-            # WVS obs identified as problematic by Claassen
-            ((country == "Albania" & year == 1998) |
-                 (country == "Indonesia" &
-                      (year == 2001 | year == 2006)) |
-                 (country == "Iran" & year == 2000) |
-                 (country == "Pakistan" &
-                      (year == 1997 | year == 2001)) | # 1996 in Claassen
-                 (country == "Vietnam" & year == 2001)
-            ) |
-            (str_detect(item, "strong_wvs") &
-                 ((country == "Egypt" & year == 2012) |
-                      (country == "Iran" &
-                           (year == 2000 | year == 2007)) | # 2005 in Claassen
-                      (country == "India") |
-                      (country == "Pakistan" &
-                           (year == 1997 | year == 2001)) | # 1996 in Claassen
-                      (country == "Kyrgyzstan" &
-                           (year == 2003 | year == 2011)) |
-                      (country == "Romania" &
-                           (year == 1998 | year == 2005 | year == 2012)) |
-                      (country == "Vietnam" & year == 2001)
-                 )) |
-            (
-                country %in% c(
-                    "Puerto Rico",
-                    "Northern Ireland",
-                    "SrpSka Republic",
-                    "Hong Kong SAR China"
-                )
-            )
-    )) %>%
-    with_min_yrs(2)
+  read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>%
+  filter(!(
+    str_detect(survey, "army_wvs") &
+      # WVS obs identified as problematic by Claassen
+      ((country == "Albania" & year == 1998) |
+         (country == "Indonesia" &
+            (year == 2001 | year == 2006)) |
+         (country == "Iran" & year == 2000) |
+         (country == "Pakistan" &
+            (year == 1997 | year == 2001)) | # 1996 in Claassen
+         (country == "Vietnam" & year == 2001)
+      ) |
+      (str_detect(item, "strong_wvs") &
+         ((country == "Egypt" & year == 2012) |
+            (country == "Iran" &
+               (year == 2000 | year == 2007)) | # 2005 in Claassen
+            (country == "India") |
+            (country == "Pakistan" &
+               (year == 1997 | year == 2001)) | # 1996 in Claassen
+            (country == "Kyrgyzstan" &
+               (year == 2003 | year == 2011)) |
+            (country == "Romania" &
+               (year == 1998 | year == 2005 | year == 2012)) |
+            (country == "Vietnam" & year == 2001)
+         )) |
+      (
+        country %in% c(
+          "Puerto Rico",
+          "Northern Ireland",
+          "SrpSka Republic",
+          "Hong Kong SAR China"
+        )
+      )
+  )) %>%
+  with_min_yrs(2)
 
+dcpo_input <- DCPOtools::format_dcpo(dcpo_input_raw1,
+                                     scale_q = "church_lb",
+                                     scale_cp = 2)
+save(dcpo_input, file = here::here("data", "dcpo_input.rda"))
+
+
+## ----compare_n, eval=TRUE--------------------------
 # if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
 #   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
 #     read_csv(col_types = "cdcddcdc") %>% 
@@ -281,30 +208,68 @@ dcpo_input_ncyi <- dcpo_input_raw1 %>%
 increase_cy <- sprintf("%2.1f", (dcpo_input_ncy/supdem_ncy - 1) * 100, 1)
 increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
-```
-
-## Better Estimates of Democratic Support and More Data
-As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
-The DCPO model has several advantages over the @Claassen2019 model used in Claassen [-@Claassen2020a; -@Claassen2020b].
-First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
-Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, 3-4; see also @McGann2014].
-Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
-Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
-
-In addition to applying the superior DCPO model, we also assembled as much available data on democratic support as possible. We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
-We used the `DCPO` package for R [@Solt2020b] to estimate the DCPO model on this expanded dataset.
-
-# Results
-
-Figure&nbsp;\ref{fig:visualizeAJPS} presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries (Claassen's 2020$a$, 128, Model 1) in the left panel and democratic support separated by regime type (Model 2) on the right.
-The uppermost set of results replicate @Claassen2020a, including by excluding measurement uncertainty, and reproduce that article's findings.
-The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
-In both models, the positive coefficients for democratic support are no longer statistically significant.
-The bottom results also incorporate uncertainty but additionally replace the @Claassen2019 estimates of support with those based on DCPO and the expanded dataset; this change works to increase the number of observations analyzed as well.
-Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
 
-```{r cls-pointAJPS}
+## ----dcpo------------------------------------------
+iter <- 3000
+
+dcpo_output <- dcpo(dcpo_input,
+                    iter = iter,
+                    chains = 4,
+                    thin = iter/500, # this yields 250 draws per chain, 1000 draws total
+                    pars = c("sd_delta","sd_theta_evolve", "sd_sigma_evolve", "sigma","phi","beta","alpha","delta","theta","y_r_pred","log_lik"))
+
+save(dcpo_output, file = here::here("data", "dcpo_output.rda"))
+
+dcpo_theta <- rstan::extract(dcpo_output, pars = "theta")
+
+save(dcpo_theta, file = here::here("data", "dcpo_theta.rda"))
+
+dcpo_sigma <- rstan::extract(dcpo_output, pars = "sigma")
+
+save(dcpo_sigma, file = here::here("data", "dcpo_sigma.rda"))
+
+dcpo_y_r_pred <- rstan::extract(dcpo_output, pars = "y_r_pred")
+
+save(dcpo_input, dcpo_y_r_pred, file = here::here("data", "dcpo_y_r_pred.rda"))
+
+
+## ----country-years---------------------------------
+path_df <-
+  list.files(
+    "../data",
+    pattern = ".*_theta.rda",
+    recursive = TRUE,
+    full.names = TRUE
+  ) %>%
+  .[str_which(., "claassen")]
+
+load(path_df)
+
+df_thetaDraw <- map_df(seq(claassen_m5_theta$theta[1, , 1]),
+       function(year) {
+         map_df(seq(claassen_m5_theta$theta[1, 1, ]),
+                function(country) {
+                  df_temp <-
+                    sample(claassen_m5_theta$theta[, year, country],
+                           size = 100,
+                           replace = TRUE) %>%
+                    matrix(ncol = 100) %>%
+                    as_tibble()
+                  df_temp$yearID <- year
+                  df_temp$countryID <- country
+                  return(df_temp)
+                })
+       }) %>% 
+  pivot_longer(
+    cols = starts_with("V"),
+    names_to = "draw",
+    values_to = "theta"
+  ) %>% 
+  group_split(draw)
+
+
+## ----claassenAJPS, eval=TRUE-----------------------
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
            "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)")
 
@@ -346,9 +311,29 @@ result_cls <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
 names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
 saveRDS(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
-```
 
-```{r cls-modelAJPS}
+
+## ----claassenUncertaintyAJPS-----------------------
+ls_country <- unique(claassen_replication$country)
+first_year <- min(claassen_replication$year)
+
+sd_control <- sd.plm %>%
+  mutate(
+    country = as.character(Country),
+    year = as.numeric(as.character(Year)),
+    regime = ifelse(Regime_VD > 1, 1, 0)
+  )
+
+df_cls <- purrr::map(1:1000, function(anEntry) {
+  claassen_m5_theta$theta[anEntry,,] %>% 
+    reformat_dcpo_output("theta") %>% 
+    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+    #           by = c("year", "country")) %>%
+    left_join(sd_control, by = c("country", "year")) %>% 
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime)) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
 
 ls_iv <- c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
@@ -357,18 +342,15 @@ ls_method <- c("plm", "pgmm")
 
 ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)") 
 
-ls_mod_ajpsCLS <- c(
+ls_mod <- c(
     glue("plm({ls_eq}, model = 'pooling', data = aData)"),
     glue(
         "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
     )
 )
 
-```
-
-```{r cls-uncertainAJPSfull, eval=FALSE}
-result_clsUncertainFull <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
-  result <- map(cls_ajps, function(aData){ # applying to the 1000 datasets
+result_clsUncertain <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(df_cls, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
@@ -399,12 +381,105 @@ result_clsUncertainFull <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
   result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
 })
 
-names(result_clsUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
-   
-saveRDS(result_clsUncertainFull, file = here::here("output", "estimates_clsAJPSfullUncertain.RDS"))
-```
 
-```{r dcpo-modelAJPS}
+names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+   
+saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
+
+
+## ----dcpoMean--------------------------------------
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpoMean <- purrr::map_df(1:1000, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta") %>%
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country"))
+}) %>%
+  group_by(country, year) %>%
+  summarise(theta = mean(theta),
+            sigma = mean(sigma))
+
+saveRDS(df_dcpoMean, file = here("data", "df_dcpoMean.RDS"))
+
+
+## ----dcpoPointAJPS---------------------------------
+df_controls <- readRDS(here("data", "control_variables_ajps.rds")) %>% 
+  mutate(country = countrycode::countrycode(country, "country.name", "country.name"),
+         regime = Vdem_regime > 1) %>% 
+  filter(year >= first_year) # using trimmed data as Claassen 
+
+df_dcpoMeanAJPS <- df_dcpoMean %>% 
+  right_join(df_controls, by = c("country", "year")) %>% 
+  mutate(theta_dem = theta * regime,
+         theta_aut = theta * (1 - regime)) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+
+ls_iv <- c("plm::lag(theta, 1)", 
+           "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ")
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
+
+ls_mod <- c(
+  glue("plm({ls_eq}, model = 'pooling', data = df_dcpoMeanAJPS)"),
+  glue(
+    "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = df_dcpoMeanAJPS, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+  )
+)
+
+#There's a problem to run this part---------------------
+
+df_result_dcpo <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
+})
+
+tidy_dcpo <- map(df_result_dcpo, function(result) {
+  df_result <- tidy(result, conf.int = TRUE)
+  
+  if (class(result) == "plm") {
+     mutate(df_result, std.error = vcovBK_se(result))
+  } else{
+    mutate(df_result, std.error = vcovHC_se(result))
+  }
+  
+})
+
+glance_dcpo <- map(df_result_dcpo, function(aResult){
+  if(class(aResult) == "plm"){ 
+    glance.plm(aResult) # using the customized glance function
+  }else{
+      glance(aResult)
+    }
+})
+
+result_dcpo <- map2(tidy_dcpo, glance_dcpo, ~ list(.x, .y))
+names(result_dcpo) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
+saveRDS(result_dcpo, file = here::here("output", "estimates_dcpoMeanAJPS.RDS"))
+
+
+## ----dcpoUncertaintyAJPS---------------------------
+df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
+  .x[[.y]] %>%
+    mutate(theta_dem = theta * regime,
+           theta_aut = theta * (1 - regime)) %>%
+    plm::pdata.frame(index = c("country", "year"))
+}) # The code is to fit the embedded format of dcpo_ajps_rubin
+
+# df_dcpo <- purrr::map(1:1000, function(anEntry) {
+#   dcpo_theta$theta[anEntry,,] %>% 
+#     reformat_dcpo_output("theta") %>% 
+#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+#               by = c("year", "country")) %>%
+#     left_join(df_controls, by = c("country", "year")) %>% 
+#     mutate(theta_dem = theta * regime,
+#            theta_aut = theta * (1 - regime)) %>% 
+#     plm::pdata.frame(index = c("country", "year"))
+# })
+
 ls_iv <- c("plm::lag(theta, 1)", 
     "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
 
@@ -412,53 +487,196 @@ ls_method <- c("plm", "pgmm")
 
 ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
 
-ls_mod_ajpsDCPO <- c(
+ls_mod <- c(
     glue("plm({ls_eq}, model = 'pooling', data = aData)"),
     glue(
         "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
     )
 )
-```
 
-```{r dcpo-uncertainAJPSfull, eval=FALSE}
-result_dcpoUncertainFull <- map(ls_mod_ajpsDCPO, function(aMod){ # reading a model
-  result <- map(dcpo_ajps, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
+result_dcpoUncertain <- map(ls_mod, function(aMod){ # reading a model
+  mod_eval <- function(aData) eval(parse(text = aMod))
+  
+  result <- map(df_dcpo, mod_eval)
   
   result_betas <- mitools::MIextract(result, fun = coef)
-  
+
   ## Not work with ifelse
   if(class(result[[1]])[1] == "plm"){
       result_vars <- mitools::MIextract(result, fun = vcovBK_se)
   }else{
       result_vars <- mitools::MIextract(result, fun = vcovHC_se)
   }
-  
-  
-  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
+
+
+  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas,
+                             variance = result_vars)) %>%
     rownames_to_column(var = "term") %>%
         rename(conf.low = `(lower`,
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
-  
-  if(class(result[[1]]) == "plm"){ 
+
+  if(class(result[[1]]) == "plm"){
     glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
   }else{
     glance_dcpoUncertain <- glance(result[[1]])
   }
-  
+
   result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
 })
 
-names(result_dcpoUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+names(result_dcpoUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-saveRDS(result_dcpoUncertainFull, file = here::here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
-```
+saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
 
-```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", eval=FALSE}
+
+## ----visualizeAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=10----
+
+# Very weird phenomenon that the same type of rds files needs different ways to read
+# Suggesting using the qs or csv data type in future.
+result_cls <- readRDS(here::here("output", "estimates_clsMeanAJPS.RDS"))
+result_clsUncertain <- readRDS(here::here("output", "estimates_clsAJPS.RDS"))
+result_dcpoUncertain <- readRDS(here::here("output", "estimates_dcpoAJPS.RDS"))
+
+result_pooled <- bind_rows(
+  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$pooled[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$pooled[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "Pooled")
+
+result_gmm <- bind_rows(
+  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$gmm[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$gmm[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
+
+result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    term = rep(
+      c("Democracy\n (t-1)",
+        "Democracy\n (t-2)",
+      "Support\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
+      "Percent\n Muslim\n (t-1)",
+      "Resource\n dependence\n (t-1)"),
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
+
+terms <- factor(rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")), levels =
+      rev(c("Democracy[t-1]",
+        "Democracy[t-2]",
+      "Support[t-1]",
+      "Log~GDP~per~capita[t-1]",
+      "GDP~per~capita~growth[t-1]",
+      "Regional~democracy[t-1]",
+      "Percent~Muslim[t-1]",
+      "Resource~dependence[t-1]")))
+
+# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
+# What I've tried
+# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
+# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
+# 2. redefining the order of model in the dataframe or in dwplot 
+# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
+# 4. Every post online is to reverse 
+
+plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
+  scale_y_discrete(labels = parse(text = levels(terms))) +
+  scale_color_grey(start = 0.4, end = 0.8) +
+  labs(
+    title = "DV: V-Dem Liberal Democracy Index",
+    subtitle = "Regime Compacted"
+  ) +
+  facet_wrap(~type, scales = "free_x") + 
+  theme(legend.position = "none")
+
+# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
+# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
+
+result_regime <- bind_rows(
+  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$`pooled-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "Pooled")
+
+result_regimeGmm <- bind_rows(
+  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
+  mutate(result_clsUncertain$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_dcpoUncertain$`gmm-regime`[[1]], model = "DCPO")
+) %>% 
+  mutate(type = "GMM")
+
+result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    term = rep(
+      c("Democracy\n (t-1)",
+        "Democracy\n (t-2)",
+      "Support\n demo only\n (t-1)",
+      "Support\n auto only\n (t-1)",
+      "Log GDP\n per capita\n (t-1)",
+      "GDP per\n capita growth\n (t-1)",
+      "Regional\n democracy\n (t-1)",
+      "Percent\n Muslim\n (t-1)",
+      "Resource\n dependence\n (t-1)"),
+    time = 6), 
+    type = factor(type, levels = c("Pooled", "GMM")),
+    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
+
+terms2 <- factor(rev(c("Democracy[t-1]",
+                       "Democracy[t-2]",
+                       "Support[t-1] (democracies~only)",
+                       "Support[t-1] (autocracies~only)",
+                       "Log~GDP~per~capita[t-1]",
+                       "GDP~per~capita~growth[t-1]",
+                       "Regional~democracy[t-1]",
+                       "Percent~Muslim[t-1]",
+                       "Resource~dependence[t-1]")), levels =
+                   rev(c("Democracy[t-1]",
+                         "Democracy[t-2]",
+                         "Support[t-1] (democracies~only)",
+                         "Support[t-1] (autocracies~only)",
+                         "Log~GDP~per~capita[t-1]",
+                         "GDP~per~capita~growth[t-1]",
+                         "Regional~democracy[t-1]",
+                         "Percent~Muslim[t-1]",
+                         "Resource~dependence[t-1]")))
+
+plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
+    scale_y_discrete(labels = parse(text = levels(terms2))) +
+  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
+  labs(
+    title = "",
+    subtitle = "Regime Specific"
+  ) +
+  facet_wrap(~type, scales = "free_x") +
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())
+
+legend <- get_legend(plot_AJPS2)
+
+plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
+
+grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
+
+
+
+## ----visualizedUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty"----
 
 df_plot <- df_result_dcpoMeanAJPS[[1]] %>% 
   mutate(model = "DCPO\n (Point Estimates)") 
@@ -538,9 +756,9 @@ plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>%
   )
 
 gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
-```
 
-```{r cls-pointAPSR}
+
+## ----claassenAPSR, eval = TRUE---------------------
 load(here::here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
@@ -583,9 +801,27 @@ names(result_clsAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regim
                            "fd1", "fd-regime1", "fd2", "fd-regime2")
 
 saveRDS(result_clsAPSR, file = here::here("output", "estimates_clsMeanAPSR.RDS"))
-```
 
-```{r cls-modelAPSR}
+
+## ----claassenAPSRUncertainty-----------------------
+ls_country <- unique(claassen_replication$country)
+first_year <- min(claassen_replication$year)
+
+sd_control <- sd.plm %>%
+  mutate(
+    country = as.character(Country),
+    year = as.numeric(as.character(Year))
+  )
+
+df_clsAPSR <- purrr::map(1:1000, function(anEntry) {
+  claassen_m5_theta$theta[anEntry,,] %>% 
+    reformat_dcpo_output("theta") %>% 
+    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+    #           by = c("year", "country")) %>%
+    left_join(sd_control, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
 ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)", 
               "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
 ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
@@ -603,15 +839,13 @@ ls_eqFD <- glue("diff(theta, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>%
   outer(ls_ctrlFD, paste0) %>% 
   as.vector()
 
-ls_mod_apsrCLS <- c(
+ls_mod <- c(
   glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
   glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = aData)")
 )
-```
 
-```{r cls-uncertainAPSRfull, eval=FALSE}
-result_clsFullUncertainAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a model
-  result <- map(cls_apsr, function(aData){ # applying to the 1000 datasets
+result_clsUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(df_clsAPSR, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
@@ -632,12 +866,26 @@ result_clsFullUncertainAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a m
   result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
 })
 
-names(result_clsFullUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
+names(result_clsUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsFullUncertainAPSR.RDS"))
-```
+saveRDS(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
 
-```{r dcpo-modelAPSR}
+
+
+## ----dcpoPointAPSR---------------------------------
+
+df_dcpoMean <- readRDS(here("data", "df_dcpoMean.RDS"))
+
+df_controls <- readRDS(here("data", "control_variables_apsr.rds")) %>% 
+  mutate(country = countrycode::countrycode(country, "country.name", "country.name")) %>% 
+  filter(year >= first_year)
+
+
+df_dcpoMeanAPSR <- df_dcpoMean %>% 
+  left_join(df_controls, by = c("country", "year")) %>% 
+  plm::pdata.frame(index = c("country", "year"))
+
+
 ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
               "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
 ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
@@ -655,15 +903,74 @@ ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>%
   outer(ls_ctrlFD, paste0) %>% 
   as.vector()
 
-ls_mod_apsrDCPO <- c(
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = df_dcpoMeanAPSR)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = df_dcpoMeanAPSR)")
+)
+
+df_result_dcpoMeanAPSR <- map(ls_mod, function(mod) {
+  result <- eval(parse(text = mod))
+})
+
+result_dcpoMeanAPSR <- map(df_result_dcpoMeanAPSR, function(aResult) {
+  tidy_result <- tidy(aResult, conf.int = TRUE) %>% 
+    mutate(std.error = vcovHC_se(aResult))
+  
+  glance_result <- glance.plm(aResult)
+  
+  ls_result <- list(tidy_result, glance_result)
+})
+
+names(result_dcpoMeanAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+saveRDS(result_dcpoMeanAPSR, file = here::here("output", "estimates_dcpoMeanAPSR.RDS"))
+
+
+## ----data-dcpoUncertainAPSR------------------------
+ls_country <- levels(dcpo_input$data$kk)
+first_year <- min(dcpo_input$data$year)
+
+df_dcpoUncertainAPSR <- purrr::map(1:1000, function(anEntry) {
+  dcpo_theta$theta[anEntry,,] %>%
+    reformat_dcpo_output("theta") %>%
+    left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
+              by = c("year", "country")) %>%
+    left_join(df_controls, by = c("country", "year")) %>%
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+saveRDS(df_dcpoUncertainAPSR, here("data", "df_dcpoUncertainAPSR.rds"))
+
+
+## ----dcpoUncertaintyAPSR---------------------------
+## The same as in the previous chunk
+
+ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
+              "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
+
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Vdem_libdem_z",
+             "Vdem_polyarchy_z + Vdem_liberal_z")
+
+ls_ctrlFD <- c("", " + corruption_z")
+
+ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+### Different datasets
+
+ls_mod <- c(
   glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
   glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
 )
-```
 
-```{r dcpo-uncertainAPSRfull, eval=FALSE}
-result_dcpoUncertainAPSR <- map(ls_mod_apsrDCPO, function(aMod){ # reading a model
-  result <- map(dcpo_apsr, function(aData){ # applying to the 1000 datasets
+result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(df_dcpoUncertainAPSR, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
@@ -686,16 +993,10 @@ result_dcpoUncertainAPSR <- map(ls_mod_apsrDCPO, function(aMod){ # reading a mod
 
 names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoUncertainAPSR.RDS"))
-```
+saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
 
-The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
-In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic support per @Claassen2020b [, 47, Models 1.1 and 1.2]. 
-The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
-However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
-And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not provide support for the original conclusion.
 
-```{r plot-mainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10, eval=FALSE}
+## ----visualizedAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10----
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_clsUncertainAPSR <- readRDS(here("output", "estimates_clsAPSR.RDS"))
@@ -975,56 +1276,83 @@ legend <- get_legend(plot_RegAPSR2)
 plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
 
 grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
-```
-
-# Discussion
-In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when a superior estimate of public support and more data are used.
-
-There are several potential methodological explanations for these null results.
-One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
-If only those who profess to prefer democracy to its alternatives _and also_ value freedom of expression, freedom of association, and pluralism of opinion will take appropriate action when democracy is threatened, then this measure is inadequate to its purpose [see, e.g., @Schedler2007].
-Moreover, given the multi-faceted nature of democratic attitudes, even the inclusion of such questions in unidimensional public opinion models such as those provided by @Claassen2019 or @Solt2020a are unlikely to be sufficient [see, e.g., @Wuttke2020].
-Another issue is that even if these survey questions do capture support for the generic concept of democracy, these measurement models might still be incapable of suitably capturing democratic support due to the variation in understanding the concept across countries or over time within countries [@Wuttke2021]. 
-Yet another is that this measure provides no assessment of the _relative_ importance the public affords democracy.
-It provides no information on the extent to which other values, such as policy preferences or partisanship, weigh more heavily---and there is growing evidence that, at least in the United States, there are many for whom these other considerations excuse substantial transgressions against democracy [see @bartels_ethnic_2020; @Carey2020; @graham_democracy_2020; @McCoy2020]. 
-
-There are theoretical explanations for the null results as well.
-With regard to how levels of democracy affect public support, we note that even the proponents of the classic argument did not contend that the mere existence of democratic institutions, no matter how consistently feckless and ineffective, would generate support among the public: instead, they maintained, public support would be gained through experience with government performance that was generally effective [@lipset_social_1959, 86-89; @Easton1965, 119-120].
-There is some empirical support for this, with government effectiveness positively related to public support among democracies and negatively related in non-democracies [@Magalhaes2014]. 
-The finding of @Krieckhaus2014 that income inequality is strongly negatively related to public support in democracies suggests that performance regarding redistribution is particularly important.
-Relatedly, on the reverse part of the classic argument, @Qi2011 suggests that democratic support alone cannot be expected to generate democratic change and oppose backsliding.
-Instead, that work contends, it is the combination of democratic support and dissatisfaction with current regime performance that generates demand for greater democracy.
-And we must be open to the possibility that no theoretical elaboration, no respecification of these models will reveal relationships between public opinion and democracy.
-Democratic backsliding may simply be primarily a matter of elite decisionmaking [see, e.g., @levitsky_how_2018].
-Regardless, these explanations indicate that there remains much work to be done in the empirical study of public support and democracy.
 
 
-# Conclusion
-In this letter, we reexamined the findings from Claassen [-@Claassen2020a; -@Claassen2020b], two articles that maintain that public support helps the survival of democracy and democratic development has a thermostatic effect on public support.
-We demonstrated the importance of incorporating measurement uncertainty in analyzing the relationship between public support and democracy.
-Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we employed the more sophisticated DCPO measurement model and additional data.
+## ----visualizedUncertaintyAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"----
 
-This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
-As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
+load(here::here("output", "estimates_dcpoAPSR.RDS"))
 
-The null results reached in this letter could arise from several sources.
-We identified a number of potential shortcomings in the measurement of democratic support and ways in which the analysis models might be underspecified.
-All of these could and should be explored in future research, though there are also theoretically grounded reasons to suspect that the relationships are in fact negligible.
-In any event, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their publics will rally to them---is not supported by the current evidence.
-Those who would defend democracy have no grounds to be complacent.
+df_plot <- df_result_dcpoMeanAPSR[[1]] %>% 
+  mutate(model = "DCPO\n (Point Estimates)") 
+ 
+df_plot <- df_result_dcpoAPSR[[1]] %>%
+  mutate(model = "DCPO\n (w. Uncertainty)") %>%
+  rename(std.error = se) %>%
+  bind_rows(df_plot)
+ 
+plot_pooled <- filter(df_plot, model != "Claassen 2019") %>% 
+  dwplot(by_2sd = FALSE) %>%
+  relabel_predictors(
+    c(
+      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
+      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
+      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
+      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
+      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
+      `plm::lag(mdprgdp_grwth, 1)` = "Corruption (Difference)"
+    )
+  ) +
+  geom_vline(xintercept = 0,
+             colour = "grey80",
+             linetype = 2) +
+  theme_minimal() +
+  ggtitle("DV: Liberal Democracy (Vdem)") +
+  xlab("Coefficient Estimate") +
+  theme(
+    axis.title.y = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
+
+df_plot <- df_result_dcpoMeanAPSR[[2]] %>% 
+  mutate(model = "DCPO\n (Point Estimates)")
+
+df_plot <- df_result_dcpoAPSR[[2]] %>%
+  mutate(model = "DCPO\n (w. Uncertainty)") %>%
+  rename(std.error = se) %>%
+  bind_rows(df_plot)
+ 
+plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>% 
+  dwplot(by_2sd = FALSE) %>%
+  relabel_predictors(
+    c(
+      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
+      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
+      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
+      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
+      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
+      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
+      `diff(cpi_sd, lag = 1)` = "Corruption (Difference)",
+      `plm::lag(cpi_sd, 1)` = "Corruption (t-1)"
+    )
+  ) +
+  geom_vline(xintercept = 0,
+             colour = "grey80",
+             linetype = 2) +
+  theme_minimal() +
+  ggtitle("DV: Liberal Democracy (Vdem)") +
+  xlab("Coefficient Estimate") +
+  theme(
+    axis.title.y = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
+
+gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
 
 
-# References  {-}
-
-<div id = 'refs'></div>
-
-\pagebreak
-
-# Online Supplementary Materials {-}
-# (APPENDIX) Appendix {-}
-# Numeric Results for Replicating Claassen 2020a
-
-```{r num-cls2020a, results='asis', eval = TRUE}
+## ----num-cls2020a, results='asis', eval = TRUE-----
 tb_result_cls <- map(result_cls, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1055,9 +1383,9 @@ modelsummary(tb_result_cls,
   
   kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
 
-```{r num-cls2020aUncertain, results='asis', eval = TRUE}
+
+## ----num-cls2020aUncertain, results='asis', eval = TRUE----
 tb_result_clsUncertain <- map(result_clsUncertain, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1085,9 +1413,9 @@ modelsummary(tb_result_clsUncertain,
              output = "latex", 
              title = "W. Uncertainty") %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
 
-```{r num-cls2020aDCPO, results='asis', eval = TRUE}
+
+## ----num-cls2020aDCPO, results='asis', eval = TRUE----
 tb_result_DCPO <- map(result_dcpoUncertain, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1115,15 +1443,9 @@ modelsummary(tb_result_DCPO,
              output = "latex", 
              title = "W. Uncertainty") %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
-
-\blandscape
-
-# Numeric Results for Replicating Claassen 2020b
 
 
-
-```{r num-cls2020b, results='asis', eval = TRUE}
+## ----num-cls2020b, results='asis', eval = TRUE-----
 tb_result_clsAPSR <- map(result_clsAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1160,13 +1482,9 @@ modelsummary(tb_result_clsAPSR,
              output = "latex") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
 
-\elandscape
 
-\blandscape
-
-```{r num-cls2020bUncertain, results='asis', eval = TRUE}
+## ----num-cls2020bUncertain, results='asis', eval = TRUE----
 tb_result_clsUncertainAPSR <- map(result_clsUncertainAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1203,13 +1521,9 @@ modelsummary(tb_result_clsUncertainAPSR,
              output = "latex") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
 
-\elandscape
 
-\blandscape
-
-```{r num-cls2020bDCPO, results='asis', eval = TRUE}
+## ----num-cls2020bDCPO, results='asis', eval = TRUE----
 tb_result_dcpoAPSR <- map(result_dcpoAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1248,11 +1562,9 @@ modelsummary(tb_result_dcpoAPSR,
              output = "latex") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
-```
 
-\elandscape
 
-```{r datawitherrors}
+## ----datawitherrors--------------------------------
 
 ls_country <- unique(claassen_replication$country)
 first_year <- min(claassen_replication$year)
@@ -1304,34 +1616,28 @@ saveRDS(cls_analysis, "data/cls_analysis_ajps.rds")
 
 
 
-```
-
-# Results Accounting for the Uncertainty in Both the Outcome and Explanatory Variables
 
 
-```{r cls-uncertainAJPSmain, eval=FALSE}
-ls_country <- unique(claassen_replication$country)
-first_year <- min(claassen_replication$year)
+## ----claassenFullUncertaintyAJPS-------------------
 
-sd_control <- sd.plm %>%
-  mutate(
-    country = as.character(Country),
-    year = as.numeric(as.character(Year)),
-    regime = ifelse(Regime_VD > 1, 1, 0)
-  )
+load(here("data", "cls_ajps.rda")) # produced by cls_ajps_apsr_uncertain.R
 
-df_cls <- purrr::map(1:1000, function(anEntry) {
-  claassen_m5_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    left_join(sd_control, by = c("country", "year")) %>% 
-    mutate(theta_dem = theta * regime,
-           theta_aut = theta * (1 - regime)) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
+ls_iv <- c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
 
+ls_method <- c("plm", "pgmm")
 
-result_clsUncertain <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
-  result <- map(df_cls, function(aData){ # applying to the 1000 datasets
+ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) + plm::lag(Res_cp_WDI_di, 1)") 
+
+ls_mod <- c(
+    glue("plm({ls_eq}, model = 'pooling', data = aData)"),
+    glue(
+        "pgmm({ls_eq} | plm::lag(Libdem_VD, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+    )
+)
+
+result_clsUncertainFull <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(cls_ajps, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
@@ -1363,292 +1669,66 @@ result_clsUncertain <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
 })
 
 
-names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+names(result_clsUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
    
-saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
-```
-
-```{r dcpo-uncertainAJPSmain, eval=FALSE}
-df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
-  .x[[.y]] %>%
-    mutate(theta_dem = theta * regime,
-           theta_aut = theta * (1 - regime)) %>%
-    plm::pdata.frame(index = c("country", "year"))
-}) # The code is to fit the embedded format of dcpo_ajps_rubin
-
-# df_dcpo <- purrr::map(1:1000, function(anEntry) {
-#   dcpo_theta$theta[anEntry,,] %>% 
-#     reformat_dcpo_output("theta") %>% 
-#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-#               by = c("year", "country")) %>%
-#     left_join(df_controls, by = c("country", "year")) %>% 
-#     mutate(theta_dem = theta * regime,
-#            theta_aut = theta * (1 - regime)) %>% 
-#     plm::pdata.frame(index = c("country", "year"))
-# })
+saveRDS(result_clsUncertainFull, file = here::here("output", "estimates_clsAJPSfullUncertain.RDS"))
 
 
-result_dcpoUncertain <- map(ls_mod_ajpsDCPO, function(aMod){ # reading a model
-  mod_eval <- function(aData) eval(parse(text = aMod))
-  
-  result <- map(df_dcpo, mod_eval)
+## ----dcpoFullUncertaintyAJPS-----------------------
+load(here("data", "dcpo_ajps.rda")) # produced by dcpo_ajps_apsr_uncertain.R
+
+ls_iv <- c("plm::lag(theta, 1)", 
+    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_method <- c("plm", "pgmm")
+
+ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
+
+ls_mod <- c(
+    glue("plm({ls_eq}, model = 'pooling', data = aData)"),
+    glue(
+        "pgmm({ls_eq} | plm::lag(Vdem_libdem, 3:5), data = aData, effect='individual', model='onestep', transformation='ld', indexes=c('country', 'year'))"
+    )
+)
+
+result_dcpoUncertainFull <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(dcpo_ajps, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
   
   result_betas <- mitools::MIextract(result, fun = coef)
-
+  
   ## Not work with ifelse
   if(class(result[[1]])[1] == "plm"){
       result_vars <- mitools::MIextract(result, fun = vcovBK_se)
   }else{
       result_vars <- mitools::MIextract(result, fun = vcovHC_se)
   }
-
-
-  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas,
-                             variance = result_vars)) %>%
+  
+  
+  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
     rownames_to_column(var = "term") %>%
         rename(conf.low = `(lower`,
                conf.high = `upper)`,
                estimate = results) %>%
         filter(!str_detect(term, "(Intercept)"))
-
-  if(class(result[[1]]) == "plm"){
+  
+  if(class(result[[1]]) == "plm"){ 
     glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
   }else{
     glance_dcpoUncertain <- glance(result[[1]])
   }
-
+  
   result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
 })
 
-names(result_dcpoUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+names(result_dcpoUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
-```
-
-```{r cls-undertainAPSRmain, eval=FALSE}
-ls_country <- unique(claassen_replication$country)
-first_year <- min(claassen_replication$year)
-
-sd_control <- sd.plm %>%
-  mutate(
-    country = as.character(Country),
-    year = as.numeric(as.character(Year))
-  )
-
-df_clsAPSR <- purrr::map(1:1000, function(anEntry) {
-  claassen_m5_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-    #           by = c("year", "country")) %>%
-    left_join(sd_control, by = c("country", "year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
-
-result_clsUncertainAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a model
-  result <- map(df_clsAPSR, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-  
-  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  
-  tidy_clsUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-  
-  glance_clsUncertainAPSR <- glance.plm(result[[1]])
-  
-  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
-})
-
-names(result_clsUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
-
-saveRDS(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
-
-```
-
-```{r dcpo-uncertainAPSRmain, eval=FALSE}
-result_dcpoUncertainAPSR <- map(ls_mod_apsrDCPO, function(aMod){ # reading a model
-  result <- map(df_dcpoUncertainAPSR, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-  
-  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  
-  tidy_dcpoUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-  
-  glance_dcpoUncertainAPSR <- glance.plm(result[[1]])
-  
-  result_dcpoUncertainAPSR <- list(tidy_dcpoUncertainAPSR, glance_dcpoUncertainAPSR)
-})
-
-names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
-
-saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
-```
+saveRDS(result_dcpoUncertainFull, file = here::here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
 
 
-# Replications of Full Pack of Models in Claassen 2020a,b
-
-```{r plot-fullpackAJPS, fig.cap= "The Effect of Public Support on Democracy", fig.width=7.5, fig.height=10}
-
-# Very weird phenomenon that the same type of rds files needs different ways to read
-# Suggesting using the qs or csv data type in future.
-result_cls <- readRDS(here::here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsUncertain <- readRDS(here::here("output", "estimates_clsAJPS.RDS"))
-result_dcpoUncertain <- readRDS(here::here("output", "estimates_dcpoAJPS.RDS"))
-
-result_pooled <- bind_rows(
-  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$pooled[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$pooled[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_gmm <- bind_rows(
-  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$gmm[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$gmm[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms <- factor(rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")), levels =
-      rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")))
-
-# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
-# What I've tried
-# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
-# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
-# 2. redefining the order of model in the dataframe or in dwplot 
-# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
-# 4. Every post online is to reverse 
-
-plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms))) +
-  scale_color_grey(start = 0.4, end = 0.8) +
-  labs(
-    title = "DV: V-Dem Liberal Democracy Index",
-    subtitle = "Regime Compacted"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
-# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
-# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
-
-result_regime <- bind_rows(
-  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$`pooled-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_regimeGmm <- bind_rows(
-  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$`gmm-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n demo only\n (t-1)",
-      "Support\n auto only\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms2 <- factor(rev(c("Democracy[t-1]",
-                       "Democracy[t-2]",
-                       "Support[t-1] (democracies~only)",
-                       "Support[t-1] (autocracies~only)",
-                       "Log~GDP~per~capita[t-1]",
-                       "GDP~per~capita~growth[t-1]",
-                       "Regional~democracy[t-1]",
-                       "Percent~Muslim[t-1]",
-                       "Resource~dependence[t-1]")), levels =
-                   rev(c("Democracy[t-1]",
-                         "Democracy[t-2]",
-                         "Support[t-1] (democracies~only)",
-                         "Support[t-1] (autocracies~only)",
-                         "Log~GDP~per~capita[t-1]",
-                         "GDP~per~capita~growth[t-1]",
-                         "Regional~democracy[t-1]",
-                         "Percent~Muslim[t-1]",
-                         "Resource~dependence[t-1]")))
-
-plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-    scale_y_discrete(labels = parse(text = levels(terms2))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  labs(
-    title = "",
-    subtitle = "Regime Specific"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "bottom", 
-        legend.title = element_blank())
-
-legend <- get_legend(plot_AJPS2)
-
-plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
-
-grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
-
-```
-
-```{r plot-fullpackAJPSfull, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=7}
+## ----visualizeFullUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=7----
 
 # Very weird phenomenon that the same type of rds files needs different ways to read
 # Suggesting using the qs or csv data type in future.
@@ -1791,85 +1871,119 @@ plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
 
 grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 
-```
 
 
-```{r plot-fullpackAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO"}
+## ----claassenFullUncertaintyAPSR-------------------
 
-load(here::here("output", "estimates_dcpoAPSR.RDS"))
+load(here("data", "cls_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
 
-df_plot <- df_result_dcpoMeanAPSR[[1]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)") 
- 
-df_plot <- df_result_dcpoAPSR[[1]] %>%
-  mutate(model = "DCPO\n (w. Uncertainty)") %>%
-  rename(std.error = se) %>%
-  bind_rows(df_plot)
- 
-plot_pooled <- filter(df_plot, model != "Claassen 2019") %>% 
-  dwplot(by_2sd = FALSE) %>%
-  relabel_predictors(
-    c(
-      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
-      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
-      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
-      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
-      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
-      `plm::lag(mdprgdp_grwth, 1)` = "Corruption (Difference)"
-    )
-  ) +
-  geom_vline(xintercept = 0,
-             colour = "grey80",
-             linetype = 2) +
-  theme_minimal() +
-  ggtitle("DV: Liberal Democracy (Vdem)") +
-  xlab("Coefficient Estimate") +
-  theme(
-    axis.title.y = element_blank(),
-    legend.position = "bottom",
-    legend.title = element_blank()
-  )
+ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)", 
+              "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
 
-df_plot <- df_result_dcpoMeanAPSR[[2]] %>% 
-  mutate(model = "DCPO\n (Point Estimates)")
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
 
-df_plot <- df_result_dcpoAPSR[[2]] %>%
-  mutate(model = "DCPO\n (w. Uncertainty)") %>%
-  rename(std.error = se) %>%
-  bind_rows(df_plot)
- 
-plot_pooled2 <- filter(df_plot, model != "Claassen 2019") %>% 
-  dwplot(by_2sd = FALSE) %>%
-  relabel_predictors(
-    c(
-      `plm::lag(theta, 1:2)1` = "Democracy Mood(t-1)",
-      `plm::lag(theta, 1:2)2` = "Democracy Mood(t-2)",
-      `diff(Vdem_libdem_z, lag = 1)` = "Liberal Democracy (Diff)",
-      `plm::lag(Vdem_libdem_z, 1)` = "Liberal Democracy (t-1)",
-      `diff(lg_imp_mdpgdp, lag = 1)` = "Log GDP per capita(Diff)", 
-      `plm::lag(lg_imp_mdpgdp, 1)` = "Log GDP per capita(t-1)",
-      `diff(cpi_sd, lag = 1)` = "Corruption (Difference)",
-      `plm::lag(cpi_sd, 1)` = "Corruption (t-1)"
-    )
-  ) +
-  geom_vline(xintercept = 0,
-             colour = "grey80",
-             linetype = 2) +
-  theme_minimal() +
-  ggtitle("DV: Liberal Democracy (Vdem)") +
-  xlab("Coefficient Estimate") +
-  theme(
-    axis.title.y = element_blank(),
-    legend.position = "bottom",
-    legend.title = element_blank()
-  )
+ls_ivFD <- c("Libdem_z",
+             "Polyarchy_z + Liberal_z")
 
-gridExtra::grid.arrange(plot_pooled,plot_pooled2, ncol = 2)
-```
+ls_ctrlFD <- c("", " + Corrup_TI_z")
+
+ls_eqFD <- glue("diff(theta, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
+)
+
+result_clsFullUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(cls_apsr, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_clsUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_clsUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
+})
+
+names(result_clsFullUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsFullUncertainAPSR.RDS"))
 
 
-```{r plot-fullpackAPSRfull, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
+
+## ----dcpoFullUncertaintyAPSR-----------------------
+load(here("data", "dcpo_apsr.rda")) # produced by cls_ajps_apsr_uncertain.R
+
+ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
+              "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
+
+ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+  outer(ls_ctrlECM, paste0) %>% 
+  as.vector()
+
+ls_ivFD <- c("Vdem_libdem_z",
+             "Vdem_polyarchy_z + Vdem_liberal_z")
+
+ls_ctrlFD <- c("", " + corruption_z")
+
+ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+  outer(ls_ctrlFD, paste0) %>% 
+  as.vector()
+
+### Different datasets
+
+
+###Duble check the dataset--------------
+ls_mod <- c(
+  glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
+)
+
+result_dcpoUncertainAPSR <- map(ls_mod, function(aMod){ # reading a model
+  result <- map(dcpo_apsr, function(aData){ # applying to the 1000 datasets
+    eval(parse(text = aMod))
+  })
+  
+  result_betas <- mitools::MIextract(result, fun = coef)
+  
+  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
+  
+  tidy_dcpoUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
+                             variance = result_vars)) %>% 
+    rownames_to_column(var = "term") %>%
+        rename(conf.low = `(lower`,
+               conf.high = `upper)`,
+               estimate = results) %>%
+        filter(!str_detect(term, "(Intercept)"))
+  
+  glance_dcpoUncertainAPSR <- glance.plm(result[[1]])
+  
+  result_dcpoUncertainAPSR <- list(tidy_dcpoUncertainAPSR, glance_dcpoUncertainAPSR)
+})
+
+names(result_dcpoUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
+
+saveRDS(result_dcpoUncertainAPSR, file = here::here("output", "estimates_dcpoUncertainAPSR.RDS"))
+
+
+## ----visualizedFullUncertainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10----
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_clsFullUncertainAPSR <- readRDS(here("output", "estimates_clsFullUncertainAPSR.RDS"))
@@ -2149,12 +2263,9 @@ legend <- get_legend(plot_RegAPSR2)
 plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
 
 grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
-```
 
-\pagebreak
 
-# Replication with Alternative Methods Accounting for Uncertainty
-```{r MocclaassenUncertaintyAJPS}
+## ----MocclaassenUncertaintyAJPS--------------------
 load("data/cls_ajps.rda")
 df_cls <- purrr::map(1:900, function(anEntry) {
   cls_ajps[[anEntry]] %>% 
@@ -2190,9 +2301,9 @@ result_clsUncertain_whole <- append(result_clsUncertain, result_clsUncertain_gmm
 
 saveRDS(result_clsUncertain_whole, file =here("output","clsAJPS_uncertainty.RDS"))
 
-```
 
-```{r MocdcpoUncertaintyAJPS}
+
+## ----MocdcpoUncertaintyAJPS------------------------
 load(here("data","dcpo_ajps.rda"))
 
 df_dcpo <- purrr::map(1:900, function(anEntry) {
@@ -2231,9 +2342,9 @@ result_dcpoUncertain_whole <- append(result_dcpoUncertain, result_dcpoUncertain_
 saveRDS(result_dcpoUncertain_whole, file =here("output","dcpoAJPS_uncertainty.RDS"))
 
 
-```
 
-```{r visualizedMocUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy ", eval = TRUE, fig.width=7, fig.height=10}
+
+## ----visualizedMocUncertainAJPS, fig.cap= "The Effect of Public Support on Democracy ", eval = TRUE, fig.width=7, fig.height=10----
 
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
 result_clsUncertain_whole <- readRDS(here("output", "clsAJPS_uncertainty.RDS"))
@@ -2364,10 +2475,9 @@ grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 
 
 
-```
 
 
-```{r claassenMocUncertaintyAPSR}
+## ----claassenMocUncertaintyAPSR--------------------
 load(here("data", "cls_apsr.rda"))
 
 
@@ -2412,9 +2522,9 @@ saveRDS(result_clsUncertain, file = here("ouput","clsAPSR_uncertainty.RDS"))
 
 
 
-```
 
-```{r  dcpoMocUncertaintyAPSR}
+
+## ----dcpoMocUncertaintyAPSR------------------------
 load(here("data","dcpo_apsr.rda"))
 df_dcpoUncertainAPSR <- purrr::map(1:900, function(anEntry) {
   dcpo_apsr[[anEntry]] %>% 
@@ -2452,10 +2562,9 @@ names(result_dcpoUncertain) <- c("pooled1", "pooled-regime1", "pooled2", "pooled
 saveRDS(result_dcpoUncertain, file =here("output","dcpoAPSR_uncertainty.RDS"))
 
 
-```
 
 
-```{r visualizedMocUncertainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
+## ----visualizedMocUncertainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10----
 
 
 result_clsUncertain <- readRDS(here("output","clsAPSR_uncertainty.RDS"))
@@ -2739,5 +2848,4 @@ grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol 
 
 
 
-```
 
