@@ -47,11 +47,13 @@ cls_ajps <- purrr::map(1:900, function(anEntry) {
     cls_theta_list[[anEntry]] %>% 
         left_join(cls_ajps_cntrl_list[[anEntry]],by = c("year", "country"))  %>% 
         mutate(SupDem_trim = ifelse(year<firstyear, NA, theta),
-               theta_dem = ifelse(is.na(SupDem_trim),NA,
+               theta_dem_trim = ifelse(is.na(SupDem_trim),NA,
                                   ifelse(Regime_VD > 1 & !is.na(SupDem_trim), theta, 0)),
-               theta_aut = ifelse(is.na(SupDem_trim),NA,
-                                  ifelse(Regime_VD < 2& !is.na(SupDem_trim), theta, 0)))
+               theta_aut_trim = ifelse(is.na(SupDem_trim),NA,
+                                  ifelse(Regime_VD < 2& !is.na(SupDem_trim), theta, 0))) %>%
+        select(country, year, theta, contains("trim"), everything())
 }) 
+
 #merge with cls_theta and create trim variables. 
 
 save(cls_ajps, file = "data/cls_ajps.rda")
