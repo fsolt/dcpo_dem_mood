@@ -150,7 +150,7 @@ theme_set(theme_minimal())
 # Data input
 
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
-v_dem <- read.csv(here("data", "vdem15.csv"))
+v_dem <- read.csv(here("data", "vdem15.csv"))    ######????????? why we need this one? for graph?  in the following analysis, we never use v_dem
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
 # produced by cls_ajps_apsr_uncertain.R and dcpo_ajps_apsr_uncertain.R
@@ -167,7 +167,8 @@ load(here("data", "dem_mood_apsr.RData"))
 load(here("data", "dcpo_input.rda"))
 load(here("data", "dcpo_theta.rda"))
 load(here("data", "dcpo_sigma.rda"))
-load(here("data", "dcpo_ajps_rubin.rda"))
+#load(here("data", "dcpo_ajps_rubin.rda"))
+# df_controls <- readRDS(here("data", "control_variables_ajps.rds"))   #use control file for merging with 
 df_dcpoUncertainAPSR <- readRDS(here("data", "df_dcpoUncertainAPSR.rds"))
 
 ```
@@ -350,8 +351,11 @@ saveRDS(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 
 ```{r cls-modelAJPS}
 
-ls_iv <- c("plm::lag(theta, 1)", 
-    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+#ls_iv <- c("plm::lag(theta, 1)", 
+#    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_iv <- c("plm::lag(SupDem_trim, 1)", 
+    "plm::lag(theta_dem_trim, 1) + plm::lag(theta_aut_trim, 1) ") #use trimmed data
 
 ls_method <- c("plm", "pgmm")
 
@@ -405,8 +409,11 @@ saveRDS(result_clsUncertainFull, file = here::here("output", "estimates_clsAJPSf
 ```
 
 ```{r dcpo-modelAJPS}
-ls_iv <- c("plm::lag(theta, 1)", 
-    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+#ls_iv <- c("plm::lag(theta, 1)", 
+#    "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ") 
+
+ls_iv <- c("plm::lag(theta_trim, 1)", 
+    "plm::lag(theta_dem_trim, 1) + plm::lag(theta_aut_trim, 1) ") #use trimmed data
 
 ls_method <- c("plm", "pgmm")
 
@@ -590,7 +597,7 @@ ls_ivECM <- c("diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)",
               "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)")
 ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
 
-ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
+ls_eqECM <- glue("diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>% 
   outer(ls_ctrlECM, paste0) %>% 
   as.vector()
 
@@ -599,13 +606,13 @@ ls_ivFD <- c("Libdem_z",
 
 ls_ctrlFD <- c("", " + Corrup_TI_z")
 
-ls_eqFD <- glue("diff(theta, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>% 
+ls_eqFD <- glue("diff(SupDem_trim, lag = 1) ~ {ls_ivFD} + lnGDP_imp") %>% 
   outer(ls_ctrlFD, paste0) %>% 
   as.vector()
 
 ls_mod_apsrCLS <- c(
   glue("plm({ls_eqECM}, model = 'pooling', data = aData)"),
-  glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = aData)")
+  glue("plm({ls_eqFD}, model = 'fd', index = 'country', data = aData)")
 )
 ```
 
@@ -640,18 +647,18 @@ saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsF
 ```{r dcpo-modelAPSR}
 ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
               "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
-ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
+ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
 
-ls_eqECM <- glue("diff(theta, lag = 1) ~ plm::lag(theta, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
+ls_eqECM <- glue("diff(theta_trim, lag = 1) ~ plm::lag(theta_trim, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
   outer(ls_ctrlECM, paste0) %>% 
   as.vector()
 
 ls_ivFD <- c("Vdem_libdem_z",
              "Vdem_polyarchy_z + Vdem_liberal_z")
 
-ls_ctrlFD <- c("", " + corruption_z")
+ls_ctrlFD <- c("", " + Corrup_TI_z")
 
-ls_eqFD <- glue("theta ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
+ls_eqFD <- glue("theta_trim ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
   outer(ls_ctrlFD, paste0) %>% 
   as.vector()
 
@@ -1369,12 +1376,12 @@ saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"
 ```
 
 ```{r dcpo-uncertainAJPSmain, eval=FALSE}
-df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
-  .x[[.y]] %>%
-    mutate(theta_dem = theta * regime,
-           theta_aut = theta * (1 - regime)) %>%
-    plm::pdata.frame(index = c("country", "year"))
-}) # The code is to fit the embedded format of dcpo_ajps_rubin
+# df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
+#  .x[[.y]] %>%
+#    mutate(theta_dem = theta * regime,
+#           theta_aut = theta * (1 - regime)) %>%
+#    plm::pdata.frame(index = c("country", "year"))
+# }) # The code is to fit the embedded format of dcpo_ajps_rubin
 
 # df_dcpo <- purrr::map(1:1000, function(anEntry) {
 #   dcpo_theta$theta[anEntry,,] %>% 
@@ -2155,14 +2162,15 @@ grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol 
 
 # Replication with Alternative Methods Accounting for Uncertainty
 ```{r MocclaassenUncertaintyAJPS}
-load("data/cls_ajps.rda")
+load(here("data","cls_ajps.rda"))
+
 df_cls <- purrr::map(1:900, function(anEntry) {
   cls_ajps[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
-ls_iv <- c("plm::lag(SupDem_trim, 1)",                         ##sumpdem_trim, our model did not use trim
-           "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1) ")
+ls_iv <- c("plm::lag(SupDem_trim, 1)",                         
+           "plm::lag(theta_dem_trim, 1) + plm::lag(theta_aut_trim, 1) ") ##all use trim
 ls_method <- c("plm", "pgmm")
 ls_eq <- glue("Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + {ls_iv} + 
               plm::lag(lnGDP_imp, 1) + plm::lag(GDP_imp_grth, 1) + 
@@ -2196,15 +2204,13 @@ saveRDS(result_clsUncertain_whole, file =here("output","clsAJPS_uncertainty.RDS"
 load(here("data","dcpo_ajps.rda"))
 
 df_dcpo <- purrr::map(1:900, function(anEntry) {
-  dcpo_ajps[[anEntry]] %>% 
-    mutate(theta_dem = ifelse(is.na(theta_trim),NA,theta_dem),
-           theta_aut = ifelse(is.na(theta_trim),NA,theta_aut)) %>% 
+  dcpo_ajps[[anEntry]] %>%     #original data has include theta_dem_trim
     plm::pdata.frame(index = c("country", "year"))
 })
 
 
 ls_iv <- c("plm::lag(theta_trim, 1)", 
-           "plm::lag(theta_dem, 1) + plm::lag(theta_aut, 1)") 
+           "plm::lag(theta_dem_trim, 1) + plm::lag(theta_aut_trim, 1)") #use trimed data
 ls_method <- c("plm", "pgmm")
 ls_eq <- glue("Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + {ls_iv} + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1)") 
 ls_mod <- c(
@@ -2737,7 +2743,4 @@ plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
 
 grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
 
-
-
 ```
-
