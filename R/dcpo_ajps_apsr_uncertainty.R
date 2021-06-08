@@ -1,13 +1,22 @@
-###Posterior distribution: codes from R/v10_posterior.R
-library(tidyverse)
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(readxl)
-library(janitor)
-library(countrycode)
-library(stringr)
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+
+# load all the packages you will use below 
+p_load(
+  here,
+  tidyr,
+  purrr,
+  readxl,
+  janitor,
+  countrycode,
+  stringr,
+  tidyverse
+) 
+
+# Functions preload
 set.seed(313)
+
+
 
 ################################################################
 ######## Create lists for elements in analysis data  ###########
@@ -16,15 +25,15 @@ set.seed(313)
 ####################### libdem_cntrl_list     ##################
 
 
-load("data/dcpo_input.rda")
-load("data/dcpo_theta.rda")
-load("data/dcpo_sigma.rda")
-load("data/dcpo_ajps_cntrl.rda")
-load("data/dcpo_apsr_cntrl.rda")
-cntrl_ajps_se <- readRDS("data/cntrl_ajps_se_1985.rds")
-load("data/country_regionUN.rda")  ##this file can be used when we need region variables
+load(here("data","dcpo_input.rda"))
+load(here("data","dcpo_theta.rda"))
+load(here("data","dcpo_sigma.rda"))
+load(here("data","dcpo_ajps_cntrl.rda"))
+load(here("data","dcpo_apsr_cntrl.rda"))
+cntrl_ajps_se <- readRDS(here("data","cntrl_ajps_se_1985.rds"))
+load(here("data","country_regionUN.rda"))  ##this file can be used when we need region variables
 
-#cpi_post <- readRDS("data/cpi_post.rds") created in R/cpi_error.R. 
+#cpi_post <- readRDS(here("data","cpi_post.rds")) created in R/cpi_error.R. 
 # For the convenience, create cpi_post here too.  
 
 
@@ -50,7 +59,7 @@ theta_sigma_list <- purrr::map(1:900, function(anEntry) {
               by = c("year", "country"))
 }) 
 
-#save(theta_sigma_list,file = "data/theta_sigma_list.rda")
+save(theta_sigma_list,file = here::here("data","theta_sigma_list.rda"))
 
 
 ########libdem_list
@@ -74,7 +83,7 @@ cntrl_ajps_se_pdist <- data.frame(cntrl_ajps_se_pdist)
 cntrl_ajps_libdem <- cbind(cntrl_ajps_se_pdist, pdist_df)
 identical(cntrl_ajps_libdem$iter_cn,cntrl_ajps_libdem$iter_se)
 
-#saveRDS(cntrl_ajps_libdem, "data/cntrl_ajps_libdem.rds")
+saveRDS(cntrl_ajps_libdem, file = here::here("data", "cntrl_ajps_libdem.rds"))
 
 data_temp <- cntrl_ajps_libdem %>% 
   group_by(iter_cn,country) %>%
@@ -86,8 +95,8 @@ for (i in 1:900) {
     filter(iter_cn ==  i)
 }
 
-#save(libdem_list, file = "data/libdem_list.rda")
-#load("data/libdem_list.rda")
+save(libdem_list, file = here::here("data","libdem_list.rda"))
+load(here("data","libdem_list.rda"))
 
 #########libdem_cntrl_list
 
@@ -113,7 +122,7 @@ libdem_cntrl_list <- libdem_list %>%
   ) 
 
 
-#save(libdem_cntrl_list, file = "data/libdem_cntrl_list.rda")
+save(libdem_cntrl_list, file = here::here("data","libdem_cntrl_list.rda"))
 
 
 ##############polyarchi_list
@@ -134,7 +143,7 @@ identical(cntrl_poly$iter_cn,cntrl_poly$iter_se)
 cntrl_poly <- cntrl_poly %>%
   rename(Vdem_polyarchy_post = value)
 
-#saveRDS(cntrl_poly, "data/cntrl_poly.rds")
+saveRDS(cntrl_poly, file = here::here("data","cntrl_poly.rds"))
 
 data_temp <- cntrl_poly %>% 
   group_by(iter_cn,country) %>%
@@ -146,7 +155,7 @@ for (i in 1:900) {
     filter(iter_cn == i)
 }
 
-#save(poly_list, file = "data/poly_list.rda")
+save(poly_list, file = here::here("data","poly_list.rda"))
 
 
 ############liberal_ist
@@ -164,7 +173,8 @@ cntrl_liberal <- cbind(cntrl_ajps_se_pdist, libpdist_df)
 identical(cntrl_liberal$iter_cn,cntrl_liberal$iter_se)
 cntrl_liberal <- cntrl_liberal %>%
   rename(Vdem_liberal_post = value)
-#saveRDS(cntrl_liberal, "data/cntrl_liberal.rds")
+
+saveRDS(cntrl_liberal, file = here::here("data","cntrl_liberal.rds"))
 
 data_temp <- cntrl_liberal %>% 
   group_by(iter_cn,country) %>%
@@ -176,11 +186,11 @@ for (i in 1:900) {
     filter(iter_cn == i)
 }
 
-#save(lib_list, file = "data/lib_list.rda")
+save(lib_list, file = here::here("data","lib_list.rda"))
 
 ############create cpi_post and Cpi_list
-cpi_95_19_update <- readRDS("data/cpi95_19_update.rds")
-cpi_2012error <- read_excel("data/CPI2019.xlsx", sheet ="CPI Timeseries 2012 - 2019")
+cpi_95_19_update <- readRDS(here("data","cpi95_19_update.rds"))
+cpi_2012error <- read_excel(here("data","CPI2019.xlsx", sheet ="CPI Timeseries 2012 - 2019"))
 
 cpi_2012error_clean <- cpi_2012error %>%
   row_to_names(row_number = 2) %>%
@@ -246,7 +256,7 @@ cpi_post <- cpi %>%
   mutate(cpi_postm1 = lag(cpi_post),
          cpi_postm1_z = as.vector(scale(cpi_postm1)))
 
-#saveRDS(cpi_post, "data/cpi_post.rds")
+saveRDS(cpi_post, file = here::here("data","cpi_post.rds"))
 
 cpi_post_z <- cpi_post %>%
   select(country, year,iter_cn,iter_se,cpi_post,cpi_post_z)
@@ -261,15 +271,15 @@ for (i in 1:900) {
     filter(iter_cn ==  i)
 }
 
-#save(cpi_list, file = "data/cpi_list.rda")
+save(cpi_list, file = here::here("data","cpi_list.rda"))
 
 
 #####################################################
 #####     Create analysis data for dcpo ajps  #######
 #####################################################
-#load("data/libdem_cntrl_list.rda")
-load("data/theta_sigma_list.rda") #theta and sigma
-load("data/dcpo_ajps_cntrl.rda")
+
+load(here("data","theta_sigma_list.rda")) #theta and sigma
+load(here("data","dcpo_ajps_cntrl.rda"))
 
 theta_cntrl <- theta_sigma_list %>%
   map(~.x %>%
@@ -283,20 +293,24 @@ dcpo_ajps <- purrr::map(1:900, function(anEntry) {
     select(-iter_cn,-iter_se) %>% 
     mutate(theta_dem = theta * regime,
            theta_aut = theta * (1 - regime),
-           theta_trim = ifelse(year < first_year, NA, theta)) 
+           theta_trim = ifelse(year < first_year, NA, theta)) %>% 
+    mutate(theta_dem_trim = ifelse(is.na(theta_trim),NA,theta_dem),
+           theta_aut_trim = ifelse(is.na(theta_trim),NA,theta_aut))  %>%
+    select(country, year, theta, sigma, contains("trim"), everything())
 }) 
 
-#save(dcpo_ajps, file = "data/dcpo_ajps.rda")
+
+save(dcpo_ajps, file = here::here("data","dcpo_ajps.rda"))
 
 #####################################################
 #####     Create analysis data for dcpo apsr  #######
 #####################################################
 
-load("data/libdem_list.rda")
-load("data/poly_list.rda")
-load("data/lib_list.rda")
-load("data/cpi_list.rda")
-load("data/dcpo_apsr_cntrl.rda")
+load(here("data","libdem_list.rda"))
+load(here("data","poly_list.rda"))
+load(here("data","lib_list.rda"))
+load(here("data","cpi_list.rda"))
+load(here("data","dcpo_apsr_cntrl.rda"))
 
 
 ## Standardize Vdem_libdem Vdem_libdem_z
@@ -351,4 +365,5 @@ dcpo_apsr <- purrr::map(1:900, function(anEntry) {
     select(country, year, first_year,theta,sigma, theta_trim, contains("z"),everything())
 }) 
 
-#save(dcpo_apsr, file = "data/dcpo_apsr.rda")
+save(dcpo_apsr, file = here::here("data","dcpo_apsr.rda"))
+
