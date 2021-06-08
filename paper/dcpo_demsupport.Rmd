@@ -65,7 +65,7 @@ Public support for democracy cannot be directly observed, and its incorrect meas
 Further, the survey data available across countries and over time on support for democracy---or indeed most topics in public opinion---are sparse and incomparable, greatly hindering broadly comparative research.
 Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
 A pair of prominent recent works took advantage of this latent variable approach to measure democratic support for over one hundred countries for up to nearly three decades and to then assess, respectively, its consequences for and roots in democratic change [@Claassen2020a; @Claassen2020b].
-These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating their own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
+These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating its own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
 
 The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
 Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
@@ -87,7 +87,7 @@ Of course, it could in fact be that democratic change does not actually depend o
 
 We draw two conclusions, one methodological and one substantive.
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-And, at a time when democracy as seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
+And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not provide support for them.
 There is no room for complacency.
 
