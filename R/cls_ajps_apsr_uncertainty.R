@@ -17,6 +17,7 @@ set.seed(313)
 ######## Create lists for elements in analysis data  ###########
 ########### AJPS: cls_libdem_ajps_list,cls_ajps  ###############
 ################################################################
+
 load(here("data","cls_ajps_cntrl.rda"))  #cls ajps variables without errors. 
 load(here("data","cls_theta_list.rda"))  #cls's theta list
 load(here("data","cls_libdem_list.rda"))  #vdem8 libdem list
@@ -71,9 +72,7 @@ save(cls_ajps, file = here("data","cls_ajps.rda"))
 ######## Create lists for elements in analysis data  ###########
 ########### APSR: cls_libdem_ajps_list,cls_ajps  ###############
 ################################################################
-#load(here("data","cls_ajps_cntrl.rda"))
-#load(here("data","cls_theta_list.rda"))
-#load(here("data","cls_libdem_list.rda"))
+
 load(here("data","cls_apsr_cntrl.rda"))
 load(here("data","cls_poly_list.rda"))
 load(here("data","cls_liberal_list.rda"))
@@ -136,5 +135,6 @@ cls_apsr <- purrr::map(1:900, function(anEntry) {
         select(-Vdem_libdem,-liter,-iter_se) %>%
         select(country, year, First_yr,theta, SupDem_trim,contains("z"),everything())
 }) 
+
 
 save(cls_apsr, file = here("data","cls_apsr.rda"))

@@ -277,7 +277,7 @@ save(cpi_list, file = here::here("data","cpi_list.rda"))
 #####################################################
 #####     Create analysis data for dcpo ajps  #######
 #####################################################
-#load(here("data","libdem_cntrl_list.rda"))
+
 load(here("data","theta_sigma_list.rda")) #theta and sigma
 load(here("data","dcpo_ajps_cntrl.rda"))
 
@@ -366,3 +366,4 @@ dcpo_apsr <- purrr::map(1:900, function(anEntry) {
 }) 
 
 save(dcpo_apsr, file = here::here("data","dcpo_apsr.rda"))
+

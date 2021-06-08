@@ -5,7 +5,6 @@ output:
     keep_tex: yes
     toc: FALSE
     latex_engine: xelatex
-    # template: svm-latex-ms2.tex
     
 title: "Democracy, Public Support, and Measurement Uncertainty"
 thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
@@ -647,7 +646,7 @@ saveRDS(result_clsFullUncertainAPSR, file = here::here("output", "estimates_clsF
 ```{r dcpo-modelAPSR}
 ls_ivECM <- c("diff(Vdem_libdem_z, lag = 1) + plm::lag(Vdem_libdem_z, 1)", 
               "diff(Vdem_polyarchy_z, lag = 1) + plm::lag(Vdem_polyarchy_z, 1) + diff(Vdem_liberal_z, lag = 1) + plm::lag(Vdem_liberal_z, 1)")
-ls_ctrlECM <- c("", " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)")
+ls_ctrlECM <- c("", " + diff(corruption_z, lag = 1) + plm::lag(corruption_z, 1)")
 
 ls_eqECM <- glue("diff(theta_trim, lag = 1) ~ plm::lag(theta_trim, 1:2) + {ls_ivECM} + diff(lg_imp_mdpgdp, lag = 1) + plm::lag(lg_imp_mdpgdp, 1)") %>% 
   outer(ls_ctrlECM, paste0) %>% 
@@ -656,7 +655,7 @@ ls_eqECM <- glue("diff(theta_trim, lag = 1) ~ plm::lag(theta_trim, 1:2) + {ls_iv
 ls_ivFD <- c("Vdem_libdem_z",
              "Vdem_polyarchy_z + Vdem_liberal_z")
 
-ls_ctrlFD <- c("", " + Corrup_TI_z")
+ls_ctrlFD <- c("", " + corruption_z")
 
 ls_eqFD <- glue("theta_trim ~ {ls_ivFD} + lg_imp_mdpgdp") %>% 
   outer(ls_ctrlFD, paste0) %>% 
@@ -2743,4 +2742,7 @@ plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
 
 grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
 
+
+
 ```
+
