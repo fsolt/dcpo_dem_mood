@@ -156,7 +156,7 @@ sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 load(here("data", "cls_ajps.rda")) 
 load(here("data", "dcpo_ajps.rda")) 
 load(here("data", "cls_apsr.rda"))
-load(here("data", "dcpo_apsr.rda")) 
+load(here("data","dcpo_apsr.rda")) 
 
 claassen_replication <- readRDS(here("data", "claassen_replication.rds")) %>% 
   janitor::clean_names() %>% 
