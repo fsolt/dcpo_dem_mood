@@ -190,7 +190,7 @@ save(lib_list, file = here::here("data","lib_list.rda"))
 
 ############create cpi_post and Cpi_list
 cpi_95_19_update <- readRDS(here("data","cpi95_19_update.rds"))
-cpi_2012error <- read_excel(here("data","CPI2019.xlsx", sheet ="CPI Timeseries 2012 - 2019"))
+cpi_2012error <- read_xlsx(here("data","CPI2019.xlsx"), sheet ="CPI Timeseries 2012 - 2019")
 
 cpi_2012error_clean <- cpi_2012error %>%
   row_to_names(row_number = 2) %>%
