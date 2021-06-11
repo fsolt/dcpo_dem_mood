@@ -46,7 +46,7 @@ nocite: |
 ```{r setup, include=FALSE}
 options(tinytex.verbose = TRUE)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300)
+knitr::opts_chunk$set(cache = TRUE, echo = FALSE, message = FALSE, warning = FALSE, dpi = 300, include = FALSE)
 
 # If you haven't install `DCPOtools`
 # remotes::install_github("fsolt/DCPOtools")
@@ -59,9 +59,9 @@ p_load(
   dataverse, # data scraping
   DCPOtools, # analysis
   plm,
-  glue,
+  glue, dotwhisker,
   huxtable, kableExtra, modelsummary, # tabulation
-  latex2exp, # visualization
+  latex2exp, patchwork, # visualization
   rstan, # Bayesian estimation
   tidyverse # data wrangling
 ) 
@@ -158,7 +158,7 @@ glance.plm <- function(x, ...) {
 ```
 
 
-## Claassen Replication Input
+## Claassen Replication
 
 ```{r claassen_replication_input, eval=FALSE}
 dcpo_input_raw1 <- read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>% 
@@ -280,27 +280,17 @@ claassen_m5 <- rstan::stan(file = 'R/argon/dcpo_demsupport/R/supdem.stan.mod5.st
 save(claassen_m5, file = load(here::here("data", "claassen_m5.rda")))
 ```
 
-```{r claassen_m5_theta}
-load(here::here("data", "claassen_m5.rda"))
-
-claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")
-
-save(claassen_m5_theta, file = "data/claassen_m5_theta.rda")
-
-claassen_m5_x_pred <- rstan::extract(claassen_m5, pars = "x_pred")
-
-save(claassen_replication_input, claassen_m5_x_pred, file = "data/claassen_m5_x_pred.rda")
-```
 
 
 
-```{r claassenUncertainty, cache=TRUE}
-load(here::here("data", "claassen_m5_3k_07-05-11-16.rda")) # ours
+```{r ajps_mean}
+load(here::here("data", "claassen_m5_3k_07-05-11-16.rda")) # our dataset of estimates, from surveys & DCPOtools, as generated in above (unrun) chunks
 
-claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")
+claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta") %>% 
+  first()
 
 ls_year <- 1988:2017
-ls_country <- claassen_input$data$country %>% unique()
+ls_country <- unique(claassen_input$data$country)
 
 vcovBK_se <- function(x) {
   vcovBK(x, cluster = "time") %>% 
@@ -326,20 +316,8 @@ sd_controls <- read_csv(here::here("data", "Support_democracy_ajps.csv"),
   left_join(first_years, by = "country") %>% 
   filter(year >= first_year)
 
-claassen_m5_theta_std = (claassen_m5_theta[[1]] - mean(as.vector(claassen_m5_theta[[1]]))) / sd(as.vector(claassen_m5_theta[[1]]))
-
-df_theta <- purrr::map(1:1000, function(x) {
-  claassen_m5_theta_std[x,,] %>% 
-    as_tibble() %>% 
-    rename_with(~ls_country, .cols = starts_with("V")) %>% 
-    mutate(year = first_year + row_number() - 1) %>% 
-    pivot_longer(cols = !year,
-                 names_to = "country",
-                 values_to = "theta") %>%
-    arrange(country, year) %>% 
-    left_join(sd_controls, by = c("country", "year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
+# standardize, exactly as in 'supdem stan estimation ajps.R' at L192
+claassen_m5_theta_std = (claassen_m5_theta - mean(as.vector(claassen_m5_theta))) / sd(as.vector(claassen_m5_theta))
 
 df_theta_mean <- purrr::map_df(1:1000, function(x) {
   claassen_m5_theta_std[x,,] %>% 
@@ -387,7 +365,7 @@ tidy_cls <- map(df_result_cls, function(result) {
   
   if (class(result)[[1]] == "plm") {
      mutate(df_result, std.error = vcovBK_se(result))
-  } else{
+  } else {
     mutate(df_result, std.error = vcovHC_se(result))
   }
   
@@ -404,7 +382,7 @@ glance_cls <- map(df_result_cls, function(aResult) {
 result_cls <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
 #names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-map_df(1:2, function(a) {
+ajps_mean_plot <- map_df(1:2, function(a) {
   result_cls[[a]][[1]] %>% 
     mutate(model = if_else(a==1, "Ours", "Claassen's"),
            term = str_replace(term, "SupDem_trim", "theta_mean")) %>% 
@@ -423,9 +401,22 @@ map_df(1:2, function(a) {
   theme_minimal() +
   ggtitle("Dependent Variable: Level of Democracy") + 
   xlab("Coefficient Estimate") +
-  scale_color_discrete(name="Dataset")
+  scale_color_discrete(name="Dataset", breaks=c("Claassen's","Ours"))
+```
 
-ggsave("paper/ours_vs_claassens_mean.pdf")
+```{r our_ajps_1k}
+df_theta <- purrr::map(1:1000, function(x) {
+  claassen_m5_theta_std[x,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_country, .cols = starts_with("V")) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = !year,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year) %>% 
+    left_join(sd_controls, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
 
 result_m5_1k <- map(df_theta, function(aDataset) {
   plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(theta, 1) + plm::lag(lnGDP_imp, 1) +
@@ -436,8 +427,6 @@ result_m5_1k <- map(df_theta, function(aDataset) {
 result_betas_m5_1k <- mitools::MIextract(result_m5_1k, fun = coef)
 result_vars_m5_1k <- mitools::MIextract(result_m5_1k, fun = vcovBK_se)
 
-load(here::here("data", "pure_claassen_1k_result.rda"))
-
 df_result_cls_1k <- summary(mitools::MIcombine(results = result_betas_m5_1k, 
                                                variance = result_vars_m5_1k)) %>%
   rownames_to_column(var = "term") %>% 
@@ -446,8 +435,155 @@ df_result_cls_1k <- summary(mitools::MIcombine(results = result_betas_m5_1k,
          estimate = results) %>% 
   filter(!str_detect(term, "(Intercept)")) %>% 
   mutate(model = "Ours")
+```
 
-bind_rows(df_result_cls_1k, mod.1_df_result_cls_1k) %>% 
+```{r pure_claassen_ajps_1k}
+load(here::here("data", "pure_claassen_1k_result.rda")) # from pure_claassen.R
+# Replicate Claassen AJPS thetas, using his input data and his code
+# light revision of 'supdem stan estimation ajps.R'
+
+# options
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+
+# read support for dem data
+sddem1 = read.csv(here::here("data", "supdem raw survey marginals.tab"))
+
+# remove NAs
+sddem1 = sddem1[!sddem1$Response==0, ]
+
+# create year by country indicators
+year0 = 1987
+sddem1 = sddem1[sddem1$Year > year0,]
+sddem1 = unite(sddem1, YearCountry, c(Year, Country), sep = "_", remove = FALSE)
+
+# create item by country indicators
+sddem1 = unite(sddem1, ItemCnt, c(Item, Country), sep = "_", remove = FALSE)
+
+# create year by project indicators
+sddem1 = unite(sddem1, YrProj, c(Year, Project), sep = "_", remove = FALSE)
+
+# create year by project by country indicators
+sddem1 = unite(sddem1, YrProjCnt, c(YrProj, Country), sep = "_", remove = FALSE)
+
+# factorise
+sddem1$Country = as.factor(as.character(sddem1$Country))
+sddem1$Item = as.factor(as.character(sddem1$Item))
+sddem1$ItemCnt = as.factor(as.character(sddem1$ItemCnt))
+sddem1$Project = as.factor(as.character(sddem1$Project))
+sddem1$YrProj = as.factor(as.character(sddem1$YrProj))
+sddem1$YrProjCnt = as.factor(as.character(sddem1$YrProjCnt))
+sddem1$Year = sddem1$Year-year0
+
+# count data
+dim(sddem1)[1]                   # 3765 national responses
+length(unique(sddem1$Country))   # 150 countries
+length(unique(sddem1$Project))   # 14 projects
+length(unique(sddem1$Item))      # 52 items
+length(unique(sddem1$ItemCnt))   # 1453 item-country
+length(unique(sddem1$YrProjCnt)) # 1390 national surveys
+length(unique(sddem1$Year))      # 27 unique years (out of 30)
+sum(sddem1$Sample) / dim(sddem1)[1] * length(unique(sddem1$YrProjCnt))   # 1,804,450 respondents              
+
+# drop countries with less than 2 years of data
+cnt.obs.years = rowSums(table(sddem1$Country, sddem1$Year) > 0)
+sort(cnt.obs.years)
+sddem2 = sddem1[sddem1$Country %in% levels(sddem1$Country)[cnt.obs.years > 1], ]
+length(unique(sddem2$Country))   # 137 countries with 2+ years of data
+
+#### Stan estimation
+# prepare data for stan
+n.items = length(unique(sddem2$Item))
+n.cntrys = length(unique(sddem2$Country))
+n.yrs = 2017-year0
+n.proj = length(unique(sddem2$Project))
+n.resp = dim(sddem2)[1]
+n.itm.cnt = length(unique(sddem2$ItemCnt))
+n.cntry.yrs = n.cntrys * n.yrs
+n.yr.proj.cnt = length(unique(sddem2$YrProjCnt))
+cntrys = as.numeric(factor(sddem2$Country))
+cnt.names = as.character(sort(unique(sddem2$Country)))
+cnt.code = as.character(sddem2[match(cnt.names, sddem2$Country), "CAbb"])
+cnt.code[83] = "MNE"
+cnt.code[106] = "SRB"
+items = as.numeric(factor(sddem2$Item))
+yrs = sddem2$Year
+projs = as.numeric(factor(sddem2$Project))
+itm.cnts = as.numeric(factor(sddem2$ItemCnt))
+
+# specify data for stan
+dat.2 = list(N=n.resp, K=n.items, T=n.yrs, J=n.cntrys, P=n.itm.cnt, jj=cntrys, tt=yrs, 
+             pp=itm.cnts, kk=items, x=sddem2$Response, samp=sddem2$Sample)
+sapply(dat.2, summary)
+
+# pars
+pars.5 = c("mu_lambda","sigma_lambda","sigma_delta","sigma_theta","phi","lambda","delta","theta",
+           "x_pred","log_lik")
+
+save(dat.2, pars.5, file = here::here("R", "argon", "dcpo_demsupport_rep", "data", "pure_claassen.rda"))
+
+# run 'R/argon/dcpo_demsupport_rep/R/pure_claassen_m5.R'
+stan.mod.5 <- rio::import(here::here("R", "argon", "dcpo_demsupport_rep", "data", "pure_claassen_m5.rda"))
+
+#### Extract theta estimates
+
+theta.out = rstan::extract(stan.mod.5, pars = c("theta"))[[1]]
+theta.std = (theta.out - mean(as.vector(theta.out))) / sd(as.vector(theta.out)) # standardize
+theta.out.t = apply( theta.std, 1, function(x) t(x) )
+theta.out.df = data.frame(Country=rep(cnt.names, length.out=n.cntrys*30), 
+                          ISO_code=rep(cnt.code, length.out=n.cntrys*30),
+                          Year=rep(1988:2017, each=n.cntrys), theta.out.t)
+theta.pe = theta.out.df[,1:3]
+theta.dim = dim(theta.out.df)[2]
+theta.pe$SupDem_trim = apply(theta.out.df[,4:theta.dim], 1, mean)
+
+first.yr = data.frame(Country=levels(sddem2$Country),
+                      First_yr = as.vector(by(sddem2, sddem2$Country, function(x) min(as.numeric(x$Year))+1987)))
+
+theta.pe = merge(theta.pe, first.yr, by="Country", all.x=TRUE)
+cnts = theta.pe[theta.pe$Year==2008, "Country"]
+frst.yr = theta.pe[theta.pe$Year==2008, "First_yr"]
+for(i in 1:length(cnts)) {
+    theta.pe[theta.pe$Country==cnts[i] & theta.pe$Year<frst.yr[i], "SupDem_trim"] = NA
+}
+
+sd_controls <- read_csv(here::here("data", "Support_democracy_ajps.csv"),
+                        col_types = cols(.default = col_double(),
+                                         Country = col_character(),
+                                         Cnt_code = col_character(),
+                                         ISO_code = col_character(),
+                                         Region_UN = col_character()))
+
+
+theta.out.df_list <- map(1:1000, function(x) {
+    theta.pe %>% 
+        mutate(theta0 = theta.out.t[,x],
+               theta = if_else(!is.na(SupDem_trim), theta0, NA_real_)) %>% 
+        left_join(sd_controls, by = c("Country", "Year")) %>% 
+        plm::pdata.frame(index = c("Country", "Year"))
+})
+
+mod.1_1k <- map(theta.out.df_list, function(aDataset) {
+    plm(Libdem_VD ~ plm::lag(Libdem_VD, 1:2) + plm::lag(theta, 1) + plm::lag(lnGDP_imp, 1) +
+            plm::lag(GDP_imp_grth, 1) + plm::lag(Libdem_regUN, 1) + plm::lag(Pr_Muslim, 1) +
+            plm::lag(Res_cp_WDI_di, 1), model="pooling", data = aDataset)
+})
+
+result_betas_mod.1_1k <- mitools::MIextract(mod.1_1k, fun = coef)
+result_vars_mod.1_1k <- mitools::MIextract(mod.1_1k, fun = vcovBK_se)
+
+mod.1_df_result_cls_1k <- summary(mitools::MIcombine(results = result_betas_mod.1_1k,
+                                            variance = result_vars_mod.1_1k)) %>%
+    rownames_to_column(var = "term") %>% 
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`, 
+           estimate = results) %>% 
+    filter(!str_detect(term, "(Intercept)")) %>% 
+    mutate(model = "Claassen's")
+```
+
+```{r ajps_1k_plot}
+ajps_1k_plot <- bind_rows(df_result_cls_1k, mod.1_df_result_cls_1k) %>% 
   dotwhisker::dwplot() %>% 
   relabel_predictors(c(`plm::lag(Libdem_VD, 1:2)1` = "Democracy(t-1)",
                        `plm::lag(Libdem_VD, 1:2)2` = "Democracy(t-2)",
@@ -462,10 +598,199 @@ bind_rows(df_result_cls_1k, mod.1_df_result_cls_1k) %>%
   ggtitle("Dependent Variable: Level of Democracy") + 
   xlab("Coefficient Estimate") +
   scale_color_discrete(name="1k Samples\nDataset", breaks=c("Claassen's","Ours"))
-
-ggsave("paper/ours_vs_claassens_1k.pdf")
 ```
 
 
 
+```{r apsr_mean}
+if (!file.exists(here::here("data", "dem_mood_apsr.csv"))) {
+  tempfile <- dataverse::get_file("dem_mood_apsr.tab", "doi:10.7910/DVN/FECIO3", 
+                                  format = "original") # Claassen's APSR replication file
+  
+  writeBin(tempfile, here::here("data", "dem_mood_apsr.csv"))
+}
+
+sd_controls_apsr <- read_csv(here::here("data", "dem_mood_apsr.csv"), 
+                        col_types = cols(.default = col_double(),
+                                         Country = col_character(),
+                                         ISO_code = col_character(),
+                                         Region_UN = col_character())) %>% 
+  mutate(country = countrycode::countrycode(as.character(Country), "country.name", "country.name"),
+         year = as.numeric(as.character(Year))) %>% 
+  left_join(first_years, by = "country") %>% 
+  filter(year >= first_year)
+
+df_theta_mean_apsr <- purrr::map_df(1:1000, function(x) {
+  claassen_m5_theta_std[x,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_country, .cols = starts_with("V")) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = !year,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year)
+}) %>% 
+  group_by(country, year) %>% 
+  summarize(theta_mean = mean(theta)) %>% 
+  right_join(sd_controls_apsr, by = c("country", "year")) %>% 
+  plm::pdata.frame(index = c("country", "year"))
+
+cor(df_theta_mean$theta_mean, df_theta_mean_apsr$theta_mean) # 1
+
+ls_dv_apsr <- c("theta_mean", "SupDem_trim")
+
+ls_eq_apsr <- glue::glue("diff({ls_dv_apsr}, lag=1) ~ plm::lag({ls_dv_apsr}, 1:2) + diff(Libdem_z, lag=1) + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag=1) + plm::lag(lnGDP_imp, 1)")
+
+ls_mod_apsr <- glue::glue("plm({ls_eq_apsr}, model = 'pooling', data = df_theta_mean_apsr)")
+
+df_result_cls_apsr <- map(ls_mod_apsr, function(mod) {
+  result <- eval(parse(text = mod))
+})
+
+tidy_cls_apsr <- map(df_result_cls_apsr, function(result) {
+  df_result <- tidy(result, conf.int = TRUE)
+  
+  if (class(result)[[1]] == "plm") {
+     mutate(df_result, std.error = vcovBK_se(result))
+  } else {
+    mutate(df_result, std.error = vcovHC_se(result))
+  }
+})
+
+glance_cls_apsr <- map(df_result_cls_apsr, function(aResult) {
+  if (class(aResult)[[1]] == "plm") { 
+    glance.plm(aResult) # using the customized glance function
+  } else {
+    glance(aResult)
+  }
+})
+
+result_cls_apsr <- map2(tidy_cls_apsr, glance_cls_apsr, ~ list(.x, .y))
+#names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+
+apsr_mean_plot <- map_df(1:2, function(a) {
+  result_cls_apsr[[a]][[1]] %>% 
+    mutate(model = if_else(a==1, "Ours", "Claassen's")) %>% 
+    filter(!str_detect(term, "(Intercept)"))
+}) %>% 
+  dotwhisker::dwplot() %>% 
+  relabel_predictors(c(`plm::lag(theta_mean, 1:2)1` = "Support[t-1]",
+                       `plm::lag(theta_mean, 1:2)2` = "Support[t-2]",
+                       `plm::lag(SupDem_trim, 1:2)1` = "Support[t-1]",
+                       `plm::lag(SupDem_trim, 1:2)2` = "Support[t-2]",
+                       `diff(Libdem_z, lag = 1)` = "Delta~Liberal~democracy",
+                       `plm::lag(Libdem_z, 1)` = "Liberal~democracy[t-1]",
+                       `diff(lnGDP_imp, lag = 1)` = "Delta~Log GDP per capita",
+                       `plm::lag(lnGDP_imp, 1)` = "Log GDP per capita[t-1]")) +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Delta Support for Democracy") + 
+  xlab("Coefficient Estimate") +
+  scale_color_discrete(name="Dataset", breaks=c("Claassen's","Ours"))
+```
+
+```{r apsr_1k}
+df_theta_apsr <- purrr::map(1:1000, function(x) {
+  claassen_m5_theta_std[x,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_country, .cols = starts_with("V")) %>% 
+    mutate(year = first_year + row_number() - 1) %>% 
+    pivot_longer(cols = !year,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year) %>% 
+    left_join(sd_controls_apsr, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+result_m5_1k_apsr <- map(df_theta_apsr, function(aDataset) {
+  plm(diff(theta, lag=1) ~ plm::lag(theta, 1:2) + diff(Libdem_z, lag=1) 
+           + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag=1) + plm::lag(lnGDP_imp, 1), 
+           aDataset, model="pooling")
+})
+
+result_betas_m5_1k_apsr <- mitools::MIextract(result_m5_1k_apsr, fun = coef)
+result_vars_m5_1k_apsr <- mitools::MIextract(result_m5_1k_apsr, fun = vcovBK_se)
+
+df_result_cls_1k_apsr <- summary(mitools::MIcombine(results = result_betas_m5_1k_apsr, 
+                                                    variance = result_vars_m5_1k_apsr)) %>%
+  rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)")) %>% 
+  mutate(model = "Ours")
+```
+
+```{r pure_claassen_apsr_1k}
+sd.apsr = read.csv(here::here("data", "dem_mood_apsr.csv")) %>% 
+    select(-starts_with("SupDem"))
+
+theta.out.df_list_apsr <- map(1:1000, function(x) {
+    theta.pe %>% 
+        mutate(theta0 = theta.out.t[,x],
+               theta = if_else(!is.na(SupDem_trim), theta0, NA_real_)) %>% 
+        left_join(sd.apsr, by = c("Country", "Year")) %>% 
+        plm::pdata.frame(index = c("Country", "Year"))
+})
+
+mod.1_apsr_1k <- map(theta.out.df_list_apsr, function(aDataset) {
+    plm(diff(theta, lag=1) ~ plm::lag(theta, 1:2) + diff(Libdem_z, lag=1) 
+        + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag=1) + plm::lag(lnGDP_imp, 1), 
+        data = aDataset, model="pooling")
+})
+
+result_betas_mod.1_apsr_1k <- mitools::MIextract(mod.1_apsr_1k, fun = coef)
+result_vars_mod.1_apsr_1k <- mitools::MIextract(mod.1_apsr_1k, fun = vcovBK_se)
+
+mod.1_df_result_cls_apsr_1k <- summary(mitools::MIcombine(results = result_betas_mod.1_apsr_1k,
+                                                     variance = result_vars_mod.1_apsr_1k)) %>%
+    rownames_to_column(var = "term") %>% 
+    rename(conf.low = `(lower`,
+           conf.high = `upper)`, 
+           estimate = results) %>% 
+    filter(!str_detect(term, "(Intercept)")) %>% 
+    mutate(model = "Claassen's")
+```
+
+```{r apsr_1k_plot}
+apsr_1k_plot <- bind_rows(df_result_cls_1k_apsr, mod.1_df_result_cls_apsr_1k) %>% 
+  dotwhisker::dwplot() %>% 
+  relabel_predictors(c(
+    `plm::lag(SupDem_trim, 1:2)1` = "Support[t-1]",
+    `plm::lag(SupDem_trim, 1:2)2` = "Support[t-2]",
+    `plm::lag(theta, 1:2)1` = "Support[t-1]",
+    `plm::lag(theta, 1:2)2` = "Support[t-2]",
+    `diff(Liberal_z, lag = 1)` = "Delta~Support(demo~only)",
+    `diff(Vdem_liberal_z, lag = 1)` = "Delta~Support(demo~only)",
+    `plm::lag(Liberal_z, 1)` = "Support[t-1](demo~only)",
+    `plm::lag(Vdem_liberal_z, 1)` = "Support[t-1](demo~only)",
+    `diff(Polyarchy_z, lag = 1)` = "Delta~Support(auto~only)",
+    `diff(Vdem_polyarchy_z, lag = 1)` = "Delta~Support(auto~only)",
+    `plm::lag(Polyarchy_z, 1)` = "Support[t-1](auto~only)",
+    `plm::lag(Vdem_polyarchy_z, 1)` = "Support[t-1](auto~only)",
+    `diff(Libdem_z, lag = 1)` = "Delta~Liberal~democracy",
+    `diff(Vdem_libdem_z, lag = 1)` = "Delta~Liberal~democracy",
+    `plm::lag(Libdem_z, 1)` = "Liberal~democracy[t-1]",
+    `plm::lag(Vdem_libdem_z, 1)` = "Liberal~democracy[t-1]",
+    `diff(lnGDP_imp, lag = 1)` = "Delta~Log~GDP~per~capita",
+    `diff(lg_imp_mdpgdp, lag = 1)` = "Delta~Log~GDP~per~capita",
+    `plm::lag(lnGDP_imp, 1)` = "Log~GDP[t-1]",
+    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP[t-1]"
+)) +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Delta Support for Democracy") + 
+  xlab("Coefficient Estimate") +
+  scale_color_discrete(name="1k Samples\nDataset", breaks=c("Claassen's","Ours"))
+
+```
+
+```{r results_comparison_plots, include=TRUE, fig.width=7}
+ajps_mean_plot 
+ajps_1k_plot
+apsr_mean_plot
+apsr_1k_plot
+
+```
 \pagebreak
