@@ -137,7 +137,7 @@ arabb4,church4,church_arabb,q5164,c(4:1),"c(98,99)"
 arabb4,suitable11,democsuit_arabb11,q512,c(0:10),"c(96,98,99)"
 arabb5,threestate_dcn,threestate_arabb,q516a,"c(2,3,1)","c(98,99)"
 arabb5,church4,church_arabb,q516_4,c(4:1),"c(98,99)"
-arabb5,suitable11,democsuit_arabb,q512,c(0:10),"c(96,98,99)"
+arabb5,suitable11,democsuit_arabb11,q512,c(0:10),"c(96,98,99)"
 asiab2003,strong_bad3,strong_asiab,q27_a,c(1:3),c(9)
 asiab2003,army_bad3,army_asiab,q27_c,c(1:3),c(9)
 asiab2003,dem_good3,evdemoc_asiab,q27_d,c(3:1),c(9)
@@ -260,7 +260,7 @@ pew2012,strong2c,strong_pew,q71,c(2:1),"c(8,9)"
 pew2012,imp4,impdemoc_pew,q115b,c(4:1),"c(8,9)"
 pew2013,threestate_dcn,threestate_pew,q15,"c(2,3,1)","c(8,9)"
 pew2013,strong2c,strong_pew,q88,c(2:1),"c(8,9)"
-pew2013,imp4,impdemoc_pew,q122b,c(4:1),"c(8,9)"
+pew2013,imp4,impdemoc_pew,q85b,c(4:1),"c(8,9)"
 pew2014,threestate_dcn,threestate_pew,q19,"c(2,3,1)","c(8,9)"
 pew2014,strong2c,strong_pew,qet1,c(2:1),"c(8,9)"
 pew2014,imp4,impdemoc_pew,q104b,c(4:1),"c(8,9)"
