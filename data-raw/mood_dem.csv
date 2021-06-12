@@ -107,6 +107,7 @@ amb_us2010,church7,church_amb,ing4,c(1:7),88
 amb_us2012,threestate_ndc,threestate_amb,dem2,"c(3,1,2)",88
 amb_us2012,church7,church_amb,ing4,c(1:7),88
 amb_us2012,strong2a,strong_amb_1,aut1,c(1:2),88
+amb_us2014,threestate_ndc,threestate_amb,dem2,"c(3,1,2)",99
 amb_us2014,church7,church_amb,ing4,c(1:7),99
 amb_us2014,strong2a,threestate_amb,dem2,"c(3,1,2)",99
 amb_us2016,church7,church_amb,ing4,c(1:7),99
