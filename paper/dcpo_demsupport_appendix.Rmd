@@ -798,7 +798,7 @@ apsr_1k_plot
 
 ```
 
-```{r expanded_claassen}
+```{r expanded_claassen_ajps}
 # these are estimates based on Claassen's original dataset, plus all additional country-year-item observations we found; see 
 
 load(here::here("data", "exp_claassen_m5_3k_06-13-17-09.rda")) #  dataset of estimates, based on Claassen's original dataset, plus all additional country-year-item observations we found, as generated in (at the moment) expanded_claassen_input.R
@@ -896,7 +896,7 @@ all_claassen_res_ajps_plot <- dotwhisker::dwplot(all_claassen_res_ajps) %>%
 all_claassen_res_ajps_plot
 ```
 
-```{r apsr_1k}
+```{r expanded_claassen_apsr}
 ec_df_theta_apsr <- purrr::map(1:1000, function(x) {
   exp_claassen_m5_theta_std[x,,] %>% 
     as_tibble() %>% 
