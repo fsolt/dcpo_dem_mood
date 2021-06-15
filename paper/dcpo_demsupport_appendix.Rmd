@@ -155,12 +155,22 @@ glance.plm <- function(x, ...) {
     )
 }
 
+vcovBK_se <- function(x) {
+  plm::vcovBK(x, cluster = "time") %>% 
+    diag() %>% 
+    sqrt()
+}
 ```
 
 
 ## Claassen Replication
 
 ```{r claassen_replication_input, eval=FALSE}
+
+# dcpo_input_raw <- DCPOtools::dcpo_setup(vars = read_csv(here::here("data-raw", "mood_dem.csv"),
+#                                                         col_types = "cccccc"),
+#                                         file = "data/dcpo_input_raw.csv")
+
 dcpo_input_raw1 <- read_csv(here::here("data", "dcpo_input_raw.csv"), col_types = "cdcddcd") %>% 
   filter(!(str_detect(survey, "army_wvs") & # WVS obs identified as problematic by Claassen 
              ((country=="Albania" & year==1998) |
@@ -201,7 +211,7 @@ supdem_cy <- supdem %>%                                             # 1390 obs
   unique()
 
 claassen_input_cy <- read_csv(here::here("data", "dcpo_input_raw.csv"),
-                              col_types = "cdcddcd") %>%           # 1861 obs
+                              col_types = "cdcddcd") %>%           # 1864 obs
   mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
          project = case_when(p_dcpo == "afrob" ~ "afb",
                              p_dcpo == "amb" ~ "lapop",
@@ -215,11 +225,11 @@ claassen_input_cy <- read_csv(here::here("data", "dcpo_input_raw.csv"),
   dplyr::select(country, year, y_dcpo, survey, project) %>% 
   unique()
 
-no_problems <- inner_join(supdem_cy, claassen_input_cy)             # 1297 obs
+no_problems <- inner_join(supdem_cy, claassen_input_cy)             # 1298 obs
 
 needed <- anti_join(supdem_cy, claassen_input_cy)                   # 93 obs
 
-available <- anti_join(claassen_input_cy, supdem_cy)                # 564 obs
+available <- anti_join(claassen_input_cy, supdem_cy)                # 566 obs
 
 year_fixes <- left_join(needed, available, by = c("country", "project")) %>% # 89 obs
   mutate(diff = year.x - year.y) %>% 
@@ -237,7 +247,7 @@ cys_crosswalk <- year_fixes %>%
 
 missing_cyps <- anti_join(needed, year_fixes,  by = c("country", "year" = "year.x", "project")) # 4 obs; listed in issue #5 
 
-cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 475 obs
+cys_to_drop <- anti_join(available, year_fixes, by = c("country", "year" = "year.y", "project")) %>% # 477 obs
   select(-y_dcpo)
 
 claassen_replication_input_raw1 <- read_csv(here::here("data", "claassen_input_raw.csv"), col_types = "cdcddcd") %>% 
@@ -291,12 +301,6 @@ claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta") %>%
 
 ls_year <- 1988:2017
 ls_country <- unique(claassen_input$data$country)
-
-vcovBK_se <- function(x) {
-  vcovBK(x, cluster = "time") %>% 
-    diag() %>% 
-    sqrt()
-}
 
 first_year <- min(claassen_input$data$year)
 
@@ -793,4 +797,138 @@ apsr_mean_plot
 apsr_1k_plot
 
 ```
+
+```{r expanded_claassen}
+# these are estimates based on Claassen's original dataset, plus all additional country-year-item observations we found; see 
+
+load(here::here("data", "exp_claassen_m5_3k_06-13-17-09.rda")) #  dataset of estimates, based on Claassen's original dataset, plus all additional country-year-item observations we found, as generated in (at the moment) expanded_claassen_input.R
+
+exp_claassen_m5_theta <- rstan::extract(exp_claassen_m5, pars = "theta") %>% 
+  first()
+
+ls_ec_year <- min(expanded_claassen_input$data$year):max(expanded_claassen_input$data$year)
+ls_ec_country <- unique(expanded_claassen_input$data$country)
+
+ec_first_year <- min(expanded_claassen_input$data$year)
+
+ec_controls <- read_csv(here::here("data", "control_variables_ajps.csv"),
+                        col_types = cols(.default = col_double(),
+                                         country = col_character(),
+                                         ISO = col_character(),
+                                         Region_UN = col_character(),
+                                         regime = col_logical())) %>% 
+  mutate(country = countrycode::countrycode(as.character(country), "country.name", "country.name"),
+         year = as.numeric(as.character(year))) %>% 
+  filter(year >= first_year)
+
+# standardize, exactly as in 'supdem stan estimation ajps.R' at L192 (= for assignment and all)
+exp_claassen_m5_theta_std = (exp_claassen_m5_theta - mean(as.vector(exp_claassen_m5_theta))) / sd(as.vector(exp_claassen_m5_theta))
+
+ec_df_theta <- purrr::map(1:1000, function(x) {
+  exp_claassen_m5_theta_std[x,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_ec_country, .cols = starts_with("V")) %>% 
+    mutate(year = ec_first_year + row_number() - 1) %>% 
+    pivot_longer(cols = !year,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year) %>% 
+    left_join(ec_controls, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+ec_result_m5_1k <- map(ec_df_theta, function(aDataset) {
+  plm::plm(Vdem_libdem ~ plm::lag(Vdem_libdem, 1:2) + plm::lag(theta, 1) + plm::lag(lg_imp_mdpgdp, 1) + plm::lag(mdprgdp_grwth, 1) + plm::lag(Region_libdem, 1) + plm::lag(muslism_prop_2010, 1) + plm::lag(dependence_pc_di, 1), model="pooling", data = aDataset)
+})
+
+ec_result_betas_m5_1k <- mitools::MIextract(ec_result_m5_1k, fun = coef)
+ec_result_vars_m5_1k <- mitools::MIextract(ec_result_m5_1k, fun = vcovBK_se)
+
+ec_df_result_cls_1k <- summary(mitools::MIcombine(results = ec_result_betas_m5_1k, 
+                                               variance = ec_result_vars_m5_1k)) %>%
+  rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)"))
+```
+
+```{r all_claassen_res_ajps_plot, include=TRUE, fig.width=7}
+all_claassen_res_ajps <- ec_df_result_cls_1k %>% 
+              mutate(model = "Expanded Dataset\nw/ Uncertainty") %>% 
+  bind_rows(mod.1_df_result_cls_1k %>% 
+              mutate(model = "Claassen w/ Uncertainty")) %>% 
+  bind_rows(result_cls[[2]][[1]] %>% 
+    mutate(model = "Claassen 2020a",
+           term = str_replace(term, "SupDem_trim", "theta_mean"))) %>% 
+  filter(!str_detect(term, "(Intercept)"))
+
+all_claassen_res_ajps_plot <- dotwhisker::dwplot(all_claassen_res_ajps) %>% 
+  relabel_predictors(c(
+    `plm::lag(Libdem_VD, 1:2)1` = "Democracy[t-1]",
+    `plm::lag(Libdem_VD, 1:2)2` = "Democracy[t-2]",
+    `plm::lag(Vdem_libdem, 1:2)1` = "Democracy[t-1]",
+    `plm::lag(Vdem_libdem, 1:2)2` = "Democracy[t-2]",
+    `plm::lag(theta_mean, 1)` = "Support[t-1]",
+    `plm::lag(theta, 1)` = "Support[t-1]",
+    `plm::lag(SupDem_Democ, 1)` = "Support[t-1](demo~only)",
+    `plm::lag(SupDem_Autoc, 1)` = "Support[t-1](auto~only)",
+    `plm::lag(theta_dem_trim, 1)` = "Support[t-1](demo~only)",
+    `plm::lag(theta_aut_trim, 1)` = "Support[t-1](auto~only)",
+    `plm::lag(lnGDP_imp, 1)` = "Log~GDP~per~capita[t-1]",
+    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP~per~capita[t-1]",
+    `plm::lag(GDP_imp_grth, 1)` = "GDP~per~capita~growth[t-1]",
+    `plm::lag(mdprgdp_grwth, 1)` = "GDP~per~capita~growth[t-1]",
+    `plm::lag(Libdem_regUN, 1)` = "Regional~democracy[t-1]",
+    `plm::lag(Region_libdem, 1)` = "Regional~democracy[t-1]",
+    `plm::lag(Pr_Muslim, 1)` = "Percent~Muslim[t-1]",
+    `plm::lag(muslism_prop_2010, 1)` = "Percent~Muslim[t-1]",
+    `plm::lag(Res_cp_WDI_di, 1)` = "Resource~dependence[t-1]",
+    `plm::lag(dependence_pc_di, 1)` = "Resource~dependence[t-1]"
+  )
+  ) +
+  geom_vline(xintercept = 0, colour = "grey80", linetype = 2) +
+  theme_minimal() +
+  ggtitle("Dependent Variable: Level of Democracy") + 
+  xlab("Coefficient Estimate") +
+  scale_color_discrete(name="Dataset", guide = guide_legend(reverse = TRUE))
+
+all_claassen_res_ajps_plot
+```
+
+```{r apsr_1k}
+ec_df_theta_apsr <- purrr::map(1:1000, function(x) {
+  exp_claassen_m5_theta_std[x,,] %>% 
+    as_tibble() %>% 
+    rename_with(~ls_ec_country, .cols = starts_with("V")) %>% 
+    mutate(year = ec_first_year + row_number() - 1) %>% 
+    pivot_longer(cols = !year,
+                 names_to = "country",
+                 values_to = "theta") %>%
+    arrange(country, year) %>% 
+    left_join(sd_controls_apsr, by = c("country", "year")) %>% 
+    plm::pdata.frame(index = c("country", "year"))
+})
+
+ec_result_m5_1k_apsr <- map(ec_df_theta_apsr, function(aDataset) {
+  plm(diff(theta, lag=1) ~ plm::lag(theta, 1:2) + diff(Libdem_z, lag=1) 
+           + plm::lag(Libdem_z, 1) + diff(lnGDP_imp, lag=1) + plm::lag(lnGDP_imp, 1), 
+           aDataset, model="pooling")
+})
+
+ec_result_betas_m5_1k_apsr <- mitools::MIextract(ec_result_m5_1k_apsr, fun = coef)
+ec_result_vars_m5_1k_apsr <- mitools::MIextract(ec_result_m5_1k_apsr, fun = vcovBK_se)
+
+ec_df_result_cls_1k_apsr <- summary(mitools::MIcombine(results = ec_result_betas_m5_1k_apsr, 
+                                                    variance = ec_result_vars_m5_1k_apsr)) %>%
+  rownames_to_column(var = "term") %>% 
+  rename(conf.low = `(lower`,
+         conf.high = `upper)`, 
+         estimate = results) %>% 
+  filter(!str_detect(term, "(Intercept)"))
+```
+
+
+
+
 \pagebreak
