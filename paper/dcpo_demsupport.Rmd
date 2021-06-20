@@ -2376,12 +2376,19 @@ grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 
 
 ```{r claassenMocUncertaintyAPSR}
-load(here("data", "cls_apsr.rda"))
+load(here("data", "pure_cls_apsr.rda")) #use pure_cls_apsr instead of cls_apsr
+load(here("data", "exp_cls_apsr.rda")) #use exp_cls_apsr instead of cls_apsr
 
 
 
 df_clsAPSR <- purrr::map(1:900, function(anEntry) {
-  cls_apsr[[anEntry]] %>% 
+  pure_cls_apsr[[anEntry]] %>% 
+    plm::pdata.frame(index = c("country", "year"))
+}
+)
+
+df_our_clsAPSR <- purrr::map(1:900, function(anEntry) {
+  exp_cls_apsr[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 }
 )
@@ -2409,16 +2416,21 @@ ls_mod <- c(
 
 result_clsUncertain  <- map(ls_mod, function(aMod){
   result <- methodComposition3(df_clsAPSR,aMod)
-})
+})  #claassen's data
+
+result_our_clsUncertain  <- map(ls_mod, function(aMod){
+  result <- methodComposition3(df_our_clsAPSR,aMod)
+})   ##our expanded data
 
 names(result_clsUncertain) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
                                 "fd1", "fd-regime1", "fd2", "fd-regime2")
 
+names(result_our_clsUncertain) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
+                                "fd1", "fd-regime1", "fd2", "fd-regime2")
 
+saveRDS(result_clsUncertain, file = here::here("ouput","clsAPSR_uncertainty.RDS"))
 
-saveRDS(result_clsUncertain, file = here("ouput","clsAPSR_uncertainty.RDS"))
-
-
+saveRDS(result_our_clsUncertain, file = here::here("ouput","our_clsAPSR_uncertainty.RDS"))
 
 ```
 
@@ -2466,7 +2478,8 @@ saveRDS(result_dcpoUncertain, file =here("output","dcpoAPSR_uncertainty.RDS"))
 ```{r visualizedMocUncertainAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
 
-result_clsUncertain <- readRDS(here("output","clsAPSR_uncertainty.RDS"))
+#result_clsUncertain <- readRDS(here("output","clsAPSR_uncertainty.RDS"))
+result_clsUncertain <- readRDS(here("output","our_clsAPSR_uncertainty.RDS"))
 result_dcpoUncertain <- readRDS(here("output","dcpoAPSR_uncertainty.RDS"))
 result_clsAPSR <- readRDS(here("output","estimates_clsMeanAPSR.RDS"))
 
