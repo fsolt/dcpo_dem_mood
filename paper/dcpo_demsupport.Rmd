@@ -113,7 +113,9 @@ library(pacman)
 p_load(
   # data scrapping
   dataverse, 
-  DCPOtools, mitools,
+  osfr,
+  # DCPOtools, 
+  mitools,
   boot, 
   here,
   # analysis
@@ -151,23 +153,25 @@ theme_set(theme_minimal())
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
-# produced by cls_ajps_apsr_uncertain.R and dcpo_ajps_apsr_uncertain.R
-load(here("data", "cls_ajps.rda")) 
-load(here("data", "dcpo_ajps.rda")) 
-load(here("data", "cls_apsr.rda"))
-load(here("data", "dcpo_apsr.rda")) 
+# Removed the comments for the final replication file
+## Claasseen and extend data
 
-claassen_replication <- readRDS(here("data", "claassen_replication.rds")) %>% 
-  janitor::clean_names() %>% 
-  DCPOtools::with_min_yrs(2)
-load(here("data", "claassen_m5_theta.rda"))
-load(here("data", "dem_mood_apsr.RData"))
-load(here("data", "dcpo_input.rda"))
-load(here("data", "dcpo_theta.rda"))
-load(here("data", "dcpo_sigma.rda"))
-#load(here("data", "dcpo_ajps_rubin.rda"))
-# df_controls <- readRDS(here("data", "control_variables_ajps.rds"))   #use control file for merging with 
-df_dcpoUncertainAPSR <- readRDS(here("data", "df_dcpoUncertainAPSR.rds"))
+# osf_retrieve_file("hczmf") %>% 
+#     osf_download(path = "../data")
+# 
+# osf_retrieve_file("wbu6m") %>% 
+#     osf_download(path = "../data")
+# 
+# osf_retrieve_file("2jhbc") %>% 
+#     osf_download(path = "../data")
+# 
+# osf_retrieve_file("u96m8") %>% 
+#     osf_download(path = "../data")
+
+load(here("data", "pure_cls_ajps.rda")) 
+load(here("data", "pure_cls_apsr.rda")) 
+load(here("data", "exp_cls_ajps.rda"))
+load(here("data", "exp_cls_apsr.rda")) 
 
 ```
 
