@@ -68,6 +68,7 @@ A pair of prominent recent works took advantage of this latent variable approach
 These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating its own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
 
 The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
+Measurement error challenges statistical analyses, especially when it is correlated with a dependent variable which is the case of democratic support, but it is often ignored in the analysis [@Blackwell2017; @Blackwell2017a].
 Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
 To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
 
@@ -184,11 +185,13 @@ As our third step, we collect even more survey data---increasing these source da
 
 ## Incorporating Uncertainty
 Although measurement uncertainty has yet not attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
+Especially when measurement error is correlated with the dependent variable, the resulting bias could either attentuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, 360].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey_policy_2018, 254]. 
 
 Therefore, after we replicate the original analyses that used only the point estimates of democratic support, we incorporate the full distribution of the latent variable estimates.
 To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
 Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
+Our approach of incorporating uncertainty is similar in the logic of @Blackwell2017a's multiple overimputation, that is, creating multiple data set from the posterior distribution of the true latent value, applying analysis model for each dataset, and then averaging results by using Rubin's rule. 
 
 
 ```{r compare_n, eval = TRUE}
