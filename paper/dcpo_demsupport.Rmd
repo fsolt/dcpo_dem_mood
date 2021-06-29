@@ -115,7 +115,7 @@ p_load(
   # data scrapping
   dataverse, 
   osfr,
-  # DCPOtools, 
+  DCPOtools,
   mitools,
   boot, 
   here,
@@ -174,6 +174,14 @@ load(here("data", "pure_cls_apsr.rda"))
 load(here("data", "exp_cls_ajps.rda"))
 load(here("data", "exp_cls_apsr.rda")) 
 
+result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
+result_pureAJPS <- readRDS(here("output", "estimates_clsPureAJPS.RDS"))
+result_expAJPS <- readRDS(here("output", "estimates_clsExpAJPS.RDS"))
+
+result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
+result_pureAPSR <- readRDS(here("output", "estimates_clsPureAPSR.RDS"))
+result_expAPSR <- readRDS(here("output", "estimates_clsExpAPSR.RDS"))
+
 ```
 
 # Method
@@ -230,7 +238,7 @@ dcpo_input_raw1 <-
                 )
             )
     )) %>%
-    with_min_yrs(2)
+    DCPOtools::with_min_yrs(2)
 
 # if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
 #   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
@@ -310,7 +318,7 @@ The bottom results also incorporate uncertainty but additionally replace the @Cl
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
 
-```{r pointAJPS}
+```{r pointAJPS, eval=TRUE}
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
            "plm::lag(SupDem_Democ, 1) + plm::lag(SupDem_Autoc, 1)")
 
@@ -348,10 +356,10 @@ glance_cls <- map(df_result_cls, function(aResult){
     }
 })
 
-result_cls <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
-names(result_cls) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+result_clsAJPS <- map2(tidy_cls, glance_cls, ~ list(.x, .y))
+names(result_clsAJPS) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
-saveRDS(result_cls, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
+saveRDS(result_clsAJPS, file = here::here("output", "estimates_clsMeanAJPS.RDS"))
 ```
 
 ```{r model-AJPS}
@@ -405,14 +413,13 @@ result_pureAJPS <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
     glance_clsUncertain <- glance(result[[1]])
   }
   
-  result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
+  result_apsrAJPS <- list(tidy_clsUncertain, glance_clsUncertain)
 })
 
 names(result_pureAJPS) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
    
 saveRDS(result_pureAJPS, file = here::here("output", "estimates_clsPureAJPS.RDS"))
 ```
-
 
 ```{r result-expAJPS}
 result_expAJPS <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
@@ -444,7 +451,7 @@ result_expAJPS <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
     glance_dcpoUncertain <- glance(result[[1]])
   }
   
-  result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
+  result_expAJPS <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
 })
 
 names(result_expAJPS) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
@@ -479,15 +486,11 @@ index_coefName <- c(
 
 ```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=7, fig.height=10, fig.align='center', eval=TRUE}
 
-result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_pureAJPS <- readRDS(here("output", "estimates_clsPureAJPS.RDS"))
-result_expAJPS <- readRDS(here("output", "estimates_clsExpAJPS.RDS"))
-
 type_model <-
   c("Original", "Uncertainty", "Uncertainty+Expanded Data")
 
 result_ajpsPooled <-
-  list(result_cls,
+  list(result_clsAJPS,
        result_pureAJPS,
        result_expAJPS) %>%
   map2_df(type_model, ~ {
@@ -499,7 +502,7 @@ result_ajpsPooled <-
   mutate(type = "Pooled")
 
 result_ajpsRegime <-
-  list(result_cls,
+  list(result_clsAJPS,
        result_pureAJPS,
        result_expAJPS) %>%
   map2_df(type_model, ~ {
@@ -533,7 +536,7 @@ dwplot(df_plot) +
 
 ```
 
-```{r pointAPSR}
+```{r pointAPSR, eval=TRUE}
 load(here::here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
 
@@ -622,7 +625,7 @@ result_pureAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a model
   
   glance_clsUncertainAPSR <- glance.plm(result[[1]])
   
-  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
+  result_apsrAJPSAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
 })
 
 names(result_pureAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
@@ -809,7 +812,7 @@ names_coef <- c(
 ```
 
 ```{r num-pointAJPS, results='asis'}
-tb_result_cls <- map(result_cls, ~ {
+tb_result_cls <- map(result_clsAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
   return(.)})
@@ -953,1067 +956,13 @@ modelsummary(tb_result_expAPSR,
 
 \elandscape
 
-# Results Accounting for the Uncertainty in Both the Outcome and Explanatory Variables
-
-
-```{r cls-uncertainAJPSmain, eval=FALSE}
-ls_country <- unique(claassen_replication$country)
-first_year <- min(claassen_replication$year)
-
-sd_control <- sd.plm %>%
-  mutate(
-    country = as.character(Country),
-    year = as.numeric(as.character(Year)),
-    regime = ifelse(Regime_VD > 1, 1, 0)
-  )
-
-df_cls <- purrr::map(1:1000, function(anEntry) {
-  claassen_m5_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    left_join(sd_control, by = c("country", "year")) %>% 
-    mutate(theta_dem = theta * regime,
-           theta_aut = theta * (1 - regime)) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
-
-
-result_clsUncertain <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
-  result <- map(df_cls, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-  
-  ## Not work with ifelse
-  if(class(result[[1]])[1] == "plm"){
-      result_vars <- mitools::MIextract(result, fun = vcovBK_se)
-  }else{
-      result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  }
-  
-  
-  tidy_clsUncertain <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-  
-  if(class(result[[1]]) == "plm"){ 
-    glance_clsUncertain <- glance.plm(result[[1]]) # using the customized glance function
-  }else{
-    glance_clsUncertain <- glance(result[[1]])
-  }
-  
-  result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
-})
-
-
-names(result_clsUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
-   
-saveRDS(result_clsUncertain, file = here::here("output", "estimates_clsAJPS.RDS"))
-```
-
-```{r dcpo-uncertainAJPSmain, eval=FALSE}
-# df_dcpo <- dcpo_ajps_rubin %>% map2(1:length(dcpo_ajps_rubin), ~ {
-#  .x[[.y]] %>%
-#    mutate(theta_dem = theta * regime,
-#           theta_aut = theta * (1 - regime)) %>%
-#    plm::pdata.frame(index = c("country", "year"))
-# }) # The code is to fit the embedded format of dcpo_ajps_rubin
-
-# df_dcpo <- purrr::map(1:1000, function(anEntry) {
-#   dcpo_theta$theta[anEntry,,] %>% 
-#     reformat_dcpo_output("theta") %>% 
-#     left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-#               by = c("year", "country")) %>%
-#     left_join(df_controls, by = c("country", "year")) %>% 
-#     mutate(theta_dem = theta * regime,
-#            theta_aut = theta * (1 - regime)) %>% 
-#     plm::pdata.frame(index = c("country", "year"))
-# })
-
-
-result_dcpoUncertain <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
-  mod_eval <- function(aData) eval(parse(text = aMod))
-  
-  result <- map(df_dcpo, mod_eval)
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-
-  ## Not work with ifelse
-  if(class(result[[1]])[1] == "plm"){
-      result_vars <- mitools::MIextract(result, fun = vcovBK_se)
-  }else{
-      result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  }
-
-
-  tidy_dcpoUncertain <- summary(mitools::MIcombine(results = result_betas,
-                             variance = result_vars)) %>%
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-
-  if(class(result[[1]]) == "plm"){
-    glance_dcpoUncertain <- glance.plm(result[[1]]) # using the customized glance function
-  }else{
-    glance_dcpoUncertain <- glance(result[[1]])
-  }
-
-  result_dcpoUncertain <- list(tidy_dcpoUncertain, glance_dcpoUncertain)
-})
-
-names(result_dcpoUncertain) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
-
-saveRDS(result_dcpoUncertain, file = here::here("output", "estimates_dcpoAJPS.RDS"))
-```
-
-```{r cls-undertainAPSRmain, eval=FALSE}
-ls_country <- unique(claassen_replication$country)
-first_year <- min(claassen_replication$year)
-
-sd_control <- sd.plm %>%
-  mutate(
-    country = as.character(Country),
-    year = as.numeric(as.character(Year))
-  )
-
-df_clsAPSR <- purrr::map(1:1000, function(anEntry) {
-  claassen_m5_theta$theta[anEntry,,] %>% 
-    reformat_dcpo_output("theta") %>% 
-    # left_join(reformat_dcpo_output(dcpo_sigma$sigma[anEntry,,], "sigma"),
-    #           by = c("year", "country")) %>%
-    left_join(sd_control, by = c("country", "year")) %>% 
-    plm::pdata.frame(index = c("country", "year"))
-})
-
-result_clsUncertainAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a model
-  result <- map(df_clsAPSR, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-  
-  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  
-  tidy_clsUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-  
-  glance_clsUncertainAPSR <- glance.plm(result[[1]])
-  
-  result_clsUncertainAPSR <- list(tidy_clsUncertainAPSR, glance_clsUncertainAPSR)
-})
-
-names(result_clsUncertainAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2", "fd1", "fd-regime1", "fd2", "fd-regime2")
-
-saveRDS(result_clsUncertainAPSR, file = here::here("output", "estimates_clsAPSR.RDS"))
-
-```
-
-```{r dcpo-uncertainAPSRmain, eval=FALSE}
-result_expAPSR <- map(ls_mod_apsrDCPO, function(aMod){ # reading a model
-  result <- map(df_dcpoUncertainAPSR, function(aData){ # applying to the 1000 datasets
-    eval(parse(text = aMod))
-  })
-  
-  result_betas <- mitools::MIextract(result, fun = coef)
-  
-  result_vars <- mitools::MIextract(result, fun = vcovHC_se)
-  
-  tidy_dcpoUncertainAPSR <- summary(mitools::MIcombine(results = result_betas, 
-                             variance = result_vars)) %>% 
-    rownames_to_column(var = "term") %>%
-        rename(conf.low = `(lower`,
-               conf.high = `upper)`,
-               estimate = results) %>%
-        filter(!str_detect(term, "(Intercept)"))
-  
-  glance_dcpoUncertainAPSR <- glance.plm(result[[1]])
-  
-  result_expAPSR <- list(tidy_dcpoUncertainAPSR, glance_dcpoUncertainAPSR)
-})
-
-names(result_expAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",  "fd1", "fd-regime1", "fd2", "fd-regime2")
-
-saveRDS(result_expAPSR, file = here::here("output", "estimates_dcpoAPSR.RDS"))
-```
-
-
-# Replications of Full Pack of Models in Claassen 2020a,b
-
-```{r plot-fullpackAJPS, fig.cap= "The Effect of Public Support on Democracy", fig.width=7.5, fig.height=10, eval=TRUE}
-
-# Very weird phenomenon that the same type of rds files needs different ways to read
-# Suggesting using the qs or csv data type in future.
-result_cls <- readRDS(here::here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsUncertain <- readRDS(here::here("output", "estimates_clsAJPS.RDS"))
-result_dcpoUncertain <- readRDS(here::here("output", "estimates_dcpoAJPS.RDS"))
-
-result_pooled <- bind_rows(
-  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$pooled[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$pooled[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_gmm <- bind_rows(
-  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$gmm[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$gmm[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms <- factor(rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")), levels =
-      rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")))
-
-# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
-# What I've tried
-# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
-# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
-# 2. redefining the order of model in the dataframe or in dwplot 
-# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
-# 4. Every post online is to reverse 
-
-plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms))) +
-  scale_color_grey(start = 0.4, end = 0.8) +
-  labs(
-    title = "DV: V-Dem Liberal Democracy Index",
-    subtitle = "Regime Compacted"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
-# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
-# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
-
-result_regime <- bind_rows(
-  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$`pooled-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_regimeGmm <- bind_rows(
-  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertain$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoUncertain$`gmm-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n demo only\n (t-1)",
-      "Support\n auto only\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms2 <- factor(rev(c("Democracy[t-1]",
-                       "Democracy[t-2]",
-                       "Support[t-1] (democracies~only)",
-                       "Support[t-1] (autocracies~only)",
-                       "Log~GDP~per~capita[t-1]",
-                       "GDP~per~capita~growth[t-1]",
-                       "Regional~democracy[t-1]",
-                       "Percent~Muslim[t-1]",
-                       "Resource~dependence[t-1]")), levels =
-                   rev(c("Democracy[t-1]",
-                         "Democracy[t-2]",
-                         "Support[t-1] (democracies~only)",
-                         "Support[t-1] (autocracies~only)",
-                         "Log~GDP~per~capita[t-1]",
-                         "GDP~per~capita~growth[t-1]",
-                         "Regional~democracy[t-1]",
-                         "Percent~Muslim[t-1]",
-                         "Resource~dependence[t-1]")))
-
-plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-    scale_y_discrete(labels = parse(text = levels(terms2))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  labs(
-    title = "",
-    subtitle = "Regime Specific"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "bottom", 
-        legend.title = element_blank())
-
-legend <- get_legend(plot_AJPS2)
-
-plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
-
-grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
-
-```
-
-```{r plot-fullpackAJPSfull, fig.cap= "The Effect of Public Support on Democracy", eval = TRUE, fig.width=7.5, fig.height=7, eval=TRUE}
-
-# Very weird phenomenon that the same type of rds files needs different ways to read
-# Suggesting using the qs or csv data type in future.
-result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_pureAJPS <- readRDS(here("output", "estimates_clsPureAJPS.RDS"))
-result_expAJPS <- readRDS(here("output", "estimates_clsExpAJPS.RDS"))
-
-result_pooled <- bind_rows(
-  mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAJPS$pooled[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAJPS$pooled[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_gmm <- bind_rows(
-  mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAJPS$gmm[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAJPS$gmm[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms <- factor(rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")), levels =
-      rev(c("Democracy[t-1]",
-        "Democracy[t-2]",
-      "Support[t-1]",
-      "Log~GDP~per~capita[t-1]",
-      "GDP~per~capita~growth[t-1]",
-      "Regional~democracy[t-1]",
-      "Percent~Muslim[t-1]",
-      "Resource~dependence[t-1]")))
-
-# ggplot produces reversed plot, and embarrassed to say, I can't fix, again. Any thought?
-# What I've tried
-# 1. using guide_legend(reverse = TRUE) will change the legend's order not the plot.
-# 2. ordering models with factor levels using the original names or even c("1", "2", "3")
-# 2. redefining the order of model in the dataframe or in dwplot 
-# 3. checking the dwplot codes, model works in line 453, but nothing looks helpful
-# 4. Every post online is to reverse 
-
-plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms))) +
-  scale_color_grey(start = 0.4, end = 0.8) +
-  labs(
-    title = "DV: V-Dem Liberal Democracy Index",
-    subtitle = "Regime Compacted"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
-# the attemp to change the order of legends failed. Both factorize the model ahead or using the  guides(fill = guide_legend(reverse=TRUE)) fails
-# The trick is  to use guide = guide_legend(reverse = TRUE) within scale_color_*(); see below in plotAJPS2. --FS
-
-result_regime <- bind_rows(
-  mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAJPS$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAJPS$`pooled-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "Pooled")
-
-result_regimeGmm <- bind_rows(
-  mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAJPS$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAJPS$`gmm-regime`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "GMM")
-
-result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-      "Support\n demo only\n (t-1)",
-      "Support\n auto only\n (t-1)",
-      "Log GDP\n per capita\n (t-1)",
-      "GDP per\n capita growth\n (t-1)",
-      "Regional\n democracy\n (t-1)",
-      "Percent\n Muslim\n (t-1)",
-      "Resource\n dependence\n (t-1)"),
-    time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO")))
-
-terms2 <- factor(rev(c("Democracy[t-1]",
-                       "Democracy[t-2]",
-                       "Support[t-1] (democracies~only)",
-                       "Support[t-1] (autocracies~only)",
-                       "Log~GDP~per~capita[t-1]",
-                       "GDP~per~capita~growth[t-1]",
-                       "Regional~democracy[t-1]",
-                       "Percent~Muslim[t-1]",
-                       "Resource~dependence[t-1]")), levels =
-                   rev(c("Democracy[t-1]",
-                         "Democracy[t-2]",
-                         "Support[t-1] (democracies~only)",
-                         "Support[t-1] (autocracies~only)",
-                         "Log~GDP~per~capita[t-1]",
-                         "GDP~per~capita~growth[t-1]",
-                         "Regional~democracy[t-1]",
-                         "Percent~Muslim[t-1]",
-                         "Resource~dependence[t-1]")))
-
-plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
-    scale_y_discrete(labels = parse(text = levels(terms2))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  labs(
-    title = "",
-    subtitle = "Regime Specific"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "bottom", 
-        legend.title = element_blank())
-
-legend <- get_legend(plot_AJPS2)
-
-plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
-
-grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
-
-```
-
-
-```{r plot-fullpackAPSR, fig.cap= "The Effect of Democratic Mood on Institutional Democratization based on DCPO", fig.width=7.5, fig.height=10, eval=TRUE}
-
-result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-result_clsUncertainAPSR <- readRDS(here("output", "estimates_clsAPSR.RDS"))
-result_expAPSR <- readRDS(here("output", "estimates_dcpoAPSR.RDS"))
-
-# Regime compacted ####
-
-result_ecm1 <- bind_rows(
-  mutate(result_clsAPSR$pooled1[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$pooled1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$pooled1[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fd1 <- bind_rows(
-  mutate(result_clsAPSR$fd1[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$fd1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$fd1[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Liberal Democracy\n (Difference)",
-      "Liberal Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)"),
-    time = 3),
-    rep(
-      c("Liberal Democracy\n (Difference)", 
-        "Log GDP\n per capita\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms1 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Liberal~democracy",
-                      "Liberal~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Liberal~democracy",
-                               "Liberal~democracy[t-1]",
-                               "Delta~Log~GDP~per~capita",
-                               "Log~GDP[t-1]")))
-
-plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms1))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "DV: Public Support for Democracy",
-    subtitle = "Regime Compacted"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
- 
-result_ecm2 <- bind_rows(
-  mutate(result_clsAPSR$pooled2[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$pooled2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$pooled2[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fd2 <- bind_rows(
-  mutate(result_clsAPSR$fd2[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$fd2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$fd2[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_APSR2 <- bind_rows(result_ecm2, result_fd2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Liberal Democracy\n (Difference)",
-      "Liberal Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)",
-      "Corruption\n (Difference)",
-      "Corruption\n (t-1)"
-      ),
-    time = 3),
-    rep(
-      c("Liberal Democracy\n (Difference)", 
-        "Log GDP\n per capita\n (Difference)",
-        "Corruption\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms2 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Liberal~democracy",
-                      "Liberal~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]",
-                      "Delta~Corruption",
-                      "Corruption[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Liberal~democracy",
-                               "Liberal~democracy[t-1]",
-                               "Delta~Log~GDP~per~capita",
-                               "Log~GDP[t-1]",
-                               "Delta~Corruption",
-                               "Corruption[t-1]")))
-
-plot_APSR2 <- dwplot(result_APSR2, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms2))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "W. Corruption"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "none")
-
-# Regime specified ####
-
-result_ecmReg1 <- bind_rows(
-  mutate(result_clsAPSR$`pooled-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`pooled-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$`pooled-regime1`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fdReg1 <- bind_rows(
-  mutate(result_clsAPSR$`fd-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`fd-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$`fd-regime1`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_RegAPSR1 <- bind_rows(result_ecmReg1, result_fdReg1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Electoral Democracy\n (Difference)",
-      "Electoral Democracy\n (t-1)",
-      "Minoritarian Democracy\n (Difference)",
-      "Minoritarian Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)"),
-    time = 3),
-    rep(
-      c("Electoral Democracy\n (Difference)", 
-        "Minoritarian Democracy\n (Difference)",
-        "Log GDP\n per capita\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms3 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")),
-                levels = rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")))
-
-plot_RegAPSR1 <- dwplot(result_RegAPSR1, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms3))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "Regime Specified"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
- 
-result_ecmReg2 <- bind_rows(
-  mutate(result_clsAPSR$`pooled-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`pooled-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$`pooled-regime2`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fdReg2 <- bind_rows(
-  mutate(result_clsAPSR$`fd-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainAPSR$`fd-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_expAPSR$`fd-regime2`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Electoral Democracy\n (Difference)",
-      "Electoral Democracy\n (t-1)",
-      "Minoritarian Democracy\n (Difference)",
-      "Minoritarian Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)",
-      "Corruption\n (Difference)",
-      "Corruption\n (t-1)"
-      ),
-    time = 3),
-    rep(
-      c("Electoral Democracy\n (Difference)", 
-        "Minoritarian Democracy\n (Difference)",
-        "Log GDP\n per capita\n (Difference)",
-        "Corruption\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms4 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP",
-                      "Log~GDP[t-1]",
-                      "Delta~Corruption",
-                      "Corruption[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Electoral~democracy",
-                               "Electoral~democracy[t-1]",
-                               "Delta~Minoritarian~democracy",
-                               "Minoritarian~democracy[t-1]",
-                               "Delta~Log~GDP",
-                               "Log~GDP[t-1]",
-                               "Delta~Corruption",
-                               "Corruption[t-1]")))
-
-plot_RegAPSR2 <- dwplot(result_RegAPSR2, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms4))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "Regime Specified w. Corruption"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "bottom", 
-        legend.title = element_blank())
-
-legend <- get_legend(plot_RegAPSR2)
-
-plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
-
-grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
-```
-
-
-```{r plot-fullpackAPSRfull, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10, eval=TRUE}
-
-result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-result_pureAPSR <- readRDS(here("output", "estimates_clsFullUncertainAPSR.RDS"))
-result_dcpoFullUncertainAPSR <- readRDS(here("output", "estimates_clsExpAPSR.RDS"))
-
-# Regime compacted ####
-
-result_ecm1 <- bind_rows(
-  mutate(result_clsAPSR$pooled1[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$pooled1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$pooled1[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fd1 <- bind_rows(
-  mutate(result_clsAPSR$fd1[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$fd1[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$fd1[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Liberal Democracy\n (Difference)",
-      "Liberal Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)"),
-    time = 3),
-    rep(
-      c("Liberal Democracy\n (Difference)", 
-        "Log GDP\n per capita\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms1 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Liberal~democracy",
-                      "Liberal~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Liberal~democracy",
-                               "Liberal~democracy[t-1]",
-                               "Delta~Log~GDP~per~capita",
-                               "Log~GDP[t-1]")))
-
-plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms1))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "DV: Public Support for Democracy",
-    subtitle = "Regime Compacted"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
- 
-result_ecm2 <- bind_rows(
-  mutate(result_clsAPSR$pooled2[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$pooled2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$pooled2[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fd2 <- bind_rows(
-  mutate(result_clsAPSR$fd2[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$fd2[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$fd2[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_APSR2 <- bind_rows(result_ecm2, result_fd2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Liberal Democracy\n (Difference)",
-      "Liberal Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)",
-      "Corruption\n (Difference)",
-      "Corruption\n (t-1)"
-      ),
-    time = 3),
-    rep(
-      c("Liberal Democracy\n (Difference)", 
-        "Log GDP\n per capita\n (Difference)",
-        "Corruption\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms2 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Liberal~democracy",
-                      "Liberal~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]",
-                      "Delta~Corruption",
-                      "Corruption[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Liberal~democracy",
-                               "Liberal~democracy[t-1]",
-                               "Delta~Log~GDP~per~capita",
-                               "Log~GDP[t-1]",
-                               "Delta~Corruption",
-                               "Corruption[t-1]")))
-
-plot_APSR2 <- dwplot(result_APSR2, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms2))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "W. Corruption"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "none")
-
-# Regime specified ####
-
-result_ecmReg1 <- bind_rows(
-  mutate(result_clsAPSR$`pooled-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$`pooled-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$`pooled-regime1`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fdReg1 <- bind_rows(
-  mutate(result_clsAPSR$`fd-regime1`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$`fd-regime1`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$`fd-regime1`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_RegAPSR1 <- bind_rows(result_ecmReg1, result_fdReg1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Electoral Democracy\n (Difference)",
-      "Electoral Democracy\n (t-1)",
-      "Minoritarian Democracy\n (Difference)",
-      "Minoritarian Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)"),
-    time = 3),
-    rep(
-      c("Electoral Democracy\n (Difference)", 
-        "Minoritarian Democracy\n (Difference)",
-        "Log GDP\n per capita\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms3 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")),
-                levels = rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP~per~capita",
-                      "Log~GDP[t-1]")))
-
-plot_RegAPSR1 <- dwplot(result_RegAPSR1, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms3))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "Regime Specified"
-  ) +
-  facet_wrap(~type, scales = "free_x") + 
-  theme(legend.position = "none")
-
- 
-result_ecmReg2 <- bind_rows(
-  mutate(result_clsAPSR$`pooled-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$`pooled-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$`pooled-regime2`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "ECM")
-
-result_fdReg2 <- bind_rows(
-  mutate(result_clsAPSR$`fd-regime2`[[1]], model = "Claassen 2020a"),
-  mutate(result_pureAPSR$`fd-regime2`[[1]], model = "Claassen w/ Uncertainty"),
-  mutate(result_dcpoFullUncertainAPSR$`fd-regime2`[[1]], model = "DCPO")
-) %>% 
-  mutate(type = "First Difference")
-
-result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-      "Electoral Democracy\n (Difference)",
-      "Electoral Democracy\n (t-1)",
-      "Minoritarian Democracy\n (Difference)",
-      "Minoritarian Democracy\n (t-1)",
-      "Log GDP\n per capita\n (Difference)",
-      "Log GDP\n (t-1)",
-      "Corruption\n (Difference)",
-      "Corruption\n (t-1)"
-      ),
-    time = 3),
-    rep(
-      c("Electoral Democracy\n (Difference)", 
-        "Minoritarian Democracy\n (Difference)",
-        "Log GDP\n per capita\n (Difference)",
-        "Corruption\n (Difference)"), 
-      time = 3
-    )),
-    type = factor(type, levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Claassen 2020a", "Claassen w/ Uncertainty", "DCPO"))
-  )
-
-terms4 <- factor(rev(c("Support[t-1]",
-                      "Support[t-2]",
-                      "Delta~Electoral~democracy",
-                      "Electoral~democracy[t-1]",
-                      "Delta~Minoritarian~democracy",
-                      "Minoritarian~democracy[t-1]",
-                      "Delta~Log~GDP",
-                      "Log~GDP[t-1]",
-                      "Delta~Corruption",
-                      "Corruption[t-1]")),
-                levels = rev(c("Support[t-1]",
-                               "Support[t-2]",
-                               "Delta~Electoral~democracy",
-                               "Electoral~democracy[t-1]",
-                               "Delta~Minoritarian~democracy",
-                               "Minoritarian~democracy[t-1]",
-                               "Delta~Log~GDP",
-                               "Log~GDP[t-1]",
-                               "Delta~Corruption",
-                               "Corruption[t-1]")))
-
-plot_RegAPSR2 <- dwplot(result_RegAPSR2, dodge_size = 0.8, by_2sd = FALSE) +
-  scale_y_discrete(labels = parse(text = levels(terms4))) +
-  scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
-  # scale_color_uiowa(name = "", palette = "digitMixed") +
-  labs(
-    title = "",
-    subtitle = "Regime Specified w. Corruption"
-  ) +
-  facet_wrap(~type, scales = "free_x") +
-  theme(legend.position = "bottom", 
-        legend.title = element_blank())
-
-legend <- get_legend(plot_RegAPSR2)
-
-plot_RegAPSR2 <- plot_RegAPSR2 + theme(legend.position = "none")
-
-grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol = 1)
-```
-
-\pagebreak
 
 # Replication with Alternative Methods Accounting for Uncertainty
 ```{r MocclaassenUncertaintyAJPS}
-load(here("data","pure_cls_ajps.rda"))
+load(here("data","cls_ajps.rda"))
 
 df_cls <- purrr::map(1:900, function(anEntry) {
-  pure_cls_ajps[[anEntry]] %>% 
+  cls_ajps[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
@@ -2049,10 +998,10 @@ saveRDS(result_clsUncertain_whole, file =here("output","clsAJPS_uncertainty.RDS"
 ```
 
 ```{r MocdcpoUncertaintyAJPS}
-load(here("data","exp_cls_ajps.rda"))
+load(here("data","dcpo_ajps.rda"))
 
 df_dcpo <- purrr::map(1:900, function(anEntry) {
-  exp_cls_ajps[[anEntry]] %>%     #original data has include theta_dem_trim
+  dcpo_ajps[[anEntry]] %>%     #original data has include theta_dem_trim
     plm::pdata.frame(index = c("country", "year"))
 })
 
@@ -2281,9 +1230,9 @@ saveRDS(result_our_clsUncertain, file = here::here("ouput","our_clsAPSR_uncertai
 ```
 
 ```{r  dcpoMocUncertaintyAPSR}
-load(here("data","exp_cls_apsr.rda"))
+load(here("data","dcpo_apsr.rda"))
 df_dcpoUncertainAPSR <- purrr::map(1:900, function(anEntry) {
-  exp_cls_apsr[[anEntry]] %>% 
+  dcpo_apsr[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
@@ -2607,4 +1556,3 @@ grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol 
 
 
 ```
-
