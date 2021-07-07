@@ -372,9 +372,9 @@ ls_mod_ajpsCLS <- c(
 
 ```
 
-```{r cls-uncertainAJPSfull}
-result_clsUncertainFull <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
-  result <- map(cls_ajps, function(aData){ # applying to the 1000 datasets
+```{r cls-AJPSpure}
+result_AJPSpure <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
+  result <- map(pure_cls_ajps, function(aData){ # applying to the 1000 datasets
     eval(parse(text = aMod))
   })
   
@@ -405,9 +405,9 @@ result_clsUncertainFull <- map(ls_mod_ajpsCLS, function(aMod){ # reading a model
   result_clsUncertain <- list(tidy_clsUncertain, glance_clsUncertain)
 })
 
-names(result_clsUncertainFull) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
+names(result_AJPSpure) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
    
-saveRDS(result_clsUncertainFull, file = here::here("output", "estimates_clsAJPSfullUncertain.RDS"))
+saveRDS(result_AJPSpure, file = here::here("output", "estimates_clsAJPSpure.RDS"))
 ```
 
 ```{r dcpo-modelAJPS}
@@ -495,7 +495,7 @@ index_coefName <- c(
 ```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=7, fig.height=10, fig.align='center', eval=TRUE}
 
 result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsUncertainFull <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
+result_AJPSpure <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
 result_dcpoUncertainFull <- readRDS(here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
 
 type_model <-
@@ -503,7 +503,7 @@ type_model <-
 
 result_ajpsPooled <-
   list(result_cls,
-       result_clsUncertainFull,
+       result_AJPSpure,
        result_dcpoUncertainFull) %>%
   map2_df(type_model, ~ {
     .x$pooled[[1]] %>%
@@ -515,7 +515,7 @@ result_ajpsPooled <-
 
 result_ajpsRegime <-
   list(result_cls,
-       result_clsUncertainFull,
+       result_AJPSpure,
        result_dcpoUncertainFull) %>%
   map2_df(type_model, ~ {
     .x$`pooled-regime`[[1]] %>%
@@ -1458,19 +1458,19 @@ grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 # Very weird phenomenon that the same type of rds files needs different ways to read
 # Suggesting using the qs or csv data type in future.
 result_cls <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsUncertainFull <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
+result_AJPSpure <- readRDS(here("output", "estimates_clsAJPSfullUncertain.RDS"))
 result_dcpoUncertainFull <- readRDS(here("output", "estimates_dcpoAJPSfullUncertain.RDS"))
 
 result_pooled <- bind_rows(
   mutate(result_cls$pooled[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainFull$pooled[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_AJPSpure$pooled[[1]], model = "Claassen w/ Uncertainty"),
   mutate(result_dcpoUncertainFull$pooled[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "Pooled")
 
 result_gmm <- bind_rows(
   mutate(result_cls$gmm[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainFull$gmm[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_AJPSpure$gmm[[1]], model = "Claassen w/ Uncertainty"),
   mutate(result_dcpoUncertainFull$gmm[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "GMM")
@@ -1531,14 +1531,14 @@ plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
 
 result_regime <- bind_rows(
   mutate(result_cls$`pooled-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainFull$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_AJPSpure$`pooled-regime`[[1]], model = "Claassen w/ Uncertainty"),
   mutate(result_dcpoUncertainFull$`pooled-regime`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "Pooled")
 
 result_regimeGmm <- bind_rows(
   mutate(result_cls$`gmm-regime`[[1]], model = "Claassen 2020a"),
-  mutate(result_clsUncertainFull$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
+  mutate(result_AJPSpure$`gmm-regime`[[1]], model = "Claassen w/ Uncertainty"),
   mutate(result_dcpoUncertainFull$`gmm-regime`[[1]], model = "DCPO")
 ) %>% 
   mutate(type = "GMM")
