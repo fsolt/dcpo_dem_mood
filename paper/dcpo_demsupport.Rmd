@@ -83,7 +83,8 @@ Another is that the relationships among these survey items have varied substanti
 A third is that these survey questions do not ask respondents how they prioritize democracy relative to other values with which it may come into conflict, such as their partisanship, and so miss capturing the true extent of support democracy would find among the public when public support was actually needed [see @Carey2020; @graham_democracy_2020; @McCoy2020].
 
 From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
-Similarly, the effect of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
+Similarly, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
+Culturally, whether the public democratic support has a pro-democratic or anti-authoritarian effect is bounded by emancipative value that, as a belief-anchored orientation, shapes the public's understanding of democracy [see @Brunkert2019; @Kirsch2019; @Kruse2019].
 Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
 
 We draw two conclusions, one methodological and one substantive.
@@ -205,7 +206,7 @@ In light of this, recent studies measuring other latent variables have recommend
 Therefore, after we replicate the original analyses that used only the point estimates of democratic support, we incorporate the full distribution of the latent variable estimates.
 To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
 Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
-Our approach of incorporating uncertainty is analogous to @Blackwell2017a's multiple overimputation, that is, creating multiple data set from the posterior distribution of the true latent value, applying analysis model for each dataset, and then averaging results by correcting the Between imputation variance.
+Our approach of incorporating uncertainty is analogous to @Blackwell2017a's multiple overimputation, that is, creating multiple data set from the posterior distribution of the true latent value, applying analysis model for each dataset, and then averaging results by correcting both within and between imputation variance.
 We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, 215) as robuestness check [see Supplementary Appendix xx].
 
 
@@ -773,6 +774,9 @@ There is some empirical support for this, with government effectiveness positive
 The finding of @Krieckhaus2014 that income inequality is strongly negatively related to public support in democracies suggests that performance regarding redistribution is particularly important.
 Relatedly, on the reverse part of the classic argument, @Qi2011 suggests that democratic support alone cannot be expected to generate democratic change and oppose backsliding.
 Instead, that work contends, it is the combination of democratic support and dissatisfaction with current regime performance that generates demand for greater democracy.
+The effects of public support also have cultural-bound.
+@Brunkert2019 contends outspoken support for democracy is a "deceptive indicator of public's affinity to democracy" [423] and finds public support has neither pro-democratic nor anti-authoritarian effect without controlling emancipative values.
+Empirical results show that the meaning of support for democracy is dependent on emancipation values and is reversed to its own negation in a society with weak emancipative values [see, e.g.,@Kirsch2019, 83-85].
 And we must be open to the possibility that no theoretical elaboration, no respecification of these models will reveal relationships between public opinion and democracy.
 Democratic backsliding may simply be primarily a matter of elite decisionmaking [see, e.g., @levitsky_how_2018].
 Regardless, these explanations indicate that there remains much work to be done in the empirical study of public support and democracy.
