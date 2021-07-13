@@ -57,24 +57,24 @@ header-includes:
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
-Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, 251-254] and just the opposite [@Fails2010, 182-183].
-Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183; @Wuttke2020a, 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Denemark2016; @Foa2017].
+Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, pp. 251-254] and just the opposite [@Fails2010, pp. 182-183].
+Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, p. 183; @Wuttke2020a, pp. 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Denemark2016; @Foa2017].
 
 One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
 Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
 Further, the survey data available across countries and over time on support for democracy---or indeed most topics in public opinion---are sparse and incomparable, greatly hindering broadly comparative research.
 Recently, a few pioneering studies have sought to overcome the hurdle of sparse and incomparable data by developing latent variable measurement models of public opinion [see @Caughey2019; @Claassen2019; @Solt2020a].
 A pair of prominent recent works took advantage of this latent variable approach to measure democratic support for over one hundred countries for up to nearly three decades and to then assess, respectively, its consequences for and roots in democratic change [@Claassen2020a; @Claassen2020b].
-These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating its own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
+These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, pp. 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating its own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
 
 The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
-Measurement error challenges statistical analyses, especially when it is correlated with a dependent variable which is the case of democratic support, but it is often ignored in the analysis [@Blackwell2017; @Blackwell2017a].
+Measurement error challenges statistical analyses, especially when it is correlated with an outcome variable which is the case of democratic support, but it is often ignored in the analysis [@Blackwell2017; @Blackwell2017a].
 Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
 To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
 
 In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
-In addition to incorporating the measurement uncertainty, we also sought to reduce it by employing a superior model of public opinion, the Dynamic Comparative Public Opinion (DCPO) model developed by @Solt2020a, and more data to estimate democratic support for 144 countries for up to 33 years between 1988 and 2020.
-Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and in our extension DCPO analyses that incorporate additional data.
+In addition to incorporating the measurement uncertainty, we also sought to reduce it by expanding the estimated data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
+Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and with expanded data.
 That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
   
 There are many plausible explanations for these null results, both methodological and theoretical.
@@ -89,7 +89,7 @@ Of course, it could in fact be that democratic change does not actually depend o
 
 We draw two conclusions, one methodological and one substantive.
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
+And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, p. 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not provide support for them.
 There is no room for complacency.
 
@@ -191,22 +191,25 @@ mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
 ```
 
 # Method
+
 We proceed in three steps.
-In our first step, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
-In the second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
-As our third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate democratic support using the superior DCPO measurement model, then conduct the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
+First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
+Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
+As the third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
 
 
 ## Incorporating Uncertainty
-Although measurement uncertainty has yet not attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
-Especially when measurement error is correlated with the dependent variable, the resulting bias could either attentuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey_policy_2018, p.254].
-In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey_policy_2018, 254]. 
 
-Therefore, after we replicate the original analyses that used only the point estimates of democratic support, we incorporate the full distribution of the latent variable estimates.
+Although measurement uncertainty has yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
+Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey_policy_2018, p.254].
+In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey_policy_2018, p. 254]. 
+
+Following this line, after replicating the original analyses with point estimates, we incorporate the full distribution of the latent and control variables to the estimation.
+We follows the 
 To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
-Then we perform each analysis repeatedly on its respective collection of datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
-Our approach of incorporating uncertainty is analogous to @Blackwell2017a's multiple overimputation, that is, creating multiple data set from the posterior distribution of the true latent value, applying analysis model for each dataset, and then averaging results by correcting both within and between imputation variance.
-We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, 215) as robuestness check [see Supplementary Appendix xx].
+Then we perform each analysis repeatedly on its respective collection of the datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
+This uncertainty-incorporation process is analogous to @Blackwell2017a's multiple overimputation (MO).
+We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, p. 215) as a robustness check [see the Online Supplementary Material \@ref(moc)].
 
 
 ```{r compare_n, eval = TRUE}
@@ -304,25 +307,32 @@ increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 ```
 
-## Better Estimates of Democratic Support and More Data
-As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
-The DCPO model has several advantages over the @Claassen2019 model used in Claassen [-@Claassen2020a; -@Claassen2020b].
-First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
-Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, 3-4; see also @McGann2014].
-Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
-Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
 
-In addition to applying the superior DCPO model, we also assembled as much available data on democratic support as possible. We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
-We used the `DCPO` package for R [@Solt2020b] to estimate the DCPO model on this expanded dataset.
+In addition to incorporating uncertainty, we also assembled as much available data on democratic support as possible. 
+We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
+
+A noteworthy point is that MO method enables not only uncertainty incorporation of key explanatory and outcome variables but also control variables. 
+We fully utilize this strength to include the uncertainty of the measurement of
+.......
 
 # Results
 
-Figure&nbsp;\ref{fig:visualizeAJPS} presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries (Claassen's 2020$a$, 128, Model 1) in the left panel and democratic support separated by regime type (Model 2) on the right.
-The uppermost set of results replicate @Claassen2020a, including by excluding measurement uncertainty, and reproduce that article's findings.
-The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
-In both models, the positive coefficients for democratic support are no longer statistically significant.
-The bottom results also incorporate uncertainty but additionally replace the @Claassen2019 estimates of support with those based on DCPO and the expanded dataset; this change works to increase the number of observations analyzed as well.
-Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
+Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries [@Claassen2020a, Model 1] in the left panel and separated by regime type (Model 2) on the right.
+The uppermost set of results replicate @Claassen2020a without uncertainty.
+The middle results introduce the uncertainty in the measurement of public support into the model.
+The lowermost set presents the results estimated with the expanded data. 
+
+
+In comparison to the original result, the positive coefficients for democratic support in both model accounting for the uncertainty are no longer statistically significant.
+This result is robust when using separated regime types in the explanatory variable. 
+The estimation based on an alternative method of uncertainty incorporation, model of composition, yields identical conclusions [XXXX].
+
+At the same time, the results also shows that ignoring uncertainty may lead to misestimation of the point effect as well. 
+In the case here, the point estimates of democracy support are notably larger than the original estimate for both model settings. 
+With MO, we draw variable values from their distributions and estimate the coefficient first before combining through Rubin's rule.
+The deviation of the result from the original indicates the coefficient (point) estimates were not that consistent.
+In other words, the estimates based on the mean values of variables cannot fully reflect their characteristics and relations at all.
+Only when the uncertainty is accounted, their effect can be more properly estimated.
 
 
 ```{r pointAJPS, eval=TRUE}
@@ -368,7 +378,6 @@ names(result_clsAJPS) <- c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
 saveRDS(result_clsAJPS, file = here::here("output", "estimates_clsMeanAJPS.RDS"))  
 ```
-
 
 ```{r model-AJPS}
 
@@ -544,6 +553,14 @@ dwplot(df_plot) +
 
 ```
 
+The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the outcome variable. 
+In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [p. 47, Models 1.1 and 1.2]. 
+The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
+However, the middle and bottom results demonstrate that this thermostatic effect, too, does not hold after the measurement uncertainty is accounted for. 
+And again, we observe the point estimates slides to the zero line.
+
+[A discussion about the support t-1]
+
 ```{r pointAPSR, eval=TRUE}
 load(here::here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year")) 
@@ -669,18 +686,16 @@ names(result_expAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regim
 saveRDS(result_expAPSR, file = here("output", "estimates_clsExpAPSR.RDS"))
 ```
 
-The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the dependent variable. 
-In Figure&nbsp;\ref{fig:visualizedAPSR}, we examine the thermostatic model of democratic support per @Claassen2020b [, 47, Models 1.1 and 1.2]. 
-The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
-However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
-And again, the bottom results reveal that the additional data and superior DCPO measurement model of our extension do not provide support for the original conclusion.
-
 ```{r coefName-APSR, eval=TRUE}
 index_coefName <- c(
     `plm::lag(SupDem_trim, 1:2)1` = "Support[t-1]",
     `plm::lag(SupDem_trim, 1:2)2` = "Support[t-2]",
     `plm::lag(theta_trim, 1:2)1` = "Support[t-1]",
     `plm::lag(theta_trim, 1:2)2` = "Support[t-2]",
+    `diff(Libdem_z, lag = 1)` = "Delta~Liberal~democracy",
+    `diff(Vdem_libdem_z, lag = 1)` = "Delta~Liberal~democracy",
+    `plm::lag(Libdem_z, 1)` = "Liberal~democracy[t-1]",
+    `plm::lag(Vdem_libdem_z, 1)` = "Liberal~democracy[t-1]",
     `diff(Liberal_z, lag = 1)` = "Delta~Support(demo~only)",
     `diff(Vdem_liberal_z, lag = 1)` = "Delta~Support(demo~only)",
     `plm::lag(Liberal_z, 1)` = "Support[t-1](demo~only)",
@@ -689,10 +704,6 @@ index_coefName <- c(
     `diff(Vdem_polyarchy_z, lag = 1)` = "Delta~Support(auto~only)",
     `plm::lag(Polyarchy_z, 1)` = "Support[t-1](auto~only)",
     `plm::lag(Vdem_polyarchy_z, 1)` = "Support[t-1](auto~only)",
-    `diff(Libdem_z, lag = 1)` = "Delta~Liberal~democracy",
-    `diff(Vdem_libdem_z, lag = 1)` = "Delta~Liberal~democracy",
-    `plm::lag(Libdem_z, 1)` = "Liberal~democracy[t-1]",
-    `plm::lag(Vdem_libdem_z, 1)` = "Liberal~democracy[t-1]",
     `diff(lnGDP_imp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `diff(lg_imp_mdpgdp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `plm::lag(lnGDP_imp, 1)` = "Log~GDP[t-1]",
@@ -757,7 +768,8 @@ dwplot(df_plot) +
 ```
 
 # Discussion
-In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when a superior estimate of public support and more data are used.
+
+In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and democracy a negative effect on support are not empirically supported once measurement uncertainty is taken into account, even when more data are used.
 
 There are several potential methodological explanations for these null results.
 One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
@@ -782,9 +794,10 @@ Regardless, these explanations indicate that there remains much work to be done 
 
 
 # Conclusion
+
 In this letter, we reexamined the findings from Claassen [-@Claassen2020a; -@Claassen2020b], two articles that maintain that public support helps the survival of democracy and democratic development has a thermostatic effect on public support.
 We demonstrated the importance of incorporating measurement uncertainty in analyzing the relationship between public support and democracy.
-Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we employed the more sophisticated DCPO measurement model and additional data.
+Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we added considerable more data.
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
 As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
@@ -968,7 +981,10 @@ modelsummary(tb_result_expAPSR,
 \elandscape
 
 
-# Replication with Alternative Methods Accounting for Uncertainty
+# Replication with Alternative Methods Accounting for Uncertainty {#moc}
+
+To ensure the robustness of our analysis, we apply another method to account for uncertainty.
+In the 
 
 ```{r moc-estimates}
 
