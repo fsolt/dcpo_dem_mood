@@ -209,7 +209,7 @@ We follows the
 To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
 Then we perform each analysis repeatedly on its respective collection of the datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
 This uncertainty-incorporation process is analogous to @Blackwell2017a's multiple overimputation (MO).
-We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, p. 215) as a robustness check [see the Online Supplementary Material \@ref(moc)].
+We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
 
 
 ```{r compare_n, eval = TRUE}
@@ -313,7 +313,8 @@ We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_inpu
 
 A noteworthy point is that MO method enables not only uncertainty incorporation of key explanatory and outcome variables but also control variables. 
 We fully utilize this strength to include the uncertainty of the measurement of
-.......
+democracy and corruption. 
+[XXXX Cassandra, please fill in a tiny little bit of details here]
 
 # Results
 
@@ -707,7 +708,10 @@ index_coefName <- c(
     `diff(lnGDP_imp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `diff(lg_imp_mdpgdp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `plm::lag(lnGDP_imp, 1)` = "Log~GDP[t-1]",
-    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP[t-1]"
+    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP[t-1]",
+    `diff(Corrup_TI_z, lag = 1)`= "Delta~Corruption",
+    `plm::lag(Corrup_TI_z, 1)` = "Log~Corruption[t-1]",
+    `Corrup_TI_z` = "Log~Corruption[t-1]"
 )
 ```
 
@@ -984,7 +988,45 @@ modelsummary(tb_result_expAPSR,
 # Replication with Alternative Methods Accounting for Uncertainty {#moc}
 
 To ensure the robustness of our analysis, we apply another method to account for uncertainty.
-In the 
+The method we employ is "method of composition" (MOC).
+It is a common method for Monte Carlo integration, but can also be applied for addressing uncertainty [@treier_democracy_2008].
+To compare these two methods, let's denote `y` as a vector of the outcome variable [either institutional democracy in @Claassen2020a or the changes in mass support of democracy in @Claassen2020b]. 
+Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
+In multiple overimputation (MO, the method used in the main article), the explanatory variable with measurement errors is regarded as missing data $x^{mis}$ with an observed proxy $w$ under the assumption of "Missing at Random" and "Ignorable Measurement Mechanism Assignment" [@Blackwell2017].
+The explanatory variables without error are denoted $x^{obs}$.
+The parameter likelihood is then
+
+
+\begin{equation}
+\mathcal{L}(\theta|y, x^{obs}) \propto \int\limit_{\chi} p(x|y, \theta)p(y|\theta)dx^{mis}.
+\end{equation}
+
+
+Given $x$ is unobservable, one can estimate it through the proxy $w$ together with the measurement error $a$:
+
+\begin{equation}
+E(w | x) = x + a.
+\end{equation}
+
+After gaining the parameter density based on the above functions, one can apply Rubin's Rule to combine the point estimates and standard errors into single values yet accounting for both within and between imputation variances [@Rubin1987].
+
+MOC addresses the same issue from a slightly different angle.
+The method assumes that the explanatory and outcome variables are samples from their estimate functions, and their paired sample follows a joint density [@Tanner1993, p.31].
+From the joint density, one can decomposite the likelihood of the explanatory variable and its parameter to a product of their own probabilities.
+When x is measured with errors $w$, the probability becomes conditional:
+
+\begin{equation}
+\mathcal{L}(\theta, x|y, w) = p(\theta|x,y)p(x|w).
+\end{equation}
+
+Based on this decomposition, one can estimate the marginal density for &\theta&:
+
+\begin{equation}
+\mathcal{L}(\theta|y, x) \propto \int\limit_{\chi} p(\theta|y, x)p(x|w)dx.
+\end{equation}
+
+Again, the gained parameter density can be combined into single values.
+A common way to do so is using the mean of $theta$ as the point estimate, and the variance from the density as the standard error.
 
 ```{r moc-estimates}
 
@@ -1498,3 +1540,6 @@ grid.arrange(plot_APSR1, plot_APSR2, plot_RegAPSR1, plot_RegAPSR2, legend, ncol 
 
 
 ```
+
+Figure \@ref(fig:plot-mocAJPS) and \@ref(fig:plot-mocAPSR) presents the results of using MOC to engage measurement error. 
+The results are consistent as we gained from the MO method (cf. Figure \@ref(fig:plot-mainAJPS) and \@ref(fig:plot-mainAPSR)).
