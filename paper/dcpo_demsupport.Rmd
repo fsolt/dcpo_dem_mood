@@ -73,7 +73,7 @@ Because they are unobserved, latent variables are inherently accompanied by meas
 To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
 
 In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
-In addition to incorporating the measurement uncertainty, we also sought to reduce it by expanding the estimated data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
+In addition to incorporating the measurement uncertainty, we also sought to reduce it by expanding survey data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
 Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and with expanded data.
 That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
   
@@ -195,7 +195,7 @@ mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
 We proceed in three steps.
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
-As the third step, we collect even more survey data---increasing these source data observations by one-fourth---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
+As the third step, we collect even more survey data---increasing these source data by one-fourth---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
 
 
 ## Incorporating Uncertainty
@@ -204,11 +204,11 @@ Although measurement uncertainty has yet attracted attention in the field of com
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey_policy_2018, p.254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey_policy_2018, p. 254]. 
 
-Following this line, after replicating the original analyses with point estimates, we incorporate the full distribution of the latent and control variables to the estimation.
-We follows the 
-To do this, we replicate the latent variable estimation from the original survey data, duplicate each article's analysis dataset 1,000 times, and assign to each a different random draw from the posterior distribution of public democratic support.
-Then we perform each analysis repeatedly on its respective collection of the datasets, and combine the results following the rules set out in @Rubin1987 [see, e.g., @Schnakenberg2014; @Crabtree2015].
-This uncertainty-incorporation process is analogous to @Blackwell2017a's multiple overimputation (MO).
+Following this line, after replicating the original analyses with point estimates, we take the distribution of the latent variable, the dependent variable, and control variables to account for the uncertainty from the measurement model as well as dependent and control variables.
+To do this, we take 900 draws from the distribution of public democratic support and corruption index, duplicate each article's analysis dataset of variables without “measurement error” 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices, electoral, polyarchy and liberal index, which are provided by V-DEM project.
+We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
+This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
+@Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
 We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
 
 
@@ -549,7 +549,7 @@ dwplot(df_plot) +
     ) +
     scale_y_discrete(labels = parse(text = rev(levels(df_plot$term)))) +
     # Using expressions of underscore and greek letters
-    scale_color_gb(palette = "digitMixed") +
+    # scale_color_gb(palette = "digitMixed") +
     facet_wrap(~ type)
 
 ```
@@ -765,7 +765,7 @@ dwplot(df_plot) +
     ) +
     scale_y_discrete(labels = parse(text = rev(levels(df_plot$term)))) +
     # Using expressions of underscore and greek letters
-    scale_color_gb(palette = "digitMixed") +
+    # scale_color_gb(palette = "digitMixed") +
     facet_wrap( ~ type)
 
 
