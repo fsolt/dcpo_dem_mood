@@ -205,7 +205,7 @@ Especially when measurement error is correlated with the outcome variable, the r
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey_policy_2018, p. 254]. 
 
 Following this line, after replicating the original analyses with point estimates, we take the distribution of the latent variable, the dependent variable, and control variables to account for the uncertainty from the measurement model as well as dependent and control variables.
-To do this, we take 900 draws from the distribution of public democratic support and corruption index, duplicate each article's analysis dataset of variables without “measurement error” 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices, electoral, polyarchy and liberal index, which are provided by V-DEM project.
+To do this, we take 900 draws from the distribution of public democratic support and corruption index, duplicate each article's analysis dataset of variables without “measurement error” 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices.
 We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
 This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
 @Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
@@ -311,10 +311,9 @@ increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 In addition to incorporating uncertainty, we also assembled as much available data on democratic support as possible. 
 We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
 
-A noteworthy point is that MO method enables not only uncertainty incorporation of key explanatory and outcome variables but also control variables. 
-We fully utilize this strength to include the uncertainty of the measurement of
-democracy and corruption. 
-[XXXX Cassandra, please fill in a tiny little bit of details here]
+A noteworthy point is that in addition to account for uncertainty in latent variable estimates, we also include the measurement uncertainty in democracy indices and corruption index. 
+We extracted the posterior distributions of democratic indices, including electoral, polyarchy, and liberal index, which are provided by [@coppedge2018]. 
+We drew 900 samples from the distribution of the Corruption Perception Index.^[Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the  multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.] 
 
 # Results
 
