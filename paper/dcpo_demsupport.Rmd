@@ -209,7 +209,7 @@ To do this, we take 900 draws from the distribution of public democratic support
 We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
 This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
 @Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
-We also employ one alternative technique known as “method of composition” [@treier_democracy_2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
+We also employ one alternative technique known as “method of composition” (MOC)  [@treier_democracy_2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
 
 
 ```{r compare_n, eval = TRUE}
@@ -325,12 +325,14 @@ The lowermost set presents the results estimated with the expanded data.
 
 In comparison to the original result, the positive coefficients for democratic support in both model accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
-The estimation based on an alternative method of uncertainty incorporation, model of composition, yields identical conclusions [XXXX].
+The estimation based on MOC yields mixed results.
+In the OLS models, the public support from originial data with uncertainty is significant for both pooled data and split data for democracies but the support estimated from the expanded data is not.
+In GMM models which should yield more accurate results than OLS models, the coeffient of public support is not significant for pooled data but significant for split sample data with original data. 
 
 At the same time, the results also shows that ignoring uncertainty may lead to misestimation of the point effect as well. 
 In the case here, the point estimates of democracy support are notably larger than the original estimate for both model settings. 
-With MO, we draw variable values from their distributions and estimate the coefficient first before combining through Rubin's rule.
-The deviation of the result from the original indicates the coefficient (point) estimates were not that consistent.
+We draw variable values from their distributions and estimate the coefficient first before combining through Rubin's rule.
+The deviation of the result from the original one indicates the coefficient (point) estimates were not that consistent.
 In other words, the estimates based on the mean values of variables cannot fully reflect their characteristics and relations at all.
 Only when the uncertainty is accounted, their effect can be more properly estimated.
 
@@ -632,7 +634,7 @@ ls_mod_apsrCLS <- c(
 
 ```{r result-pureAPSR}
 result_pureAPSR <- map(ls_mod_apsrCLS, function(aMod){ # reading a model
-  result <- map(pure_cls_apsr, function(aData){ # applying to the 1000 datasets
+  result <- map(pure_cls_apsr, function(aData){ # applying to the 900 datasets
     eval(parse(text = aMod))
   })
   
@@ -714,7 +716,7 @@ index_coefName <- c(
 )
 ```
 
-```{r plot-mainAPSR, fig.cap= "The Effect of Democracy on Public Support", fig.width=7, fig.height=10, eval = TRUE}
+```{r plot-mainAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", fig.width=7, fig.height=10, eval = TRUE}
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_pureAPSR <- readRDS(here("output", "estimates_clsFullUncertainAPSR.RDS"))
 result_expAPSR <- readRDS(here("output", "estimates_clsExpAPSR.RDS"))
@@ -755,7 +757,7 @@ dwplot(df_plot) +
                colour = "grey80",
                linetype = 2) +
     theme_minimal() +
-    ggtitle("DV: Public Support for Democracy") +
+    ggtitle("DV: The Change of Public Support for Democracy") +
     xlab("Coefficient Estimate") +
     theme(
         axis.title.y = element_blank(),
@@ -851,7 +853,7 @@ modelsummary(tb_result_cls,
              statistic = "conf.int",
              coef_map = names_coef, 
              output = "latex", 
-             title = "Original") %>% 
+             title = "Original") %>%
   
   kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
@@ -1258,7 +1260,7 @@ saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expAPSR.RDS"
 
 ```
 
-```{r plot-mocAPSR, fig.cap= "The Effect of Democracy on Public Support", eval = TRUE, fig.width=7, fig.height=10}
+```{r plot-mocAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", eval = TRUE, fig.width=7, fig.height=10}
 
 result_ecm1 <- bind_rows(
   mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], model = "Original"),
@@ -1311,7 +1313,7 @@ plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
   scale_color_grey(start = 0.4, end = 0.8, guide = guide_legend(reverse = TRUE)) +
   # scale_color_uiowa(name = "", palette = "digitMixed") +
   labs(
-    title = "DV: Public Support for Democracy",
+    title = "DV: The Change of Public Support for Democracy",
     subtitle = "Regime Compacted"
   ) +
   facet_wrap(~type, drop=T,scales = "free_x") +
