@@ -722,7 +722,7 @@ result_pureAPSR <- readRDS(here("output", "estimates_clsFullUncertainAPSR.RDS"))
 result_expAPSR <- readRDS(here("output", "estimates_clsExpAPSR.RDS"))
 
 type_model <-
-  c("Claassen 2020", "Claassen Uncertainty", "DCPO Uncertainty")
+  c("Original", "Uncertainty", "Uncertainty+Expanded Data")
 
 result_apsrPooled <-
   list(result_clsAPSR,
