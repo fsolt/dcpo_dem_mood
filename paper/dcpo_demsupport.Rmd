@@ -312,7 +312,7 @@ In addition to incorporating uncertainty, we also assembled as much available da
 We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
 
 A noteworthy point is that in addition to account for uncertainty in latent variable estimates, we also include the measurement uncertainty in democracy indices and corruption index. 
-We extracted the posterior distributions of democratic indices, including electoral, polyarchy, and liberal index, which are provided by [@coppedge2018]. 
+We extracted the posterior distributions of democratic indices, including Liberal Democracy,  polyarchy, and electoral democracy index, which are provided by [@coppedge2018]. 
 We drew 900 samples from the distribution of the Corruption Perception Index.^[Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the  multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.] 
 
 # Results
@@ -326,8 +326,12 @@ The lowermost set presents the results estimated with the expanded data.
 In comparison to the original result, the positive coefficients for democratic support in both model accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
 The estimation based on MOC yields mixed results.
-In the OLS models, the public support from originial data with uncertainty is significant for both pooled data and split data for democracies but the support estimated from the expanded data is not.
-In GMM models which should yield more accurate results than OLS models, the coeffient of public support is not significant for pooled data but significant for split sample data with original data. 
+In pooled OLS models, the public support estimated from the originial data with uncertainty is significant for the whole data and split databut the support estimated from the expanded data is not.
+In system GMM models which are more appropriate in this case than pooled OLS models, public support estimated from the original data reached the threshold of significance within democratic regimes. 
+The estimated support with the expanded data is not significant in GMM models.
+
+Using the same models and the measurement, the support estimate from a more qualified data yields insignificant results. 
+This undermines the reliability of significant results from the estimate using the original data.^[In fact, when we further improve the estimate and reduce the uncertainty by applying a more superior measurement model, the relationship between public support and democratic survival disappears.] 
 
 At the same time, the results also shows that ignoring uncertainty may lead to misestimation of the point effect as well. 
 In the case here, the point estimates of democracy support are notably larger than the original estimate for both model settings. 
@@ -805,6 +809,7 @@ We demonstrated the importance of incorporating measurement uncertainty in analy
 Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we added considerable more data.
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
+Measurement issues have never had a prominent place in comparative political studies because they need more time to estimate models, but they ground the quality of data and the basis of analysis [@stegmueller2011, 484].
 As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
 
 The null results reached in this letter could arise from several sources.
@@ -995,7 +1000,9 @@ To compare these two methods, let's denote `y` as a vector of the outcome variab
 Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
 In multiple overimputation (MO, the method used in the main article), the explanatory variable with measurement errors is regarded as missing data $x^{mis}$ with an observed proxy $w$ under the assumption of "Missing at Random" and "Ignorable Measurement Mechanism Assignment" [@Blackwell2017].
 The explanatory variables without error are denoted $x^{obs}$.
+*Personally, I think we should be careful to use MO since our approach is not MO. I will go back here later.* 
 The parameter likelihood is then
+
 
 
 \begin{equation}
