@@ -132,6 +132,9 @@ In terms of the impact of measurement error on estimated effects, many studies h
 ## Reviewer #4
 [Issue 15](https://github.com/fsolt/dcpo_dem_mood/issues/15) Second, I was a bit confused by Figures 1 and 2. My understanding is that accounting for uncertainty should only affect the standard errors, but in the figures it also affects the point estimates. This is the case even in the models 'Claassen W/Uncertainty.'
 
+## Response
+First, we need to clarify the DV in Figure2, which is the change of public support rather than current public support.  
+
 
 # Test Full Models 
 ## Reviewer #1
