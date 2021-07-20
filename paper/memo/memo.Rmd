@@ -133,8 +133,16 @@ In terms of the impact of measurement error on estimated effects, many studies h
 [Issue 15](https://github.com/fsolt/dcpo_dem_mood/issues/15) Second, I was a bit confused by Figures 1 and 2. My understanding is that accounting for uncertainty should only affect the standard errors, but in the figures it also affects the point estimates. This is the case even in the models 'Claassen W/Uncertainty.'
 
 ## Response
-First, we need to clarify the DV in Figure2, which is the change of public support rather than current public support.  
-
+First, we need to clarify the DV in Figure2 is the change of public support for democracy rather than current public support.
+Second, when DV is the change of public support, Claassen's original results wouldn't make any sense. 
+Claassen's original results indicate the change of public support in one year is positively changed by the public support in the previous one year and negatively shifted by the previous two years.
+However, should we expect that public support can produce its demand and especially a conflicting demand?
+Can high public support of this year ask for a change in next year but resist a change in the next two years?
+In the contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
+Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero and the magnitude of the coefficient also moves to zero.
+As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, it is rare that accounting of uncertainty renders the insignificant effect of democracy.
+However, even in Claassen's original results, the estimated effects of both the change of democracy and other social as well as economic factors are small.
+Given the measurement errors in both democratic indices and public support, it is not surprising to get the diminution of the estimated effects.
 
 # Test Full Models 
 ## Reviewer #1
