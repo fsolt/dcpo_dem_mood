@@ -702,21 +702,21 @@ index_coefName <- c(
     `diff(Vdem_libdem_z, lag = 1)` = "Delta~Liberal~democracy",
     `plm::lag(Libdem_z, 1)` = "Liberal~democracy[t-1]",
     `plm::lag(Vdem_libdem_z, 1)` = "Liberal~democracy[t-1]",
-    `diff(Liberal_z, lag = 1)` = "Delta~Support(demo~only)",
-    `diff(Vdem_liberal_z, lag = 1)` = "Delta~Support(demo~only)",
-    `plm::lag(Liberal_z, 1)` = "Support[t-1](demo~only)",
-    `plm::lag(Vdem_liberal_z, 1)` = "Support[t-1](demo~only)",
-    `diff(Polyarchy_z, lag = 1)` = "Delta~Support(auto~only)",
-    `diff(Vdem_polyarchy_z, lag = 1)` = "Delta~Support(auto~only)",
-    `plm::lag(Polyarchy_z, 1)` = "Support[t-1](auto~only)",
-    `plm::lag(Vdem_polyarchy_z, 1)` = "Support[t-1](auto~only)",
+    `diff(Liberal_z, lag = 1)` = "Delta~Support(electoral)",
+    `diff(Vdem_liberal_z, lag = 1)` = "Delta~Support(electoral)",
+    `plm::lag(Liberal_z, 1)` = "Support[t-1](electoral)",
+    `plm::lag(Vdem_liberal_z, 1)` = "Support[t-1](electoral)",
+    `diff(Polyarchy_z, lag = 1)` = "Delta~Support(minoritarian)",
+    `diff(Vdem_polyarchy_z, lag = 1)` = "Delta~Support(minoritarian)",
+    `plm::lag(Polyarchy_z, 1)` = "Support[t-1](minoritarian)",
+    `plm::lag(Vdem_polyarchy_z, 1)` = "Support[t-1](minoritarian)",
     `diff(lnGDP_imp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `diff(lg_imp_mdpgdp, lag = 1)` = "Delta~Log~GDP~per~capita",
     `plm::lag(lnGDP_imp, 1)` = "Log~GDP[t-1]",
-    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP[t-1]",
-    `diff(Corrup_TI_z, lag = 1)`= "Delta~Corruption",
-    `plm::lag(Corrup_TI_z, 1)` = "Log~Corruption[t-1]",
-    `Corrup_TI_z` = "Log~Corruption[t-1]"
+    `plm::lag(lg_imp_mdpgdp, 1)` = "Log~GDP[t-1]"
+    # `diff(Corrup_TI_z, lag = 1)`= "Delta~Corruption",
+    # `plm::lag(Corrup_TI_z, 1)` = "Log~Corruption[t-1]",
+    # `Corrup_TI_z` = "Log~Corruption[t-1]"
 )
 ```
 
@@ -750,17 +750,17 @@ result_apsrRegime <-
       select(term, estimate, conf.low, conf.high) %>%
       mutate(model = .y)
   }) %>% 
-  mutate(type = "Regime Specified")
+  mutate(type = "Institution Specified")
 
 df_plot <- bind_rows(result_apsrPooled, result_apsrRegime) %>% 
     mutate(term = index_coefName[term],
-           term = factor(term, levels = unique(index_coefName)))
+           term = factor(term, levels = unique(index_coefName)), 
+           type = factor(type, levels = c("Pooled", "Institution Specified")))
  
 dwplot(df_plot) +
     geom_vline(xintercept = 0,
                colour = "grey80",
                linetype = 2) +
-    theme_minimal() +
     ggtitle("DV: The Change of Public Support for Democracy") +
     xlab("Coefficient Estimate") +
     theme(
@@ -768,10 +768,11 @@ dwplot(df_plot) +
         legend.position = "bottom",
         legend.title = element_blank()
     ) +
-    scale_y_discrete(labels = parse(text = rev(levels(df_plot$term)))) +
+    facet_wrap( ~ type) + 
+    scale_y_discrete(labels = parse(text = rev(levels(df_plot$term))))
     # Using expressions of underscore and greek letters
-    # scale_color_gb(palette = "digitMixed") +
-    facet_wrap( ~ type)
+    # scale_color_gb(palette = "digitMixed")
+    
 
 
 ```
@@ -829,7 +830,7 @@ Those who would defend democracy have no grounds to be complacent.
 # (APPENDIX) Appendix {-}
 # Numeric Results for Replicating Claassen 2020a
 
-```{r num-labelAJPS}
+```{r num-labelAJPS, eval=TRUE}
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
   "plm::lag(Libdem_VD, 1:2)1" = "Democracy[t-1]",
@@ -845,7 +846,7 @@ names_coef <- c(
 )
 ```
 
-```{r num-pointAJPS, results='asis'}
+```{r num-pointAJPS, results='asis', eval=TRUE}
 tb_result_cls <- map(result_clsAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -864,7 +865,7 @@ modelsummary(tb_result_cls,
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r num-pureAJPS, results='asis'}
+```{r num-pureAJPS, results='asis', eval=TRUE}
 tb_result_pureAJPS <- map(result_pureAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -881,7 +882,7 @@ modelsummary(tb_result_pureAJPS,
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r num-expAJPS, results='asis'}
+```{r num-expAJPS, results='asis', eval=TRUE}
 tb_result_expAJPS <- map(result_expAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -902,7 +903,7 @@ modelsummary(tb_result_expAJPS,
 
 # Numeric Results for Replicating Claassen 2020b
 
-```{r num-labelAPSR}
+```{r num-labelAPSR, eval=TRUE}
 names_coef <- c(
   "(Intercept)" = "(Intercept)",
   "plm::lag(SupDem_trim, 1:2)1" = "Democratic\n Mood\n (t-1)",
@@ -925,7 +926,7 @@ names_coef <- c(
 )
 ```
 
-```{r num-pointAPSR, results='asis'}
+```{r num-pointAPSR, results='asis', eval=TRUE}
 tb_result_clsAPSR <- map(result_clsAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -947,7 +948,7 @@ modelsummary(tb_result_clsAPSR,
 
 \blandscape
 
-```{r num-pureAPSR, results='asis'}
+```{r num-pureAPSR, results='asis', eval=TRUE}
 tb_result_pureAPSR <- map(result_pureAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -970,7 +971,7 @@ modelsummary(tb_result_pureAPSR,
 
 \blandscape
 
-```{r num-expAPSR, results='asis'}
+```{r num-expAPSR, results='asis', eval=TRUE}
 tb_result_expAPSR <- map(result_expAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
@@ -1006,7 +1007,7 @@ The parameter likelihood is then
 
 
 \begin{equation}
-\mathcal{L}(\theta|y, x^{obs}) \propto \int\limit_{\chi} p(x|y, \theta)p(y|\theta)dx^{mis}.
+\mathcal{L}(\theta|y, x^{obs}) \propto \int_{\chi} p(x|y, \theta)p(y|\theta)dx^{mis}.
 \end{equation}
 
 
@@ -1030,13 +1031,13 @@ When x is measured with errors $w$, the probability becomes conditional:
 Based on this decomposition, one can estimate the marginal density for &\theta&:
 
 \begin{equation}
-\mathcal{L}(\theta|y, x) \propto \int\limit_{\chi} p(\theta|y, x)p(x|w)dx.
+\mathcal{L}(\theta|y, x) \propto \int_{\chi} p(\theta|y,x)p(x|w)dx.
 \end{equation}
 
 Again, the gained parameter density can be combined into single values.
 A common way to do so is using the mean of $theta$ as the point estimate, and the variance from the density as the standard error.
 
-```{r moc-estimates}
+```{r moc-estimates, eval=TRUE}
 
 
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
@@ -1099,7 +1100,7 @@ saveRDS(mocresult_expAJPS, file =here("output","estimates_moc_expAJPS.RDS"))
 
 ```
 
-```{r plot-mocAJPS, fig.cap= "The Effect of Public Support on Democracy ", eval = TRUE, fig.width=7, fig.height=10}
+```{r plot-mocAJPS, fig.cap= "The Effect of Public Support on Democracy ", eval = TRUE, fig.width=7, fig.height=10, eval=TRUE}
 
 result_pooled <- bind_rows(
   mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Original"),
@@ -1267,7 +1268,7 @@ saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expAPSR.RDS"
 
 ```
 
-```{r plot-mocAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", eval = TRUE, fig.width=7, fig.height=10}
+```{r plot-mocAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", eval = TRUE, fig.width=7, fig.height=10, eval=TRUE}
 
 result_ecm1 <- bind_rows(
   mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], model = "Original"),
