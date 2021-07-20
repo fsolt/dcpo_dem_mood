@@ -209,7 +209,7 @@ To do this, we take 900 draws from the distribution of public democratic support
 We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
 This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
 @Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
-We also employ one alternative technique known as “method of composition” (MOC)  [@treier_democracy_2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
+We also employ one alternative technique known as “method of composition” (MOC)  [@Treier2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
 
 
 ```{r compare_n, eval = TRUE}
@@ -1000,7 +1000,7 @@ modelsummary(tb_result_expAPSR,
 
 To ensure the robustness of our analysis, we apply another method to account for uncertainty.
 The method we employ is "method of composition" (MOC).
-It is a common method for Monte Carlo integration, but can also be applied for addressing uncertainty [@treier_democracy_2008].
+It is a common method for Monte Carlo integration, but can also be applied for addressing uncertainty [@Treier2008].
 To compare these two methods, let's denote `y` as a vector of the outcome variable [either institutional democracy in @Claassen2020a or the changes in mass support of democracy in @Claassen2020b]. 
 Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
 In multiple overimputation (MO, the method used in the main article), the explanatory variable with measurement errors is regarded as missing data $x^{mis}$ with an observed proxy $w$ under the assumption of "Missing at Random" and "Ignorable Measurement Mechanism Assignment" [@Blackwell2017].
