@@ -118,7 +118,7 @@ As Reviewer3 pointed out, democratic value is formed and shaped by institution, 
 
 Our approach and MOC yield mixed results for AJPS's analysis. 
 
-In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @treier_democracy_2008, p. 211; @caughey_policy_2018,p. 254].
+In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey_policy_2018,p. 254].
 
 
 # The Change of Democratic Support and Lagged Support
