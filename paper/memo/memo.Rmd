@@ -106,6 +106,19 @@ The updated results are presented in Figure XXX at Page xx.
 ## Reviewer #4
 [Issue 17](https://github.com/fsolt/dcpo_dem_mood/issues/17) We need more information on (1) how uncertainty is integrated into the models of Claassen, and (2) the DCPO models.
 
+## Response 
+Both Reviewers 1 & 2 concern about the validity of the approach which we used to incorporate measurement uncertainty. First, we added more explanations on how uncertainty is integrated into the models in Page xx of main text and also presented equations in Page xx in SI. It is ture that Rubin's rule is designed to address missing values by using multiple imputation(MI), but as Reviewer 2 has already pointed out, @Blackwell2017 applied the logic of MI and Rubin's rule in their Multiple Overimputation (P309) to address measurement error and missing data which is conceptulized as an extreme case of measurement error. 
+
+The idea of our approach for propagating uncertainty is correcting both within and between imputation variance through Rubin's rule, and the idea of MOC is accounting for within imputation variance through drawing sample from the joint posterior distribution of the measurement and analysis model. 
+
+To address the performance of the method we used, we employed "method of component" as an alternative way in SI.
+Our approach and MOC yield similar results from replicating APSR's analysis, that is, when uncertainty is allowed, the coefficients on the lagged public support and the change of democratic level are no longer distinguishable from zero in Page xx in MS and Page xx in SI.
+It is not surprising that the estimated effect of democracy is indistinguishable from zero given measurement errors in both democracy and democratic support measurements and cultural features of democratic values.
+As Reviewer3 pointed out, democratic value is formed and shaped by institution, history, and culture and the cultural feature of democratic value determines that it cannot be impacted swiftly by the change of democracy.
+
+Our approach and MOC yield mixed results for AJPS's analysis. 
+
+In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @treier_democracy_2008, p. 211; @caughey_policy_2018,p. 254].
 
 
 # The Change of Democratic Support and Lagged Support
