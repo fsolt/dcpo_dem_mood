@@ -84,14 +84,16 @@ Again, this is things to do only.  Remember to go back to the reviews and mine t
 ## Response 
 A major concern raised by Reviewers 1 & 2 was regard to the omission of measurement errors of DV and control variables in our analysis.
 It is a good point.
-Many variables in the analysis cannot be observed directly and inherently contaminated by measurement errors.
-To address this concern, since Claassen used V-Dem Version 8 in his analyses, we incorporated measurement error for V-Dem democracy index, electoral index, polyarchy index, and liberal index, by using the posterior distribution of Version 8 provided by V-Dem.
-Regarding the data used to replicate Claassen' analyses, we simulated 900 data set for democracy index from V-Dem Version 10 which did not provide available posterior distribution yet but standard error.
-To account for measurement error in Corruption Perceptions Index, we simulated 900 draws from a distribution with the point estimate and standard error which provided by CPI for the year from 2012 to 2018.
-For the year before 2012, we estimated standard error by using the multiplication between country's maximum relative error (standard error/cpi index) and CPI index.
+Many variables in the analysis cannot be observed directly and are inherently contaminated by measurement errors.
+To address this concern, since Claassen used V-Dem Version 8 in his analyses, we incorporated measurement error for the V-Dem democracy index, electoral index, polyarchy index, and liberal index using the posterior distribution of Version 8 provided by V-Dem.
+Regarding the data used to replicate Claassen's analyses, we simulated 900 data set for democracy index from V-Dem Version 10, which did not provide available posterior distribution yet but standard error.
+To account for measurement error in Corruption Perceptions Index, we simulated 900 draws from a distribution with the point estimate and standard error provided by CPI for the year from 2012 to 2018.
+We estimated the standard error for the year before 2012 by using the multiplication between countries' maximum relative error (standard error/cpi index) and their CPI index.
 We rerun the models following the same steps in our previous analysis but incorporating uncertainty in democracy index, democratic support, and corruption perception index.
-The relationship between public support and democracy development disappears when uncertainty is accounted for in models either using Claassen's original data or expanded data with 25% more country-year data.
-The updated results are presented in Figure XXX at Page xx. 
+The relationship between the change of public support and the change of democracy disappears when uncertainty is accounted for in models either using Claassen's original data or expanded data with 25% more country-year data.
+The updated results are presented in Figure XXX on Page xx. 
+
+*Need to explain the different results in AJPS*
 
 
 # Alternative Method for Incorporating uncertainty
@@ -107,18 +109,18 @@ The updated results are presented in Figure XXX at Page xx.
 [Issue 17](https://github.com/fsolt/dcpo_dem_mood/issues/17) We need more information on (1) how uncertainty is integrated into the models of Claassen, and (2) the DCPO models.
 
 ## Response 
-Both Reviewers 1 & 2 concern about the validity of the approach which we used to incorporate measurement uncertainty. First, we added more explanations on how uncertainty is integrated into the models in Page xx of main text and also presented equations in Page xx in SI. It is ture that Rubin's rule is designed to address missing values by using multiple imputation(MI), but as Reviewer 2 has already pointed out, @Blackwell2017 applied the logic of MI and Rubin's rule in their Multiple Overimputation (P309) to address measurement error and missing data which is conceptulized as an extreme case of measurement error. 
+Both Reviewers 1 & 2 concern the validity of the approach used to incorporate measurement uncertainty. First, we added more explanations of how uncertainty is integrated into the models on Page xx of the main text and presented equations on Page xx in SI. Rubin's rule is indeed designed to address missing values by using multiple imputations (MI). However, as Reviewer 2 has already pointed out, @Blackwell2017 applied the logic of MI and Rubin's rule in their Multiple Overimputation (P309) to address measurement error and missing data, which is conceptualized as an extreme case of measurement error. 
 
-The idea of our approach for propagating uncertainty is correcting both within and between imputation variance through Rubin's rule, and the idea of MOC is accounting for within imputation variance through drawing sample from the joint posterior distribution of the measurement and analysis model. 
+The idea of our approach for propagating uncertainty is correcting both within and between imputation variance through Rubin's rule, and the idea of MOC is accounting for within imputation variance through drawing samples from the joint posterior distribution of the measurement and analysis model. 
 
-To address the performance of the method we used, we employed "method of component" as an alternative way in SI.
+To address the performance of the method we used, we employed the "method of component" as an alternative way in SI.
 Our approach and MOC yield similar results from replicating APSR's analysis, that is, when uncertainty is allowed, the coefficients on the lagged public support and the change of democratic level are no longer distinguishable from zero in Page xx in MS and Page xx in SI.
 It is not surprising that the estimated effect of democracy is indistinguishable from zero given measurement errors in both democracy and democratic support measurements and cultural features of democratic values.
-As Reviewer3 pointed out, democratic value is formed and shaped by institution, history, and culture and the cultural feature of democratic value determines that it cannot be impacted swiftly by the change of democracy.
+As Reviewer3 pointed out, democratic value is formed and shaped by institution, history, and culture, and the cultural feature of democratic value determines that it cannot be impacted swiftly by the change of democracy.
 
 Our approach and MOC yield mixed results for AJPS's analysis. 
 
-In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey2018,p. 254].
+In terms of the impact of measurement error on estimated effects, many studies have shown that when taking measurement uncertainty into account, the magnitude of coefficients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey2018,p. 254].
 
 
 # The Change of Democratic Support and Lagged Support
@@ -133,25 +135,29 @@ In terms of the impact of measurement error on estimated effects, many studies h
 [Issue 15](https://github.com/fsolt/dcpo_dem_mood/issues/15) Second, I was a bit confused by Figures 1 and 2. My understanding is that accounting for uncertainty should only affect the standard errors, but in the figures it also affects the point estimates. This is the case even in the models 'Claassen W/Uncertainty.'
 
 ## Response
-First, we need to clarify the DV in Figure2 is the change of public support for democracy rather than current public support.
-Second, when DV is the change of public support, Claassen's original results wouldn't make any sense. 
-Claassen's original results indicate the change of public support in one year is positively changed by the public support in the previous one year and negatively shifted by the previous two years.
+
+First, we need to clarify that the DV in Figure2 is the change of public support for democracy rather than current public support.
+Second, when DV is the change of public support, Claassen's original results would not make any sense. 
+Claassen's original results indicate the change of public support in one year is positively changed by the public support in the previous year and negatively shifted by the previous two years.
 However, should we expect that public support can produce its demand and especially a conflicting demand?
-Can high public support of this year ask for a change in next year but resist a change in the next two years?
-In the contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
-Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero and the magnitude of the coefficient also moves to zero.
-As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, it is rare that accounting of uncertainty renders the insignificant effect of democracy.
-However, even in Claassen's original results, the estimated effects of both the change of democracy and other social as well as economic factors are small.
-Given the measurement errors in both democratic indices and public support, it is not surprising to get the diminution of the estimated effects.
+Can high public support this year ask for a change next year but resist a change in the next two years?
+In contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
+Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero, and the magnitude of the coefficient also moves to zero.
+As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, accounting of uncertainty rarely renders the insignificant effect of democracy.
+However, even in Claassen's original results, the estimated effects of both the change of democracy and other social and economic factors are minor.
+Given the measurement errors in both democratic indices and public support, it is not surprising to see the diminution of the estimated effects.
 
 # Test Full Models 
 ## Reviewer #1
 [Issue 22](https://github.com/fsolt/dcpo_dem_mood/issues/22) I have two additional concerns with the paper. First, the authors have not replicated all of Claassen's main results. Claassen 2020a argues that within-country analyses are desirable and uses generalized method of moments (GMM) estimators to obtain these. Claassen (2020b) uses first difference models; he also focuses on the separate effects of the electoral and liberal components of democracy. I suggest that the authors replicate all the main results from Claassen (2020a; 2020b), rather than an ad hoc subset of these. 
 
 ## Response
-Regarding Reviewer 1's request on replicating all specification in the original two studies, we added alternate specifications on the relationship between support and democracy, including GMM models, First Different Models, and sample split.
-Results do not change in all these models, presented in Page xxx, Figure xxx and xxx in SI. 
-As the editor suggested that this letter should focus on the core point, that is, the relationship between public support and democracy, we do not replicate specifications on other relationship. 
+In contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
+Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero, and the magnitude of the coefficient also moves to zero.
+As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, accounting of uncertainty rarely renders the insignificant effect of democracy.
+However, even in Claassen's original results, the estimated effects of both the change of democracy and other social and economic factors are minor.
+Given the measurement errors in both democratic indices and public support, it is not surprising to see the diminution of the estimated effects.
+
 
 
 # Justification of DCPO 
