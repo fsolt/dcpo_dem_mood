@@ -118,7 +118,7 @@ As Reviewer3 pointed out, democratic value is formed and shaped by institution, 
 
 Our approach and MOC yield mixed results for AJPS's analysis. 
 
-In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey_policy_2018,p. 254].
+In terms of the impact of measurement error on estimated effects, many studies have shown when taking measurement uncertainty into account, magnitude of coeffients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey2018,p. 254].
 
 
 # The Change of Democratic Support and Lagged Support
@@ -163,20 +163,24 @@ As the editor suggested that this letter should focus on the core point, that is
 [Issue 18](https://github.com/fsolt/dcpo_dem_mood/issues/18) Third, the author should provide more information on the differences between the models employed by Claassen and those that she/he employs (perhaps in an appendix).
 
 
-
+## Response
 Thanks to editor's suggesions, we do agree that we should present and assess the effect of intermediate modification in an incremental way.
-To do this, in the revised manuscript, we replicated Claassen's measure for public democratic support by applying his measurement Model5 to  his original data file and used the posterior distribution of the public support estimates to incorporated uncertainty. 
+To do this, in the revised manuscript, we replicated Claassen's measure for public democratic support by applying his measurement Model5 to his original data file and used the posterior distribution of the public support estimates to incorporated uncertainty. 
 Then, we added more survey data to improve the quality of source data and applied Model5 to this expanded data set, still keeping the full posterior distribution of estimates. 
 In this way, we isolate the effects of measurement uncertainty and more data. 
 In the APSR analyses, it is uncertainty that accounts for the disappearing significance of public support. 
-
-
 
 
 # Substantive Discussion
 ## Reviewer #4
 
 [Issue 19](https://github.com/fsolt/dcpo_dem_mood/issues/19) First, I found the 'Discussion' section somewhat underwhelming. The discussion is mainly about data issues that could explain the lack of a relationship, not the substantive question. If that is the case, the letter makes a negligible contribution because it only finds that the findings of two specific studies are not robust (not that there is no relationship between public support for democracy and regime survival). I would like the author to engage a bit more in substantive debates. 
+
+## Response
+Since we do acknowledge uncertainty in extant measurements, we can not unambigously make a statement that there is no relationship between public support and regime survival although it is possible.
+Examing theories in different contexts overtime is a promising strategy for generalization [KKV].
+However, scholars' pursue on models usually lead to the ignorance for measurements which cost more time but determine the quality of data in analyses [@stegmueller2011].
+In this letter, we stress the necessity of incorporating measurement uncertainty in analyses with latent variables and encourage scholars to pay more attention on that.
 
 
 # Compliement
@@ -193,28 +197,45 @@ Kruse, S., M. Ravlik & C. Welzel (2018). "Democracy Confused: When People Mistak
 Brunkert, L., S. Kruse & C. Welzel (2018). "A Tale of Culture-bound Regime Evolution: The Centennial Democratic Trend and Its Recent Reversal." Democratization 25: 1-23 (DOI: 10.1080/13510347.2018.1542430).
 
 
-
-
-
-
-
-
-
 ## Editor
 Both Reviewers 1 and 2 want more evidence, explanation, and/or justification of the alternative method used to incorporate measurement error. Reviewer 1 seems to specifically suggest a simulation study. If such a study already addresses the performance of the method (either analytically or with simulations) in a context with temporally and serially correlated errors, it would make sense to reference that work in the main text. 
 Reviewer 2 also asks for clarification and/or justification of the imputation and smoothing processes used in the analysis. 
 Reviewers 1 & 2 also ask why measurement error in other variables are not included in the analysis.
 Reviewers 1 & 2 also ask why lagged support is unrelated to current support. 
 
-Reviewers 1, 2, and 4 all ask why the results for Claassen's model but accounting for measurement error (second set of results) also yield different point estimates. The revised version should address this directly, including by better explaining the method(s) used. 
-If the different in point estimates is due to multiple deviations from Claassen's approach (e.g., in both the smoothing _and_ the use of the errors), I would suggest introducing and presenting each intermediate modification of the research design incrementally to avoid confusion and help readers assess how much of the change in results is due to the incorporation of measurement error vs. other modelling or measurement decisions. Analytical transparency is key.       
+## Response
+We did not do a simulation study, instead we employ MOC suggested by Review 1 and 2 as a robust check and present results in SI. 
+We also elaborate the imputation process in details in MS and clarify the equations in SI.
+Measurement errors in other variables have been included in our rexaminations. 
+As for the concerns on Fig2, the first thing needing to clarify is that the DV is not current public support but the change of public support. 
+We elaborate why our null results make more sense than Claassen's original results. 
 
-Evidence to address these various methodological questions and issues issues may be included in the response to reviewers and/or the Supplemental Information (if it would help readers appreciate the methods used) as needed. For instance, I could imagine some readers benefitting from having the estimating equations included in the Supplemental Information in order to appreciate how measurement error is incorporated into the estimates as well as more information about the levels of measurement used (mentioned as an important difference by Reviewer 3). 
+## Editor
+Reviewers 1, 2, and 4 all ask why the results for Claassen's model but accounting for measurement error (second set of results) also yield different point estimates. The revised version should address this directly, including by better explaining the method(s) used. 
+If the different in point estimates is due to multiple deviations from Claassen's approach (e.g., in both the smoothing _and_ the use of the errors), I would suggest introducing and presenting each intermediate modification of the research design incrementally to avoid confusion and help readers assess how much of the change in results is due to the incorporation of measurement error vs. other modelling or measurement decisions. Analytical transparency is key.  
+
+## Response
+It is a misunderstanding that incorporating uncertainty only changes standard error.
+First, incorporating uncertainty might or might not cause the changes of standard error.
+For example, standard errors did not change after accounting for uncerainty in [@caughey2018] but became smaller in [@Treier2008].
+Second, the propogation of uncertainty can either attentuate or magnify the magnitude of estimated effects.
+*We can cite more lit if neccessary*. 
+For transparcy and avoiding confusion, we only focus on uncertainty in revised version. 
+
+## Editor
+Evidence to address these various methodological questions and issues issues may be included in the response to reviewers and/or the Supplemental Information (if it would help readers appreciate the methods used) as needed. *For instance, I could imagine some readers benefitting from having the estimating equations included in the Supplemental Information in order to appreciate how measurement error is incorporated into the estimates as well as more information about the levels of measurement used (mentioned as an important difference by Reviewer 3)*. 
 While Reviewer 1 asks for all results from the original two studies be replicated as well, these additional replications need only be included in the paper or SI to the extent that they are relevant to the relationship between support and democracy at the core of this Letter's focus. 
 
 As you expand the SI, please keep in mind our limit of 25 pages. Material solely for editors and reviewers that would not be relevant for readers can remain in the response to reviewers.   
 
+## Response
+We might need to review the functions added in SI.
+
+
+## Editor
 Finally, Reviewers 2, 3, and 4 offer various suggestions for how to more effectively frame or discuss the substantive or theoretical (rather than measurement or methodological) implications of your contribution. We hope their feedback is useful as you revise your Letter.  
+
+## Response
 
 
 
