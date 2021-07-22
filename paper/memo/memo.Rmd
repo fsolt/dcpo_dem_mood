@@ -117,6 +117,10 @@ Brunkert, L., S. Kruse & C. Welzel (2018). "A Tale of Culture-bound Regime Evolu
 
 [Issue 15](https://github.com/fsolt/dcpo_dem_mood/issues/15) Second, I was a bit confused by Figures 1 and 2. My understanding is that accounting for uncertainty should only affect the standard errors, but in the figures it also affects the point estimates. This is the case even in the models 'Claassen W/Uncertainty.'
 
+Reviewer 4 raised the question of whether accounting for uncertainty should affect the point estimates at all, rather than simply inflating the standard errors (a concern perhaps also raised indirectly by Reviewers 1 and 2).
+
+
+
 [Issue 18](https://github.com/fsolt/dcpo_dem_mood/issues/18) Third, the author should provide more information on the differences between the models employed by Claassen and those that she/he employs (perhaps in an appendix).
 
 [Issue 17](https://github.com/fsolt/dcpo_dem_mood/issues/17) We need more information on (1) how uncertainty is integrated into the models of Claassen, and (2) the DCPO models.
