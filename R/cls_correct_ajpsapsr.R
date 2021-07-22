@@ -7,8 +7,13 @@ p_load(
     purrr,
     countrycode,
     tidyverse,
-    rstan
+    rstan,
+    osfr
 ) 
+
+#osf_retrieve_file("kg7z4") %>%
+#     osf_download(here::here("data"))  ##pure corrected
+
 
 # Functions preload
 set.seed(313)
@@ -26,48 +31,49 @@ reformat_dcpo_output <- function(x, parameter_name) {
 }
 
 
-load(here::here("data", "exp_claassen_m5_3k_06-13-17-09.rda")) 
 
-load(here("data", "pure_claassen_m5.rda")) 
+load(here("data", "claassen_m5_3k_07-05-11-16.rda")) 
 
-claassen_m5_theta <- rstan::extract(pure_claassen_m5, pars = "theta")
+claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##derived from claassen_m5_3k_07-05-11-16
+##however, theta has 136 country instead of 137. 
 
-cnt.names = as.character(sort(unique(sddem2$Country)))
+#cnt.names = as.character(sort(unique(sddem2$Country)))
 
-supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"), col_types = "cdcddcdc")
-pure_claassen_input <- supdem %>%                                             # 1390 obs
+
+claassen_replication <- readRDS(here::here("data","claassen_replication.rds")) %>% 
     janitor::clean_names() %>% 
-    mutate(old_country = country,
-           country = countrycode::countrycode(old_country, "country.name", "country.name")) %>%
-    DCPOtools::with_min_yrs(2) %>% 
-    dplyr::select(country, year, project) %>% 
-    unique()
+    DCPOtools::with_min_yrs(2) 
+##need to use claassen_replication.rds. remember to mention which country is missing
 
-length(unique(pure_claassen_input$country))
+length(unique(claassen_replication$country))
 
 ls_year <- 1988:2017
-ls_country <- pure_claassen_input$country %>% unique()
-first_year <- min(pure_claassen_input$year)
+ls_country <- claassen_replication$country %>% unique()
+first_year <- min(claassen_replication$year)
 
-pure_cls_theta_list <- purrr::map(1:900, function(anEntry) {
+correct_cls_theta_list <- purrr::map(1:900, function(anEntry) {
     claassen_m5_theta$theta[anEntry,,] %>%
         reformat_dcpo_output("theta") 
 }
 )
-#year 30, country 137
-save(pure_cls_theta_list,file = here("data","pure_cls_theta_list.rda"))
+#year 30, country 136
+save(correct_cls_theta_list,file = here("data","correct_cls_theta_list.rda"))
 
 ################################################################
 ######## Create lists for elements in analysis data  ###########
-########### AJPS: cls_libdem_ajps_list,pure_cls_ajps ############
+########### AJPS: cls_libdem_ajps_list,correct_cls_ajps ############
 ################################################################
 
-load(here("data","cls_ajps_cntrl.rda"))  #cls ajps variables without errors. 
-#load(here("data","cls_theta_list.rda"))  #cls's theta list
-load(here("data","pure_cls_theta_list.rda"))
+ 
 load(here("data","cls_libdem_list.rda"))  #vdem8 libdem list
 load(here("data","country_regionUN.rda"))
+libdem_ajps_list <- readRDS(here::here("data","cls_libdem_ajps_list.rds"))  
+#created by cls_libdem_list,country_regionUN
+load(here("data","cls_ajps_cntrl.rda"))  #cls ajps variables without errors.
+load(here("data","correct_cls_theta_list.rda"))
 
+
+######process to creat libdem_ajps_list
 libdem_ajps_list <- cls_libdem_list %>%
     map(~.x %>%
             mutate(Libdem_VD = Vdem_libdem*100) %>%    ###negative values, after 100, so big. 
@@ -90,7 +96,7 @@ libdem_ajps_list <- cls_libdem_list %>%
     ) 
 
 saveRDS(libdem_ajps_list, file = here("data","cls_libdem_ajps_list.rds"))
-#include vdem8 libdem related variables such Libdem, Region_libdem, ChDem
+#######include vdem8 libdem related variables such Libdem, Region_libdem, ChDem
 
 cls_ajps_cntrl_list <-  purrr::map(1:900, function(anEntry) {
     libdem_ajps_list[[anEntry]] %>% 
@@ -98,8 +104,8 @@ cls_ajps_cntrl_list <-  purrr::map(1:900, function(anEntry) {
 }) 
 #create full control variables for cls ajps
 
-pure_cls_ajps <- purrr::map(1:900, function(anEntry) {
-    pure_cls_theta_list[[anEntry]] %>% 
+correct_cls_ajps <- purrr::map(1:900, function(anEntry) {
+    correct_cls_theta_list[[anEntry]] %>% 
         left_join(cls_ajps_cntrl_list[[anEntry]],by = c("year", "country"))  %>% 
         mutate(SupDem_trim = ifelse(year<firstyear, NA, theta),
                theta_dem_trim = ifelse(is.na(SupDem_trim),NA,
@@ -109,20 +115,21 @@ pure_cls_ajps <- purrr::map(1:900, function(anEntry) {
         select(country, year, theta, contains("trim"), everything())
 }) 
 
-#merge with cls_theta and create trim variables. 
+#merge with correct_cls_theta and create trim variables. 
 
 
-save(pure_cls_ajps, file = here("data","pure_cls_ajps.rda"))
+save(correct_cls_ajps, file = here("data","correct_cls_ajps.rda"))
 
 ################################################################
 ######## Create lists for elements in analysis data  ###########
-########### APSR: cls_libdem_apsr_list,pure_cls_apsr  ###########
+########### APSR: cls_libdem_apsr_list,correct_cls_apsr  ###########
 ################################################################
-
+load(here("data","cls_libdem_list.rda"))  #vdem8 libdem list
 load(here("data","cls_apsr_cntrl.rda"))
 load(here("data","cls_poly_list.rda"))
 load(here("data","cls_liberal_list.rda"))
 load(here("data","cpi_list.rda"))
+#cls_apsr_cntrl_list <- readRDS(here::here("data","cls_apsr_cntrl_list.rds"))
 
 ## Standardize cls_libdem_list Libdem_z
 cls_libdem_z <- cls_libdem_list %>%
@@ -171,11 +178,13 @@ cls_apsr_cntrl_list <-  purrr::map(1:900, function(anEntry) {
         left_join(cls_lib_z[[anEntry]],by = c("year", "country","liter" ="iter")) %>%
         left_join(cpi_list_z[[anEntry]],by = c("year", "country","liter"= "iter_cn"))
 }) 
+saveRDS(cls_apsr_cntrl_list, file = here("data","cls_apsr_cntrl_list.rds"))
+
 
 
 # merge with theta variable and produce trim data. 
-pure_cls_apsr <- purrr::map(1:900, function(anEntry) {
-    pure_cls_theta_list[[anEntry]] %>% 
+correct_cls_apsr <- purrr::map(1:900, function(anEntry) {
+    correct_cls_theta_list[[anEntry]] %>% 
         left_join(cls_apsr_cntrl_list[[anEntry]],by = c("year", "country"))  %>% 
         mutate(SupDem_trim = ifelse(year< First_yr, NA, theta)) %>%
         select(-Vdem_libdem,-liter,-iter_se) %>%
@@ -183,13 +192,22 @@ pure_cls_apsr <- purrr::map(1:900, function(anEntry) {
 }) 
 
 
-save(pure_cls_apsr, file = here("data","pure_cls_apsr.rda"))
+save(correct_cls_apsr, file = here("data","correct_cls_apsr.rda"))
 
+
+###Upload to osf
+osf_retrieve_user("me") %>%
+    osf_ls_nodes()
+
+demsup <- osf_retrieve_node("tnp2a")
+
+osf_upload(demsup, c(here("data","correct_cls_apsr.rda")))
+osf_upload(demsup, c(here("data","correct_cls_ajps.rda")))
 
 
 ###############Expanded_Claassen and Analysis Data##################
-###############Input:  exp_claassen_m5 ############################
-##############Output: exp_cls_theta_list ############################
+###############Input:  correctexp_claassen_m5 ############################
+##############Output: correctexp_cls_theta_list ############################
 exp_claassen_m5_theta <- rstan::extract(exp_claassen_m5, pars = "theta")
 
 ls_year <- 1988:2017
