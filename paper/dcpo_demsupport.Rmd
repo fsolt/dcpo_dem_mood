@@ -174,8 +174,11 @@ sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 #load(here("data", "pure_cls_apsr.rda")) 
 load(here("data", "correct_cls_ajps.rda"))
 load(here("data", "correct_cls_apsr.rda")) 
-load(here("data", "exp_cls_ajps.rda"))
-load(here("data", "exp_cls_apsr.rda")) 
+#load(here("data", "exp_cls_ajps.rda"))
+#load(here("data", "exp_cls_apsr.rda")) 
+load(here("data", "expcor_cls_ajps.rda"))
+load(here("data", "expcor_cls_apsr.rda")) 
+
 
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
 result_pureAJPS <- readRDS(here("output", "estimates_clsPureAJPS.RDS"))
@@ -185,10 +188,14 @@ result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_pureAPSR <- readRDS(here("output", "estimates_clsPureAPSR.RDS"))
 result_expAPSR <- readRDS(here("output", "estimates_clsExpAPSR.RDS"))
 
-mocresult_pureAJPS <- readRDS(here("output", "estimates_moc_pureAJPS.RDS"))
-mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expAJPS.RDS"))
-mocresult_pureAPSR <- readRDS(here("output", "estimates_moc_pureAPSR.RDS"))
-mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
+#mocresult_pureAJPS <- readRDS(here("output", "estimates_moc_pureAJPS.RDS"))
+mocresult_correctAJPS <- readRDS(here("output", "estimates_moc_correctAJPS.RDS")) 
+#mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expAJPS.RDS"))
+mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expcorAJPS.RDS"))
+#mocresult_pureAPSR <- readRDS(here("output", "estimates_moc_pureAPSR.RDS"))
+mocresult_correctAPSR <- readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
+#mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
+mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expcorAPSR.RDS"))
 
 ```
 
@@ -1110,7 +1117,7 @@ saveRDS(mocresult_correctAJPS, file =here("output","estimates_moc_correctAJPS.RD
 ```{r mocresult-expAJPS}
 
 df_exp_clsAjps <- purrr::map(1:900, function(anEntry) {
-  exp_cls_ajps[[anEntry]] %>% 
+  expcor_cls_ajps[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 })
 
@@ -1127,7 +1134,7 @@ names(result_exp_clsUncertain_gmm) <- c("gmm", "gmm-regime")
 
 mocresult_expAJPS <- append(result_exp_clsUncertain, result_exp_clsUncertain_gmm)
 
-saveRDS(mocresult_expAJPS, file =here("output","estimates_moc_expAJPS.RDS")) 
+saveRDS(mocresult_expAJPS, file =here("output","estimates_moc_expcorAJPS.RDS")) 
 
 ```
 
@@ -1137,7 +1144,7 @@ result_pooled <- bind_rows(
   mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Original"),
  # mutate(MOCsumm(mocresult_pureAJPS[["pooled"]]), model = "Uncertainty"),
  mutate(MOCsumm(mocresult_correctAJPS[["pooled"]]), model = "Corrected"),
-  mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertainty+Expanded Data")
+ mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "Pooled")
 
@@ -1304,7 +1311,7 @@ saveRDS(mocresult_correctAPSR, file = here::here("ouput","estimates_moc_correctA
 ```{r mocresult-expAPSR}
 
 #df_exp_clsAPSR <- purrr::map(1:900, function(anEntry) {
-#  exp_cls_apsr[[anEntry]] %>% 
+#  expcor_cls_apsr[[anEntry]] %>% 
 #    plm::pdata.frame(index = c("country", "year"))
 #}
 #)
@@ -1319,15 +1326,8 @@ saveRDS(mocresult_correctAPSR, file = here::here("ouput","estimates_moc_correctA
 #                                "fd1", "fd-regime1", "fd2", "fd-regime2")
 #saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expAPSR.RDS"))
 
-
-
-
-```
-
-```{r mocresult-expAPSR}
-
 df_exp_clsAPSR <- purrr::map(1:900, function(anEntry) {
-  exp_cls_apsr[[anEntry]] %>% 
+  expcor_cls_apsr[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
 }
 )
@@ -1341,10 +1341,11 @@ mocresult_expAPSR <- map(ls_mod_apsrCLS, function(aMod){
 names(mocresult_expAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
                                 "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expAPSR.RDS"))
+saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expcorAPSR.RDS"))
 
 
 ```
+
 
 ```{r plot-mocAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", eval = TRUE, fig.width=7, fig.height=10, eval=TRUE}
 
