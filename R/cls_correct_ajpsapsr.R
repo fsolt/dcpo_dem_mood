@@ -43,7 +43,8 @@ claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##derived from
 #cnt.names = as.character(sort(unique(sddem2$Country)))
 
 
-claassen_replication <- readRDS(here::here("data","claassen_replication.rds")) %>% 
+#claassen_replication <- readRDS(here::here("data","claassen_replication.rds")) %>% 
+claassen_replication <- readRDS(here::here("data","claassen_replication_input.rda")) %>%
     janitor::clean_names() %>% 
     DCPOtools::with_min_yrs(2) 
 ##need to use claassen_replication.rds. remember to mention which country is missing
@@ -274,6 +275,27 @@ expcor_cls_ajps <- purrr::map(1:900, function(anEntry) {
 }) 
 
 
+expcor_cls_ajps <- purrr::map(1:900, function(anEntry) {
+    expcor_cls_ajps[[anEntry]] %>% 
+            rename(SupDem_trim = theta_trim,
+                   Regime_VD = Vdem_regime,
+                   Pr_Muslim = muslism_prop_2010,
+                   Res_cp_WDI_di = dependence_pc_di,
+                   lnGDP_imp = lg_imp_mdpgdp,
+                   GDP_imp_grth = mdprgdp_grwth,
+                   Regime_VD = Vdem_regime,
+                   firstyear = first_year,
+                   Libdem_VD = Vdem_libdem,
+                   Libdem_m1 = Vdem_libdem_m1,
+                   Libdem_m2 = Vdem_libdem_m2,
+                   ChgDem = Chgdem,
+                   UpChgDem = upchgdem,
+                   DwnChgDem = downchgdem,
+                   Libdem_regUN = Region_libdem,
+                   Libdem_regUN_m1 = Region_libdem_m1,) 
+    })  ##adjust names to be consistent with correct_cls_ajps
+
+
 save(expcor_cls_ajps, file = here::here("data","expcor_cls_ajps.rda"))
 
 ################################################################
@@ -339,6 +361,23 @@ expcor_cls_apsr <- purrr::map(1:900, function(anEntry) {
         select(country, year, first_year,theta, theta_trim, contains("z"),everything())
 }) 
 
+colnames(correct_cls_apsr[[1]])
+colnames(expcor_cls_apsr[[1]])
+
+expcor_cls_apsr <- purrr::map(1:900, function(anEntry) {
+    expcor_cls_apsr[[anEntry]] %>% 
+        rename( First_yr = first_year,
+                SupDem_trim = theta_trim,
+                Libdem_z = Vdem_libdem_z,
+                Polyarchy_z = Vdem_polyarchy_z,
+                Liberal_z = Vdem_liberal_z,
+                Corrup_TI_z = corruption_z,
+                lnGDP_imp = lg_imp_mdpgdp,
+                Educ_yrs_UN = edu_year) 
+})  ##adjust names to be consistent with correct_cls_apsr
+
+
+
 save(expcor_cls_apsr, file = here::here("data","expcor_cls_apsr.rda"))
 
 ##upload to osf
@@ -347,5 +386,5 @@ osf_retrieve_user("me") %>%
 
 demsup <- osf_retrieve_node("tnp2a")
 
-osf_upload(demsup, c(here("data","expcor_cls_apsr.rda")))
-osf_upload(demsup, c(here("data","expcor_cls_ajps.rda")))
+osf_upload(demsup, c(here("data","expcor_cls_apsr.rda")),conflicts = "overwrite")
+osf_upload(demsup, c(here("data","expcor_cls_ajps.rda")),conflicts = "overwrite")
