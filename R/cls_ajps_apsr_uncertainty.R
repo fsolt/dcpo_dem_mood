@@ -7,8 +7,13 @@ p_load(
     purrr,
     countrycode,
     tidyverse,
-    rstan
+    rstan,
+    osfr
 ) 
+
+osf_retrieve_file("kg7z4") %>%
+     osf_download(here::here("data"))  ##pure corrected
+
 
 # Functions preload
 set.seed(313)
@@ -26,13 +31,18 @@ reformat_dcpo_output <- function(x, parameter_name) {
 }
 
 
-load(here::here("data", "exp_claassen_m5_3k_06-13-17-09.rda")) 
+#load(here::here("data", "exp_claassen_m5_3k_06-13-17-09.rda")) 
 
-load(here("data", "pure_claassen_m5.rda")) 
+#load(here("data", "pure_claassen_m5.rda")) 
 
-claassen_m5_theta <- rstan::extract(pure_claassen_m5, pars = "theta")
+load(here("data", "claassen_m5_3k_07-05-11-16.rda")) 
 
-cnt.names = as.character(sort(unique(sddem2$Country)))
+#claassen_m5_theta <- rstan::extract(pure_claassen_m5, pars = "theta")
+
+claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##derived from claassen_m5_3k_07-05-11-16
+##however, theta has 136 country instead of 137. 
+
+#cnt.names = as.character(sort(unique(sddem2$Country)))
 
 supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"), col_types = "cdcddcdc")
 pure_claassen_input <- supdem %>%                                             # 1390 obs
