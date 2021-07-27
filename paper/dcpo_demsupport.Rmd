@@ -204,12 +204,12 @@ Although measurement uncertainty has yet attracted attention in the field of com
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey2018, p.254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey2018, p. 254]. 
 
-Following this line, after replicating the original analyses with point estimates, we take the distribution of the latent variable, the dependent variable, and control variables to account for the uncertainty from the measurement model as well as dependent and control variables.
-To do this, we take 900 draws from the distribution of public democratic support and corruption index, duplicate each article's analysis dataset of variables without “measurement error” 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices.
+Following this line, after replicating the original analyses with point estimates, we take the distribution of the latent (explanatory) variable, the outcome variable, and control variables to account for the uncertainty from the measurement model as well as outcome and control variables.
+We take 900 draws from the distribution of public democratic support, duplicate each article's analysis dataset of variables without "measurement error" 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices.
 We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
 This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
 @Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
-We also employ one alternative technique known as “method of composition” (MOC)  [@Treier2008, p. 215] as a robustness check [see the Online Supplementary Material \@ref(moc)].
+We also employ one alternative technique known as "method of composition" (MOC)  [@Treier2008, p. 215] as a robustness check [see Online Supplementary Material \@ref(moc)].
 
 
 ```{r compare_n, eval = TRUE}
@@ -307,39 +307,35 @@ increase_cyi <- sprintf("%2.1f", (dcpo_input_ncyi/supdem_ncyi - 1) * 100, 1)
 increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 ```
 
-[XXXX This paragraph should be revised]
-In addition to incorporating uncertainty, we also assembled as much available data on democratic support as possible. 
-We employed `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
+<!-- This paragraph should be revised. -->
+In addition to incorporating uncertainty, we expanded Claassen's data pool assembling as much data on democratic support as possible from available opinion surveys around the world. 
+The expansion ended with `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
 
-A noteworthy point is that in addition to account for uncertainty in latent variable estimates, we also include the measurement uncertainty in democracy indices and corruption index. 
-We extracted the posterior distributions of democratic indices, including Liberal Democracy,  polyarchy, and electoral democracy index, which are provided by [@coppedge2018]. 
-We drew 900 samples from the distribution of the Corruption Perception Index.^[Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the  multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.] 
+Besides accounting for uncertainty in latent variable estimates, we also included the measurement uncertainty in democracy indices and corruption index. 
+We extracted the posterior distributions of democratic indices, including Liberal Democracy,polyarchy, and electoral democracy index, which are provided by [@coppedge2018]. 
+We drew 900 samples from the distribution of the Corruption Perception Index.^[Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.] 
 
 # Results
 
 Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries [@Claassen2020a, Model 1] in the left panel and separated by regime type (Model 2) on the right.
 The uppermost set of results replicate @Claassen2020a without uncertainty.
 The middle results introduce the uncertainty in the measurement of public support into the model.
-The lowermost set presents the results estimated with the expanded data. 
-
+And the lowermost set presents the results estimated with the expanded data. 
 
 In comparison to the original result, the positive coefficients for democratic support in both model accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
-The estimation based on MOC yields mixed results.
-In pooled OLS models, the public support estimated from the originial data with uncertainty is significant for the whole data and split databut the support estimated from the expanded data is not.
-In system GMM models which are more appropriate in this case than pooled OLS models, public support estimated from the original data reached the threshold of significance within democratic regimes. 
-The estimated support with the expanded data is not significant in GMM models.
+Nor do applying system GMM models and using alternative methods for uncertainty incorporation methods alters the conclusion (see Online Supplementary Material \@ref(fullAJPS), \@ref(fullAPSR), and \@ref(moc)).
 
-Using the same models and the measurement, the support estimate from a more qualified data yields insignificant results. 
-This undermines the reliability of significant results from the estimate using the original data.^[In fact, when we further improve the estimate and reduce the uncertainty by applying a more superior measurement model, the relationship between public support and democratic survival disappears.] 
+Adding more data is indeed helpful for increasing the certainty to the analytic estimates. 
+The confidence intervals of the explanatory variable (and some control variables) are considerably narrower than the cases just bringing the uncertainty back---or even the original case when uncertainty was completely ignored. 
+Nonetheless, the insignificance remains and is robust across different model specifications.
 
-At the same time, the results also shows that ignoring uncertainty may lead to misestimation of the point effect as well. 
-In the case here, the point estimates of democracy support are notably larger than the original estimate for both model settings. 
-We draw variable values from their distributions and estimate the coefficient first before combining through Rubin's rule.
-The deviation of the result from the original one indicates the coefficient (point) estimates were not that consistent.
-In other words, the estimates based on the mean values of variables cannot fully reflect their characteristics and relations at all.
-Only when the uncertainty is accounted, their effect can be more properly estimated.
-
+Moreover, the results also manfiest another risk of ignoring uncertainty: missestimation. 
+As shown in Figure \@ref(fig:plot-mainAJPS), besides the confidence intervals the (point) estimates also shift. 
+Methodologically, these shifts indicates that the 900 regressions of public support on democracy do not yield consistent results although the support opinions were drawn from the same distribution. 
+In this sense, the coefficient produced simply by the mean of the public support distribution is no more than a one-time guess of the true parameter and definitely not a robust one. 
+What this methodological issue lead to, however, is a substantively different conclusion of the relationship between public opinions and institutional democratization in both direction and magnitude.
+The replication results illustrate the uncertainty ignorance with mounting risk.
 
 ```{r pointAJPS, eval=TRUE}
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
@@ -561,11 +557,9 @@ dwplot(df_plot) +
 
 The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the outcome variable. 
 In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [p. 47, Models 1.1 and 1.2]. 
-The negative coefficient estimates of change in liberal democracy in the top set of results, which do not take uncertainty into account, imply that democratic mood decreases as democracy increases and vice versa. 
-However, the middle and bottom results demonstrate that this thermostatic effect, too, does not hold after the measurement uncertainty is accounted for. 
-And again, we observe the point estimates slides to the zero line.
-
-[A discussion about the support t-1]
+When the uncertainty is ignored, the coefficient of $\Delta$liberal democracy (the uppermost set), the yearly changes of the institutional feature is negative inferring that democratic mood decreases as democracy increases and vice versa. 
+However, when the measurement uncertainty is properly accounted (the middle set), the point estimate shifts towards zero and the coefficient is no longer significant.
+More data (the lowermost set), again, only adjusts the confidence intervals but not direction nor significance. 
 
 ```{r pointAPSR, eval=TRUE}
 load(here::here("data", "dem_mood_apsr.RData"))
@@ -832,7 +826,7 @@ Those who would defend democracy have no grounds to be complacent.
 
 # Online Supplementary Materials {-}
 # (APPENDIX) Appendix {-}
-# Numeric Results for Replicating Claassen 2020a
+# Numeric Results for Replicating Claassen 2020a {#fullAJPS}
 
 ```{r num-labelAJPS, eval=TRUE}
 names_coef <- c(
@@ -905,7 +899,7 @@ modelsummary(tb_result_expAJPS,
 
 \blandscape
 
-# Numeric Results for Replicating Claassen 2020b
+# Numeric Results for Replicating Claassen 2020b {#fullAPSR}
 
 ```{r num-labelAPSR, eval=TRUE}
 names_coef <- c(
