@@ -1248,6 +1248,7 @@ plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
 legend <- get_legend(plot_AJPS2)
 plot_AJPS2 <- plot_AJPS2 + theme(legend.position = "none")
 grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
+
 ```
 
 ```{r mocresult-pureAPSR}
