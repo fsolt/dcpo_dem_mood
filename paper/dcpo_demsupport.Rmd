@@ -170,6 +170,12 @@ sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 # osf_retrieve_file("u96m8") %>%
 #     osf_download(path = "../data", conflicts = "overwrite")
 
+# osf_retrieve_file("52u7n") %>%
+#     osf_download(path = "../data", conflicts = "overwrite") #corrected ajps
+# osf_retrieve_file("2hwqg") %>%
+#     osf_download(path = "../data", conflicts = "overwrite") #corrected apsr
+
+
 load(here("data", "correct_cls_ajps.rda"))
 load(here("data", "correct_cls_apsr.rda")) 
 load(here("data", "expcor_cls_ajps.rda"))
@@ -1040,10 +1046,8 @@ A common way to do so is using the mean of $theta$ as the point estimate, and th
 
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-#mocresult_pureAJPS <- readRDS(here("output", "estimates_moc_pureAJPS.RDS"))
 mocresult_correctAJPS <- readRDS(here("output", "estimates_moc_correctAJPS.RDS"))
 mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expAJPS.RDS"))
-#mocresult_pureAPSR <- readRDS(here("output", "estimates_moc_pureAPSR.RDS"))
 mocresult_correctAPSR <- readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
 mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
 
@@ -1127,8 +1131,7 @@ saveRDS(mocresult_expAJPS, file =here("output","estimates_moc_expcorAJPS.RDS"))
 
 result_pooled <- bind_rows(
   mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Original"),
- # mutate(MOCsumm(mocresult_pureAJPS[["pooled"]]), model = "Uncertainty"),
- mutate(MOCsumm(mocresult_correctAJPS[["pooled"]]), model = "Corrected"),
+ mutate(MOCsumm(mocresult_correctAJPS[["pooled"]]), model = "Uncertainty+Corrected"),
  mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "Pooled")
@@ -1136,8 +1139,7 @@ result_pooled <- bind_rows(
 
 result_gmm <- bind_rows(
   mutate(result_clsAJPS[["gmm"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm(mocresult_pureAJPS[["gmm"]]), model = "Uncertainty"),
-  mutate(MOCsumm(mocresult_correctAJPS[["gmm"]]), model = "Corrected"),
+  mutate(MOCsumm(mocresult_correctAJPS[["gmm"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm(mocresult_expAJPS[["gmm"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "GMM")
@@ -1157,7 +1159,7 @@ result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
         "Resource\n dependence\n (t-1)"),
       time = 6), 
     type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original", "Corrected", "Uncertainty+Expanded Data")))
+    model = factor(model, levels = c("Original", "Uncertainty+Corrected", "Uncertainty+Expanded Data")))
 
 terms <- factor(rev(c("Democracy[t-1]",
                       "Democracy[t-2]",
@@ -1188,16 +1190,14 @@ plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
 ###########Regime
 result_regime <- bind_rows(
   mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm(mocresult_pureAJPS[["pooled-regime"]]), model = "Uncertainty"),
-  mutate(MOCsumm(mocresult_correctAJPS[["pooled-regime"]]), model = "Corrected"),
+  mutate(MOCsumm(mocresult_correctAJPS[["pooled-regime"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm(mocresult_expAJPS[["pooled-regime"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "Pooled")
 
 result_regimeGmm <- bind_rows(
   mutate(result_clsAJPS[["gmm-regime"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm(mocresult_pureAJPS[["gmm-regime"]]), model = "Uncertainty"),
-  mutate(MOCsumm(mocresult_correctAJPS[["gmm-regime"]]), model = "Corrected"),
+  mutate(MOCsumm(mocresult_correctAJPS[["gmm-regime"]]), model = "Uncertainty+Corrected"),
  mutate(MOCsumm(mocresult_expAJPS[["gmm-regime"]]), model = "Uncertainty+Expanded Data")
 )%>% 
   mutate(type = "GMM")
@@ -1217,7 +1217,7 @@ result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
         "Resource\n dependence\n (t-1)"),
       time = 6), 
     type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original","Corrected", "Uncertainty+Expanded Data")))
+    model = factor(model, levels = c("Original","Uncertainty+Corrected", "Uncertainty+Expanded Data")))
 terms2 <- factor(rev(c("Democracy[t-1]",
                        "Democracy[t-2]",
                        "Support[t-1] (democracies~only)",
@@ -1333,16 +1333,14 @@ saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expcorAPSR.R
 
 result_ecm1 <- bind_rows(
   mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["pooled1"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled1"]]), model = "Corrected"),
+  mutate(MOCsumm2(mocresult_correctAPSR[["pooled1"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["pooled1"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "ECM")
 
 result_fd1 <- bind_rows(
   mutate(result_clsAPSR[["fd1"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["fd1"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd1"]]), model = "Corrected"),
+  mutate(MOCsumm2(mocresult_correctAPSR[["fd1"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["fd1"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "First Difference")
@@ -1364,7 +1362,7 @@ result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Corrected", "Uncertainty+Expanded Data"))
+    model = factor(model, levels = c("Original","Uncertainty+Corrected", "Uncertainty+Expanded Data"))
   )
 
 terms1 <- factor(rev(c("Support[t-1]",
@@ -1392,9 +1390,7 @@ plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
 
 result_ecmReg1 <- bind_rows(
   mutate(result_clsAPSR[["pooled-regime1"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["pooled-regime1"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime1"]]), model = "Corrected"),
-
+  mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime1"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime1"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "ECM")
@@ -1402,8 +1398,7 @@ result_ecmReg1 <- bind_rows(
 
 result_fdReg1 <- bind_rows(
   mutate(result_clsAPSR[["fd-regime1"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["fd-regime1"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime1"]]), model = "Corrected"),
+  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime1"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["fd-regime1"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "First Difference")
@@ -1429,7 +1424,7 @@ result_RegAPSR1 <- bind_rows(result_ecmReg1, result_fdReg1) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Corrected", "Uncertainty+Expanded Data"))
+    model = factor(model, levels = c("Original","Uncertainty+Corrected", "Uncertainty+Expanded Data"))
   )
 terms3 <- factor(rev(c("Support[t-1]",
                        "Support[t-2]",
@@ -1461,9 +1456,7 @@ plot_RegAPSR1 <- dwplot(result_RegAPSR1, dodge_size = 0.8, by_2sd = FALSE) +
 
 result_ecm2 <- bind_rows(
   mutate(result_clsAPSR[["pooled2"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["pooled2"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled2"]]), model = "Corrected"),
-
+  mutate(MOCsumm2(mocresult_correctAPSR[["pooled2"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["pooled2"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "ECM")
@@ -1472,8 +1465,7 @@ result_ecm2 <- bind_rows(
 
 result_fd2 <- bind_rows(
   mutate(result_clsAPSR[["fd2"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["fd2"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd2"]]), model = "Corrected"),
+  mutate(MOCsumm2(mocresult_correctAPSR[["fd2"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["fd2"]]), model = "Uncertainty+Expanded Data")
 ) %>% 
   mutate(type = "First Difference")
@@ -1499,7 +1491,7 @@ result_APSR2 <- bind_rows(result_ecm2, result_fd2) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Corrected", "Uncertainty+Expanded Data"))
+    model = factor(model, levels = c("Original","Uncertainty+Corrected", "Uncertainty+Expanded Data"))
   )
 terms2 <- factor(rev(c("Support[t-1]",
                        "Support[t-2]",
@@ -1532,18 +1524,15 @@ plot_APSR2 <- dwplot(result_APSR2, dodge_size = 0.8, by_2sd = FALSE) +
 
 result_ecmReg2 <- bind_rows(
   mutate(result_clsAPSR[["pooled-regime2"]][[1]][,1:3], model = "Original"),
- # mutate(MOCsumm2(mocresult_pureAPSR[["pooled-regime2"]]), model = "Uncertainty"),
- mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime2"]]), model = "Corrected"),
-
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), model = "Uncertainty+Expanded Data")) %>% 
+ mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime2"]]), model = "Uncertainty+Corrected"),
+  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), model = "Uncertainty+Expanded Data")) %>%
   mutate(type = "ECM")
   
 
 
 result_fdReg2 <- bind_rows(
   mutate(result_clsAPSR[["fd-regime2"]][[1]][,1:3], model = "Original"),
-  #mutate(MOCsumm2(mocresult_pureAPSR[["fd-regime2"]]), model = "Uncertainty"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime2"]]), model = "Corrected"),
+  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime2"]]), model = "Uncertainty+Corrected"),
   mutate(MOCsumm2(mocresult_expAPSR[["fd-regime2"]]), model = "Uncertainty+Expanded Data")) %>% 
   mutate(type = "First Difference")
 
@@ -1573,7 +1562,7 @@ result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Corrected", "Uncertainty+Expanded Data"))
+    model = factor(model, levels = c("Original","Uncertainty+Corrected", "Uncertainty+Expanded Data"))
   )
 terms4 <- factor(rev(c("Support[t-1]",
                        "Support[t-2]",
