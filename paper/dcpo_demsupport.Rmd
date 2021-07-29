@@ -552,7 +552,7 @@ dwplot(df_plot) +
     theme(
         axis.title.y = element_blank(),
         legend.position = "bottom",
-        legend.title = element_blank()
+      legend.title = element_blank()
     ) +
     scale_y_discrete(labels = parse(text = rev(levels(df_plot$term)))) +
     # Using expressions of underscore and greek letters
@@ -851,7 +851,7 @@ names_coef <- c(
 ```
 
 ```{r num-pointAJPS, results='asis', eval=TRUE}
-tb_result_cls <- map(result_clsAJPS, ~ {
+tb_result_cls <- purrr::map(result_clsAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
   return(.)})
@@ -870,7 +870,7 @@ modelsummary(tb_result_cls,
 ```
 
 ```{r num-pureAJPS, results='asis', eval=TRUE}
-tb_result_pureAJPS <- map(result_pureAJPS, ~ {
+tb_result_pureAJPS <- purrr::map(result_pureAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
   return(.)})
@@ -887,7 +887,7 @@ modelsummary(tb_result_pureAJPS,
 ```
 
 ```{r num-expAJPS, results='asis', eval=TRUE}
-tb_result_expAJPS <- map(result_expAJPS, ~ {
+tb_result_expAJPS <- purrr::map(result_expAJPS, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
   return(.)})
@@ -953,7 +953,7 @@ modelsummary(tb_result_clsAPSR,
 \blandscape
 
 ```{r num-pureAPSR, results='asis', eval=TRUE}
-tb_result_pureAPSR <- map(result_pureAPSR, ~ {
+tb_result_pureAPSR <- purrr:::map(result_pureAPSR, ~ {
   names(.) <- c("tidy", "glance")
   class(.) <- "modelsummary_list"
   return(.)}) %>% 
@@ -1040,18 +1040,6 @@ Based on this decomposition, one can estimate the marginal density for &\theta&:
 
 Again, the gained parameter density can be combined into single values.
 A common way to do so is using the mean of $theta$ as the point estimate, and the variance from the density as the standard error.
-
-```{r moc-estimates, eval=TRUE}
-
-
-result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
-result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-mocresult_correctAJPS <- readRDS(here("output", "estimates_moc_correctAJPS.RDS"))
-mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expAJPS.RDS"))
-mocresult_correctAPSR <- readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
-mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expAPSR.RDS"))
-
-```
 
 ```{r mocresult-pureAJPS}
 
