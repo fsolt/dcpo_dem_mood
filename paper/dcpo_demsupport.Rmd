@@ -1043,29 +1043,6 @@ A common way to do so is using the mean of $theta$ as the point estimate, and th
 
 ```{r mocresult-pureAJPS}
 
-#df_pure_clsAjps <- purrr::map(1:900, function(anEntry) {
-#  correct_cls_ajps[[anEntry]] %>% 
-#    plm::pdata.frame(index = c("country", "year"))
-#})
-
-#result_pure_clsUncertain  <- map(ls_mod_ajpsCLS[1:2], function(aMod){
-#  result <- methodComposition1(df_pure_clsAjps,aMod)
-#})
-
-#names(result_pure_clsUncertain) <- c("pooled", "pooled-regime")
-
-
-#result_pure_clsUncertain_gmm  <- map(ls_mod_ajpsCLS[3:4], function(aMod){
-#  result <- methodComposition2(df_pure_clsAjps,aMod)
-#})
-#names(result_pure_clsUncertain_gmm) <- c("gmm", "gmm-regime")
-
-#mocresult_pureAJPS <- append(result_pure_clsUncertain, result_pure_clsUncertain_gmm)
-
-
-#saveRDS(mocresult_pureAJPS, file =here("output","estimates_moc_pureAJPS.RDS"))
-
-
 df_correct_clsAjps <- purrr::map(1:900, function(anEntry) {
   correct_cls_ajps[[anEntry]] %>% 
     plm::pdata.frame(index = c("country", "year"))
@@ -1170,7 +1147,7 @@ plot_AJPS1 <- dwplot(result_pooledAJPS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms))) +
   labs(
     title = "DV: V-Dem Liberal Democracy Index",
-    subtitle = "Regime Compacted"
+    subtitle = "Pooled"
   ) +
   facet_wrap(~type, scales = "free_x") + 
   theme(legend.position = "none")
@@ -1228,7 +1205,7 @@ plot_AJPS2 <- dwplot(result_regimeAJPS, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms2))) +
   labs(
     title = "",
-    subtitle = "Regime Specific"
+    subtitle = "Regime Specified"
   ) +
   facet_wrap(~type, scales = "free_x") +
   theme(legend.position = "bottom", 
@@ -1240,24 +1217,6 @@ grid.arrange(plot_AJPS1, plot_AJPS2, legend, ncol = 1)
 ```
 
 ```{r mocresult-pureAPSR}
-
-#df_pure_clsAPSR <- purrr::map(1:900, function(anEntry) {
-#  correct_cls_apsr[[anEntry]] %>% 
-#    plm::pdata.frame(index = c("country", "year"))
-#}
-#)
-
-
-#mocresult_pureAPSR  <- map(ls_mod_apsrCLS, function(aMod){
-#  result <- methodComposition3(df_pure_clsAPSR,aMod)
-#})  
-
- 
-#names(mocresult_pureAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
-#                                "fd1", "fd-regime1", "fd2", "fd-regime2")
-
-
-#saveRDS(mocresult_pureAPSR, file = here::here("ouput","estimates_moc_pureAPSR.RDS"))
 
 df_correct_clsAPSR <- purrr::map(1:900, function(anEntry) {
   correct_cls_apsr[[anEntry]] %>% 
@@ -1281,22 +1240,6 @@ saveRDS(mocresult_correctAPSR, file = here::here("ouput","estimates_moc_correctA
 ```
 
 ```{r mocresult-expAPSR}
-
-#df_exp_clsAPSR <- purrr::map(1:900, function(anEntry) {
-#  expcor_cls_apsr[[anEntry]] %>% 
-#    plm::pdata.frame(index = c("country", "year"))
-#}
-#)
-
-
-#mocresult_expAPSR <- map(ls_mod_apsrCLS, function(aMod){
- # result <- methodComposition3(df_exp_clsAPSR,aMod)
-#})  
-
-
-#names(mocresult_expAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
-#                                "fd1", "fd-regime1", "fd2", "fd-regime2")
-#saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expAPSR.RDS"))
 
 df_exp_clsAPSR <- purrr::map(1:900, function(anEntry) {
   expcor_cls_apsr[[anEntry]] %>% 
@@ -1370,7 +1313,7 @@ plot_APSR1 <- dwplot(result_APSR1, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms1))) +
   labs(
     title = "DV: The Change of Public Support for Democracy",
-    subtitle = "Regime Compacted"
+    subtitle = "Pooled"
   ) +
   facet_wrap(~type, drop=T,scales = "free_x") +
   theme(legend.position = "none")
@@ -1435,7 +1378,7 @@ plot_RegAPSR1 <- dwplot(result_RegAPSR1, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms3))) +
   labs(
     title = "",
-    subtitle = "Regime Specified"
+    subtitle = "Institution Specified"
   ) +
   facet_wrap(~type, scales = "free_x") + 
   theme(legend.position = "none")
@@ -1577,7 +1520,7 @@ plot_RegAPSR2 <- dwplot(result_RegAPSR2, dodge_size = 0.8, by_2sd = FALSE) +
   scale_y_discrete(labels = parse(text = levels(terms4))) +
   labs(
     title = "",
-    subtitle = "Regime Specified w. Corruption"
+    subtitle = "Institution Specified w. Corruption"
   ) +
   facet_wrap(~type, scales = "free_x") +
   theme(legend.position = "bottom", 
