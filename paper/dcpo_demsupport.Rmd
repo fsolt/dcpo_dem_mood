@@ -73,19 +73,20 @@ Because they are unobserved, latent variables are inherently accompanied by meas
 To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
 
 In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
-In addition to incorporating the measurement uncertainty, we also sought to reduce it by expanding survey data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
+In addition to incorporating the measurement uncertainty, we also sought to reduce it by correcting and expanding survey data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
 Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and with expanded data.
 That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
   
-There are many plausible explanations for these null results, both methodological and theoretical.
+There are many plausible explanations for these null results, both theoretical and methodological.
+From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
+Similarly, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
+Whether the public support has a pro-democratic or anti-authoritarian effect is also bounded by the emancipative value that, as a belief-anchored orientation, shapes the public's understanding of democracy [see @Brunkert2019; @Kirsch2019; @Kruse2019].
+Moreover, the cultural and historical attributes of the emancipative value decide that it cannot be shifted shortly by institutional changes.
+Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
+
 Methodologically, one possible issue is that support for democracy is multidimensional, and the survey questions used to measure it simply do not capture all of the dimensions relevant to democratic change, such as commitments to political equality and freedom of expression [see @Schedler2007; @Wuttke2020].
 Another is that the relationships among these survey items have varied substantially over time [see @Wuttke2021]; this would violate the assumptions of the public opinion models used and would yield faulty estimates of democratic support.
 A third is that these survey questions do not ask respondents how they prioritize democracy relative to other values with which it may come into conflict, such as their partisanship, and so miss capturing the true extent of support democracy would find among the public when public support was actually needed [see @Carey2020; @graham_democracy_2020; @McCoy2020].
-
-From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
-Similarly, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
-Culturally, whether the public democratic support has a pro-democratic or anti-authoritarian effect is bounded by emancipative value that, as a belief-anchored orientation, shapes the public's understanding of democracy [see @Brunkert2019; @Kirsch2019; @Kruse2019].
-Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
 
 We draw two conclusions, one methodological and one substantive.
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
@@ -213,8 +214,7 @@ In light of this, recent studies measuring other latent variables have recommend
 Following this line, after replicating the original analyses with point estimates, we take the distribution of the latent (explanatory) variable, the outcome variable, and control variables to account for the uncertainty from the measurement model as well as outcome and control variables.
 We take 900 draws from the distribution of public democratic support, duplicate each article's analysis dataset of variables without "measurement error" 900 times, and assign them to each a different random draw from the posterior distribution of democracy indices.
 We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
-This combine rule was set out in @Rubin1987 and employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015].
-@Blackwell2017a's multiple overimputation (MO) uses the same logic to correct sampling variance.
+This combine rule was set out in @Rubin1987, and has been employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015] as well as incorporated in @Blackwell2017a's multiple overimputation (MO) to handle missing values and measurement uncertainty.
 We also employ one alternative technique known as "method of composition" (MOC)  [@Treier2008, p. 215] as a robustness check [see Online Supplementary Material \@ref(moc)].
 
 
