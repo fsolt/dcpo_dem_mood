@@ -212,7 +212,6 @@ As the third step, we collect even more survey data---increasing these source da
 When we recollected the original data, we could not entirely achieve a primary replication [see @Grossman2020, p. 18] based @Claassen2020a's Dataverse materials.
 It turned out that we have differences in number of country-year surveys and in sample size.
 Specificially, our replication data has five fewer observations, three of which are no longer available in originial survey data and 2 seem to have never existed, and one more survey item which was conflated in original data [See more detail in Appendix].
-<!-- which 5? South Sudan arabb4; Dominican Rep lb 2003; Spain lb 2005. 2? -->
 
 Although measurement uncertainty has yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey2018, p.254].
@@ -289,11 +288,7 @@ increase_surv <- sprintf("%2.1f", (dcpo_input_surv/supdem_surv - 1) * 100, 1)
 We also expanded Claassen's data pool assembling as much data on democratic support as possible from available opinion surveys around the world. 
 The expansion ended with `r dcpo_input_ncyi` national opinions on democracy from `r dcpo_input_surv` national surveys, representing a `r increase_cyi`% and `r increase_surv`% increase respectively over the `r supdem_ncy` opinions and `r supdem_surv` national surveys used in Claassen [-@Claassen2020a; -@Claassen2020b].^[These figures represent the survey data actually used in estimating public support for democracy; as in Claassen [-@Claassen2020a; -@Claassen2020b], countries for which two separate years of survey data were not available were excluded.]
 
-Besides accounting for uncertainty in latent variable estimates, we also included the measurement uncertainty in democracy indices and corruption index [See Appendix]. 
-
-<!-- put it into memo rather than in main context. -->
-We extracted the posterior distributions of democratic indices, including Liberal Democracy,polyarchy, and electoral democracy index, which are provided by [@coppedge2018]. 
-We drew 900 samples from the distribution of the Corruption Perception Index.^[Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.] 
+Besides accounting for uncertainty in latent variable estimates, we also included the measurement uncertainty in democracy indices and corruption index [See Appendix].
 
 # Results
 
@@ -969,6 +964,21 @@ modelsummary(tb_result_expAPSR,
 
 \elandscape
 
+# Data Recollection and Control Uncertainty in Control Variables. 
+
+Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to achieve a primary replication [@Grossman2020] based on survey data summarized in @Claassen2020a and @Claassen2020b's Dataverse files.
+
+Specifically, we are not able to identify 5 cournty-year surveys, including South Sudan in Arab Barometer Wave 4, Dominican Republic in 2003 Latinobarometer, XXXX, and Spain in 2005 Latinobarometer. 
+In addition, we still have different sample size and number of respondents answering supportively by following approaches of cleanning data and treatment of non-responses described in @Claassen2020a's supplementatry materials.
+Specifically, we used Claassen's year coding to recode 85 unmatching country-year observations and added one more item "strong leader 2" in Arabbarometer which has different response categories but was conflated into "strong leader 1".  
+
+V-Dem data was standardized in @Claassen2020b's analyses, but we did not figure out how the standardization was exactly performed.
+We standardized variables using Z-score, and the standardized values are different from Claassen's data. 
+
+We also include measurement errors in control variables, including three democratic indices and corruption index.
+We extracted the posterior distributions of democratic indices, including Liberal Democracy,polyarchy, and electoral democracy index, which are provided by [@coppedge2018].
+We drew 900 samples from the distribution of the Corruption Perception Index.
+Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.
 
 # Replication with Alternative Methods Accounting for Uncertainty {#moc}
 
@@ -979,7 +989,7 @@ To compare these two methods, let's denote `y` as a vector of the outcome variab
 Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
 In multiple overimputation (MO, the method used in the main article), the explanatory variable with measurement errors is regarded as missing data $x^{mis}$ with an observed proxy $w$ under the assumption of "Missing at Random" and "Ignorable Measurement Mechanism Assignment" [@Blackwell2017].
 The explanatory variables without error are denoted $x^{obs}$.
-*Personally, I think we should be careful to use MO since our approach is not MO. I will go back here later.* 
+*Personally, I think we should be careful to use MO since our approach is not MO. I will go back here later. Instead, we might just write down Rubin's rule here. * 
 The parameter likelihood is then
 
 
