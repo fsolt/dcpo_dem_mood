@@ -93,8 +93,6 @@ We rerun the models following the same steps in our previous analysis but incorp
 The relationship between the change of public support and the change of democracy disappears when uncertainty is accounted for in models either using Claassen's original data or expanded data with 25% more country-year data.
 The updated results are presented in Figure XXX on Page xx. 
 
-*Need to explain the different results in AJPS*
-
 
 # Alternative Method for Incorporating uncertainty
 
@@ -136,16 +134,18 @@ In terms of the impact of measurement error on estimated effects, many studies h
 
 ## Response
 
-First, we need to clarify that the DV in Figure2 is the change of public support for democracy rather than current public support.
-Second, when DV is the change of public support, Claassen's original results would not make any sense. 
+First, we need to clarify that the DV in Figure2 is the _change_ of public support for democracy rather than current public support.
+Second, when DV is the change of public support, Claassen's original results of lagged support do not make any sense. 
 Claassen's original results indicate the change of public support in one year is positively changed by the public support in the previous year and negatively shifted by the previous two years.
-However, should we expect that public support can produce its demand and especially a conflicting demand?
-Can high public support this year ask for a change next year but resist a change in the next two years?
-In contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
-Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero, and the magnitude of the coefficient also moves to zero.
-As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, accounting of uncertainty rarely renders the insignificant effect of democracy.
-However, even in Claassen's original results, the estimated effects of both the change of democracy and other social and economic factors are minor.
-Given the measurement errors in both democratic indices and public support, it is not surprising to see the diminution of the estimated effects.
+Claassen's results indicate that a high public support in 2020 leads to a bigger change in mood in 2021 but a high support in 2019 leads to a smaller change in mood in 2021.
+However, we do not have grounded theories to expect that public support can produce its positive demand in one year but backsliding demands in two years. 
+In contrast, our null results of lagged support on change of support mood indicate that the change of moods might not be dependent on its previous situation but might be shaped by exogenous factors, especially a shock in democratic or economic environment.
+
+In terms of the effects of social and economic environment on the change in mood, even in Claassen's original results (the uppermost results in Figure \@ref(fig:plot-mainAPSR)),  point estimates of the change in democracy,  economic growth, corruption index as well as their lagged level, are close to zero in magnitude. 
+Except for the change in democracy, all other estimated effects are not distinguishable from zero. 
+After acknowledging uncertainty, the estimated effect of the change in democracy is indistinguishable from zero, and the magnitude of the coefficient moves further to zero.
+As @Treier2008 [p213] emphasized, accounting of uncertainty maintains the significant effect of democracy mainly in applications where democracy strongly affects the quantity of interest and models are simple enough.
+Given the measurement errors in public support, democratic indices, and corruption index, it is not surprising to see the diminution of the estimated effects.
 
 # Test Full Models 
 ## Reviewer #1
