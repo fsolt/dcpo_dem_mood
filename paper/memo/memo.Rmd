@@ -174,7 +174,23 @@ Thanks to the editor's suggestions, we agree that we should present and assess t
 To do this, in the revised manuscript, we replicated Claassen's measure for public democratic support by applying his measurement Model5 to his original data file and used the posterior distribution of the public support estimates to incorporate uncertainty. 
 Then, we added more survey data to improve source data quality and applied Model5 to this expanded data set, still keeping the full posterior distribution of estimates.
 In this way, we isolate the effects of measurement uncertainty and more data. 
-In the APSR analyses, it is uncertainty that accounts for the disappearing significance of public support. 
+In replications for both AJPS and APSR analyses, it is uncertainty that accounts for the disappearing significance of public support and changes in democracy. 
+In Supplementatry material, we explained the methodology for addressing measurement uncerainty in this study and compared Rubin's Rules and Method of Composition.
+Both methods yield the similar results in significant and magnitude, though they address measurement errors in different angles. 
+
+In terms of disappearing relationships between public support and democracy and the change in mood and the change in democracy, we have discussed theoretical reasons in our main text. 
+It is possbile that the relationship is negligible. 
+The incorporation of measurement error swamping the significant effects of democracy in a strong relationship is rare [@Treier2008].
+
+In addition to potential methodological explanations we have discussed, another potential reason is the over-time smoothing induced by the random-walk prior thanks to Reviwer 2's suggestion.
+At aggregated level, country-year data is super sparse. 
+Even in our expanded data, xx data is missing, compared to xxx missing in original data, which might cause the domination of priors in smoothing over-time changes.
+However, in our revised manuscript, we only employed Claassen's Model 5 to estimate public support using corrected original data and expanded data, seperately.
+Therefore, we isolate the effect of priors on estimates. 
+Since our expanded data added xxx country-year, the estimates from the expanded data should be influenced less by priors than original data by inputing more data. 
+The results render strong evidence that the coefficient estimates from expanded data are more certainty with narrow confident interval.
+However, since the temporal evoluation of latent public support is specificed as a simple dynamic linear model and variance of noise term is constant across countries, the actual changes in mood might not be accurately captured instead being smoothed over. 
+That might explain why literally there is nothing significant when uncertainty is accounted in APSR replication. 
 
 
 # Substantive Discussion
