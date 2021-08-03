@@ -297,7 +297,7 @@ And the lowermost set presents the results estimated with the expanded data with
 
 In comparison to the original result, the positive coefficients for democratic support in both models accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
-Nor do applying system GMM models and using alternative method for uncertainty incorporation alters the conclusion (see Online Supplementary Material \@ref(fullAJPS), \@ref(fullAPSR), and \@ref(moc)).
+Nor do applying system GMM models and using MOC for uncertainty incorporation alters the conclusion (see Online Supplementary Material \@ref(fullAJPS), \@ref(fullAPSR), and \@ref(moc)).
 
 Adding more data is indeed helpful for increasing the certainty to the analytic estimates. 
 The confidence intervals of the explanatory variable (and some control variables) are considerably narrower than the cases just bringing the uncertainty back---or even the original case when uncertainty was completely ignored. 
@@ -986,25 +986,55 @@ The method we employ is "method of composition" (MOC).
 It is a common method for Monte Carlo integration, but can also be applied for addressing uncertainty [@Treier2008].
 To compare these two methods, let's denote `y` as a vector of the outcome variable [either institutional democracy in @Claassen2020a or the changes in mass support of democracy in @Claassen2020b]. 
 Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
-In multiple overimputation (MO, the method used in the main article), the explanatory variable with measurement errors is regarded as missing data $x^{mis}$ with an observed proxy $w$ under the assumption of "Missing at Random" and "Ignorable Measurement Mechanism Assignment" [@Blackwell2017].
-The explanatory variables without error are denoted $x^{obs}$.
-*Personally, I think we should be careful to use MO since our approach is not MO. I will go back here later. Instead, we might just write down Rubin's rule here. * 
-The parameter likelihood is then
 
+Rubin's Rules (RR, the method used in the main article) take variables with measurement error as missing value, and combine the point estimates and standard errors into single values yet accounting for both within and between imputation variances [@Rubin1987].
 
+Rubein's Rules is defined in the following formulas.
 
 \begin{equation}
-\mathcal{L}(\theta|y, x^{obs}) \propto \int_{\chi} p(x|y, \theta)p(y|\theta)dx^{mis}.
+\bar{\theta}_{m} = \frac{1}{m}\sum_{i=1}^{m} \theta_{i}.
+\end{equation}
+
+\begin{equation}
+{V}_{B} = \frac{1}{m-1}\sum_{i=1}^{m} (\theta_{i}-\bar{\theta}_{m})^2.
+\end{equation}
+
+\begin{equation}
+{V}_{W} = \frac{1}{m}\sum_{i=1}^{m} SE_{i}^2.
+\end{equation}
+
+\begin{equation}
+{V}_{T} = {V}_{w} +(1+ \frac{1}{m})\frac{V_B}{m}.
 \end{equation}
 
 
-Given $x$ is unobservable, one can estimate it through the proxy $w$ together with the measurement error $a$:
+$\bar{\theta}_{M}$ is the pooled parameter estimate, $m$ is the number of imputed datasets, $V_{B}$ is between imputation variance, $V_{W}$ within imputation variance, $V_{T}$ is total variance.
+
+The general formula for confidence interval (CI) is defined as:
 
 \begin{equation}
-E(w | x) = x + a.
+\bar{\theta} \pm t_{df,1-\alpha/2} *\sqrt{V_{T}}.
 \end{equation}
 
-After gaining the parameter density based on the above functions, one can apply Rubin's Rule to combine the point estimates and standard errors into single values yet accounting for both within and between imputation variances [@Rubin1987].
+$df$ is calculated by using $df_{Adjusted$ [@barnard1999] and the Fraction of Missing information, lambda, is derived from between and total variance [@raghunathan2015, @van2018]. 
+ 
+\begin{equation}
+{df_{Adjusted}} = \frac{df_{Old}*df_{Observed}}{df_{Old}+df_{Observed}}.
+\end{equation}
+
+\begin{equation}
+{df_{Old}} = \frac{(n-k)+1}{(n-k)+3} * (n-k)(1-lambda).
+\end{equation}
+
+\begin{equation}
+{df_{Observed}} = \frac{(n-k)+1}{(n-k)+3} * (n-k)(1-lambda).
+\end{equation}
+
+\begin{equation}
+{Lambda} = \frac{V_{B}+\frac{V_{B}}{m}}{V_{T}}
+\end{equation}
+
+One main idea behind RR is to account for both within imputation variance and sample variance which is due to the missing data (measurement error in our case). 
 
 MOC addresses the same issue from a slightly different angle.
 The method assumes that the explanatory and outcome variables are samples from their estimate functions, and their paired sample follows a joint density [@Tanner1993, p.31].
