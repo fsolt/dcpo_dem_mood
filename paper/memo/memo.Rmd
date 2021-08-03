@@ -156,9 +156,6 @@ Regarding Reviewer 1's request on replicating all specifications in the original
 Results do not change in all these models, presented on Page xxx, Figure xxx, and xxx in SI. 
 As the editor suggested, this letter should focus on the core point: the relationship between public support and democracy. We do not replicate specifications on other relationships. 
 
-*Need to add APSR models or more description on full models*
-
-
 
 # Justification of DCPO 
 ## Reviewer #1
@@ -176,21 +173,19 @@ Then, we added more survey data to improve source data quality and applied Model
 In this way, we isolate the effects of measurement uncertainty and more data. 
 In replications for both AJPS and APSR analyses, it is uncertainty that accounts for the disappearing significance of public support and changes in democracy. 
 In Supplementatry material, we explained the methodology for addressing measurement uncerainty in this study and compared Rubin's Rules and Method of Composition.
-Both methods yield the similar results in significant and magnitude, though they address measurement errors in different angles. 
+Both methods yield the similar results in significant, though they address measurement errors in different angles. 
 
 In terms of disappearing relationships between public support and democracy and the change in mood and the change in democracy, we have discussed theoretical reasons in our main text. 
-It is possbile that the relationship is negligible. 
-The incorporation of measurement error swamping the significant effects of democracy in a strong relationship is rare [@Treier2008].
+It is possbile that the relationship is negligible, because the incorporation of measurement error swamping the significant effects of democracy in a strong relationship is rare [@Treier2008].
 
 In addition to potential methodological explanations we have discussed, another potential reason is the over-time smoothing induced by the random-walk prior thanks to Reviwer 2's suggestion.
 At aggregated level, country-year data is super sparse. 
-Even in our expanded data, xx data is missing, compared to xxx missing in original data, which might cause the domination of priors in smoothing over-time changes.
-However, in our revised manuscript, we only employed Claassen's Model 5 to estimate public support using corrected original data and expanded data, seperately.
-Therefore, we isolate the effect of priors on estimates. 
+Even in our expanded data, xx data is missing, compared to xxx missing in original data.
+The sparse of raw data and the simple dynamic linear model used in measurement model to capture dynamic effect might make priors dominate in smoothing over-time changes. 
+However, in our revised manuscript, we only used Claassen's Model 5 to estimate public support using corrected original data and expanded data, seperately.
 Since our expanded data added xxx country-year, the estimates from the expanded data should be influenced less by priors than original data by inputing more data. 
-The results render strong evidence that the coefficient estimates from expanded data are more certainty with narrow confident interval.
-However, since the temporal evoluation of latent public support is specificed as a simple dynamic linear model and variance of noise term is constant across countries, the actual changes in mood might not be accurately captured instead being smoothed over. 
-That might explain why literally there is nothing significant when uncertainty is accounted in APSR replication. 
+Still, the coefficient estimates from expanded data are indistinguishable from zero though with narrower confident interval.
+Therefore, it is the incorporation of uncertainty that changes the coefficient estimates in magnitude and significant. 
 
 
 # Substantive Discussion
@@ -241,7 +236,6 @@ It is a misunderstanding that incorporating uncertainty only changes standard er
 First, incorporating uncertainty might or might not cause the changes of standard error.
 For example, standard errors did not change after accounting for uncertainty in [@caughey2018] but became smaller in [@Treier2008].
 Second, the propagation of uncertainty can either attenuate or magnify the magnitude of estimated effects.
-*We can cite more lit if necessary*. 
 To avoid confusion, we only focus on uncertainty in this revised version.
 
 ## Editor
@@ -251,7 +245,9 @@ While Reviewer 1 asks for all results from the original two studies be replicate
 As you expand the SI, please keep in mind our limit of 25 pages. Material solely for editors and reviewers that would not be relevant for readers can remain in the response to reviewers.   
 
 ## Response
-We might need to review the functions added in SI.
+In SI, we discussed methodology used in this article to address measurement errors, Rubin's Rules and MOC.
+We compared these two methods by introducing their fomulas and equations and highlighing their different approaches. 
+As results show, though they have different approaches, the results from two methods are similar with each other. 
 
 
 ## Editor
