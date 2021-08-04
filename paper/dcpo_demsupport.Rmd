@@ -822,55 +822,63 @@ names_coef <- c(
 
 ```{r num-pointAJPS, results='asis', eval=TRUE}
 tb_result_cls <- purrr::map(result_clsAJPS, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)})
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+})
 
-names(tb_result_cls) <- c("Pooled", "Pooled-Regime", 
+names(tb_result_cls) <- c("Pooled", "Pooled-Regime",
                           "GMM", "GMM-Regime")
 
-modelsummary(tb_result_cls,  
-             statistic = "conf.int",
-             coef_map = names_coef, 
-             output = "latex", 
+modelsummary(tb_result_cls,
+             # statistic = "conf.int",
+             coef_map = names_coef,
+             output = "latex",
              title = "Original") %>%
-  
-  kableExtra::kable_styling(font_size = 8) %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+    kableExtra::kable_styling(font_size = 8) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 ```{r num-pureAJPS, results='asis', eval=TRUE}
 tb_result_pureAJPS <- purrr::map(result_pureAJPS, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)})
+    .[[1]] <- rename(.[[1]], std.error = se)
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+})
 
-names(tb_result_pureAJPS) <- c("Pooled", "Pooled-Regime", 
-                          "GMM", "GMM-Regime")
+names(tb_result_pureAJPS) <- c("Pooled", "Pooled-Regime",
+                               "GMM", "GMM-Regime")
 
-modelsummary(tb_result_pureAJPS, 
-             statistic = "conf.int",
-             coef_map = names_coef, 
-             output = "latex", 
-             title = "W. Uncertainty") %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+modelsummary(
+    tb_result_pureAJPS,
+    # statistic = "conf.int",
+    coef_map = names_coef,
+    output = "latex",
+    title = "W. Uncertainty"
+) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 ```{r num-expAJPS, results='asis', eval=TRUE}
 tb_result_expAJPS <- purrr::map(result_expAJPS, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)})
+    .[[1]] <- rename(.[[1]], std.error = se)
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+})
 
-names(tb_result_expAJPS) <- c("Pooled", "Pooled-Regime", 
-                          "GMM", "GMM-Regime")
+names(tb_result_expAJPS) <- c("Pooled", "Pooled-Regime",
+                              "GMM", "GMM-Regime")
 
-modelsummary(tb_result_expAJPS, 
-             statistic = "conf.int",
-             coef_map = names_coef, 
-             output = "latex", 
-             title = "W. Uncertainty and Expanded Data") %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+modelsummary(
+    tb_result_expAJPS,
+    # statistic = "conf.int",
+    coef_map = names_coef,
+    output = "latex",
+    title = "W. Uncertainty and Expanded Data"
+) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 \blandscape
@@ -902,21 +910,42 @@ names_coef <- c(
 
 ```{r num-pointAPSR, results='asis', eval=TRUE}
 tb_result_clsAPSR <- map(result_clsAPSR, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)}) %>% 
-  .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
-      "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+}) %>%
+    .[c(
+        "pooled1",
+        "pooled-regime1",
+        "fd1",
+        "fd-regime1",
+        "pooled2",
+        "pooled-regime2",
+        "fd2",
+        "fd-regime2"
+    )]
 
-names(tb_result_clsAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
+names(tb_result_clsAPSR) <-
+    c(
+        "ECM",
+        "ECM-Regime",
+        "FD",
+        "FD-Regime",
+        "ECM Corrup",
+        "ECM Corrup-Regime",
+        "FD Corrup",
+        "FD Corrup-Regime"
+    )
 
-modelsummary(tb_result_clsAPSR, 
-             stars = TRUE,
-             coef_map = names_coef, 
-             output = "latex", 
-             title = "Original") %>% 
-  kableExtra::kable_styling(font_size = 7) %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+modelsummary(
+    tb_result_clsAPSR,
+    # statistic = "conf.int",
+    coef_map = names_coef,
+    output = "latex",
+    title = "Original"
+) %>%
+    kableExtra::kable_styling(font_size = 7) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 \elandscape
@@ -925,22 +954,44 @@ modelsummary(tb_result_clsAPSR,
 
 ```{r num-pureAPSR, results='asis', eval=TRUE}
 tb_result_pureAPSR <- purrr:::map(result_pureAPSR, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)}) %>% 
-  .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
-      "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
+    .[[1]] <- rename(.[[1]], std.error = se)
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+}) %>%
+    .[c(
+        "pooled1",
+        "pooled-regime1",
+        "fd1",
+        "fd-regime1",
+        "pooled2",
+        "pooled-regime2",
+        "fd2",
+        "fd-regime2"
+    )]
 
-names(tb_result_pureAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
+names(tb_result_pureAPSR) <-
+    c(
+        "ECM",
+        "ECM-Regime",
+        "FD",
+        "FD-Regime",
+        "ECM Corrup",
+        "ECM Corrup-Regime",
+        "FD Corrup",
+        "FD Corrup-Regime"
+    )
 
 
-modelsummary(tb_result_pureAPSR, 
-             statistic = "conf.int",
-             coef_map = names_coef, 
-             output = "latex", 
-             title = "W. Uncertainty") %>% 
-  kableExtra::kable_styling(font_size = 7) %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+modelsummary(
+    tb_result_pureAPSR,
+    # statistic = "conf.int",
+    coef_map = names_coef,
+    output = "latex",
+    title = "W. Uncertainty"
+) %>%
+    kableExtra::kable_styling(font_size = 7) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 \elandscape
@@ -949,21 +1000,43 @@ modelsummary(tb_result_pureAPSR,
 
 ```{r num-expAPSR, results='asis', eval=TRUE}
 tb_result_expAPSR <- map(result_expAPSR, ~ {
-  names(.) <- c("tidy", "glance")
-  class(.) <- "modelsummary_list"
-  return(.)}) %>% 
-  .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
-      "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
+    .[[1]] <- rename(.[[1]], std.error = se)
+    names(.) <- c("tidy", "glance")
+    class(.) <- "modelsummary_list"
+    return(.)
+}) %>%
+    .[c(
+        "pooled1",
+        "pooled-regime1",
+        "fd1",
+        "fd-regime1",
+        "pooled2",
+        "pooled-regime2",
+        "fd2",
+        "fd-regime2"
+    )]
 
-names(tb_result_expAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
+names(tb_result_expAPSR) <-
+    c(
+        "ECM",
+        "ECM-Regime",
+        "FD",
+        "FD-Regime",
+        "ECM Corrup",
+        "ECM Corrup-Regime",
+        "FD Corrup",
+        "FD Corrup-Regime"
+    )
 
-modelsummary(tb_result_expAPSR, 
-             statistic = "conf.int",
-             coef_map = names_coef, 
-             output = "latex", 
-             title = "W. Uncertainty and Expanded Data") %>% 
-  kableExtra::kable_styling(font_size = 7) %>% 
-  kableExtra::kable_styling(latex_options = "HOLD_position")
+modelsummary(
+    tb_result_expAPSR,
+    # statistic = "conf.int",
+    coef_map = names_coef,
+    output = "latex",
+    title = "W. Uncertainty and Expanded Data"
+) %>%
+    kableExtra::kable_styling(font_size = 7) %>%
+    kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 \elandscape

@@ -4,7 +4,7 @@ output:
     citation_package: natbib
     keep_tex: true
     fig_caption: true
-    latex_engine: pdflatex
+    latex_engine: xelatex
     template: ../svm-latex-ms2.tex
 title: |
     | Democracy, Public Support, and Measurement Uncertainty
@@ -153,8 +153,9 @@ Given the measurement errors in public support, democratic indices, and corrupti
 
 ## Response
 Regarding Reviewer 1's request on replicating all specifications in the original two studies, we added alternate specifications on the relationship between public support and democracy, including GMM models, First Different Models, and sample split.
-Results do not change in all these models, presented on Page xxx, Figure xxx, and xxx in SI. 
-As the editor suggested, this letter should focus on the core point: the relationship between public support and democracy. We do not replicate specifications on other relationships. 
+See Page xxx, Figure xxx, and xxx in SI. 
+
+
 
 
 # Justification of DCPO 
