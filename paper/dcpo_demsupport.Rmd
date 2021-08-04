@@ -809,7 +809,9 @@ names_coef <- c(
   "plm::lag(Libdem_VD, 1:2)2"  = "Democracy[t-2]",
   "plm::lag(SupDem_trim, 1)" = "Support[t-1]",
   "plm::lag(SupDem_Democ, 1)" = "Support in Democracy",
+  "plm::lag(theta_dem_trim, 1)" = "Support in Democracy",
   "plm::lag(SupDem_Autoc, 1)" = "Support in Autocracy",
+  "plm::lag(theta_aut_trim, 1)" = "Support in Autocracy",
   "plm::lag(lnGDP_imp, 1)" = "Log GDP Per Capita[t-1]",
   "plm::lag(GDP_imp_grth, 1)"  = "GDP Per Capita~growth[t-1]",
   "plm::lag(Libdem_regUN, 1)" = "Regional Democracy[t-1]",
@@ -843,7 +845,7 @@ tb_result_pureAJPS <- purrr::map(result_pureAJPS, ~ {
   class(.) <- "modelsummary_list"
   return(.)})
 
-names(tb_result_cls) <- c("Pooled", "Pooled-Regime", 
+names(tb_result_pureAJPS) <- c("Pooled", "Pooled-Regime", 
                           "GMM", "GMM-Regime")
 
 modelsummary(tb_result_pureAJPS, 
@@ -867,7 +869,7 @@ modelsummary(tb_result_expAJPS,
              statistic = "conf.int",
              coef_map = names_coef, 
              output = "latex", 
-             title = "W. Uncertainty") %>% 
+             title = "W. Uncertainty and Expanded Data") %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
@@ -911,7 +913,8 @@ names(tb_result_clsAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup
 modelsummary(tb_result_clsAPSR, 
              stars = TRUE,
              coef_map = names_coef, 
-             output = "latex") %>% 
+             output = "latex", 
+             title = "Original") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -934,7 +937,8 @@ names(tb_result_pureAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corru
 modelsummary(tb_result_pureAPSR, 
              statistic = "conf.int",
              coef_map = names_coef, 
-             output = "latex") %>% 
+             output = "latex", 
+             title = "W. Uncertainty") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -956,7 +960,8 @@ names(tb_result_expAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup
 modelsummary(tb_result_expAPSR, 
              statistic = "conf.int",
              coef_map = names_coef, 
-             output = "latex") %>% 
+             output = "latex", 
+             title = "W. Uncertainty and Expanded Data") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1016,7 +1021,7 @@ The general formula for confidence interval (CI) is defined as:
 \bar{\theta} \pm t_{df,1-\alpha/2} *\sqrt{V_{T}}.
 \end{equation}
 
-$df$ is calculated by using $df_{Adjusted$ [@barnard1999] and the Fraction of Missing information, lambda, is derived from between and total variance [@raghunathan2015, @van2018]. 
+$df$ is calculated by using $df_{Adjusted}$ [@barnard1999] and the Fraction of Missing information, lambda, is derived from between and total variance [@raghunathan2015, @van2018]. 
  
 \begin{equation}
 {df_{Adjusted}} = \frac{df_{Old}*df_{Observed}}{df_{Old}+df_{Observed}}.
