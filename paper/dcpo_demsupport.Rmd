@@ -26,7 +26,8 @@ editor_options:
     wrap: sentence
 tables: true # enable longtable and booktabs
 citation_package: natbib
-fontsize: 11pt
+fontsize: 12pt
+indent: true
 linestretch: 1.5 # double spacing using linestretch 1.5
 bibliography: dcpo_demsupport.bib
 # bibliography: \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
@@ -197,26 +198,24 @@ mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expcorAPSR.RDS"))
 We proceed in three steps.
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
-As the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
+In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.
 
-## Data Recollection and Incorporating Uncertainty
+It is worth to note that, despite the great effort of collecting data and identifying differences, we could not reach a completely primary replication of @Claassen2020a's Dataverse materials.
+Specifically, we have five fewer observations, three of which are no longer available in original survey data and two seem to have never existed, and one more survey item which was conflated in original data.
+(See more details in Online Supplementary Material \@ref(dgp).)
+Nevertheless, given there are over 2000 observations involved in the analysis, the five missing should not make a meaningful difference.
 
-Despite the great effort of collecting data and identifying differences, we could not entirely achieve a primary replication [see @Grossman2020, p. 18] based on @Claassen2020a's Dataverse materials.
-Our replication data has differences in number of country-year surveys and in sample size.
-Specifically, we have five fewer observations, three of which are no longer available in original survey data and two seem to have never existed, and one more survey item which was conflated in original data [see Online Supplementary Material].
+## Uncertainty Incorporation
 
 Although measurement uncertainty has yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can bias coefficient estimates and standard errors.
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey2018, p.254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey2018, p. 254]. 
-
 Following this line, after replicating the original analyses with point estimates, we incorporate uncertainty in analysis models using our replication data.
 We take the distribution of the latent (explanatory) variable, the outcome variable, and control variables to account for the uncertainty.
 We take 900 draws from the posterior distribution of democratic support, outcome, and control variables with errors.
 We then duplicate each article's analysis dataset of variables "without" measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error. 
-We estimate each analysis model repeatedly on its respective collection of the datasets, and then make inferences from the distribution of parameter estimates by accounting for both within model standard error and between model variance.
-This combine rule was set out in @Rubin1987, and has been employed in research of measurement errors [see, e.g., @Schnakenberg2014; @Crabtree2015] as well as incorporated in @Blackwell2017a's multiple overimputation (MO) to handle missing values and measurement uncertainty.
-We also employ one alternative technique known as "method of composition" (MOC)  [@Treier2008, p. 215] as a robustness check [see Online Supplementary Material \@ref(moc)].
-
+We conduct inferences from the distributive data via a technique known as "method of composition" (MOC) [@Treier2008, p. 215].
+See more details of the method and the operational process in Online Supplementary Material \@ref(moc).
 
 ```{r compare_n}
 
@@ -289,18 +288,18 @@ And the lowermost set presents the results estimated with the expanded data with
 
 In comparison to the original result, the positive coefficients for democratic support in both models accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
-Nor do applying system GMM models and using MOC for uncertainty incorporation alters the conclusion (see Online Supplementary Material \@ref(fullAJPS), \@ref(fullAPSR), and \@ref(moc)).
+Nor do applying system GMM models or controlling for corruption alter the conclusion (see Online Supplementary Material \@ref(moc) for the the result of the full-pack analyses).
 
 Adding more data is indeed helpful for increasing the certainty to the analytic estimates. 
 The confidence intervals of the explanatory variable (and some control variables) are considerably narrower than the cases just bringing the uncertainty back---or even the original case when uncertainty was completely ignored. 
 Nonetheless, the insignificance remains and is robust across different model specifications.
 
-Moreover, the results also manfiest another risk of ignoring uncertainty: missestimation. 
+Moreover, the results expose another risk for ignoring uncertainty: missestimation. 
 As shown in Figure \@ref(fig:plot-mainAJPS), besides the confidence intervals the (point) estimates also shift. 
-Methodologically, these shifts indicates that the 900 regressions of public support on democracy do not yield consistent results although the support opinions were drawn from the same distribution. 
-In this sense, the coefficient produced simply by the mean of the public support distribution is no more than a one-time guess of the true parameter and definitely not a robust one. 
-What this methodological issue lead to, however, is a substantively different conclusion of the relationship between public opinions and institutional democratization in both direction and magnitude.
-The replication results illustrate the uncertainty ignorance with mounting risk.
+Methodologically, the shifts indicate that the 900 regressions of public support on democracy do not yield consistent results, although the explanatory and control variables were drawn from the same distribution. 
+In this sense, the coefficients produced simply by the means of the variable distributions are no more than a one-time guess of the true parameters and apparently not a robust one. 
+More importantly, what this methodological difference leads to is a substantively opposite conclusion of the relationship between public opinions and institutional democratization.
+Our replication results manifest the uncertainty ignorance with mounting risk.
 
 ```{r pointAJPS}
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
@@ -533,7 +532,7 @@ dwplot(df_plot) +
 
 ```
 
-The importance of accounting for the measurement uncertainty appear more evident when the relevant variable plays as the outcome variable. 
+The importance for taking the measurement uncertainty into account appear more evident when the relevant variable plays as the outcome variable. 
 In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [p. 47, Models 1.1 and 1.2]. 
 When the uncertainty is ignored, the coefficient of $\Delta$liberal democracy (the uppermost set), the yearly changes of the institutional feature is negative inferring that the change in democratic mood decreases as change in democracy increases and vice versa. 
 However, when the measurement uncertainty is properly accounted (the middle set), the point estimate shifts towards zero and the coefficient is no longer significant.
@@ -879,10 +878,10 @@ The finding of @Krieckhaus2014 that income inequality is strongly negatively rel
 Relatedly, on the reverse part of the classic argument, @Qi2011 suggests that democratic support alone cannot be expected to generate democratic change and oppose backsliding.
 Instead, that work contends, it is the combination of democratic support and dissatisfaction with current regime performance that generates demand for greater democracy.
 The effects of public support also have cultural-bound.
-@Brunkert2019 contends outspoken support for democracy is a "deceptive indicator of public's affinity to democracy" [423] and finds public support has neither pro-democratic nor anti-authoritarian effect without controlling emancipative values.
+@Brunkert2019[p. 423] contends outspoken support for democracy is a "deceptive indicator of public's affinity to democracy"  and finds public support has neither pro-democratic nor anti-authoritarian effect without controlling emancipative values.
 Empirical results show that the meaning of support for democracy is dependent on emancipation values and is reversed to its own negation in a society with weak emancipative values [see, e.g.,@Kirsch2019, 83-85].
 And we must be open to the possibility that no theoretical elaboration, no respecification of these models will reveal relationships between public opinion and democracy.
-Democratic backsliding may simply be primarily a matter of elite decisionmaking [see, e.g., @levitsky_how_2018].
+Democratic backsliding may simply be primarily a matter of elite decision making [see, e.g., @levitsky_how_2018].
 
 There are several potential methodological explanations for these null results as well.
 One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
@@ -908,7 +907,7 @@ The null results reached in this letter could arise from several sources.
 There are theoretically grounded reasons of government effectiveness, democratic understanding, and generical-or-behavioral support to suspect that the relationships are in fact negligible.
 We also identified a number of potential shortcomings in the measurement of democratic support and ways in which the analysis models might be underspecified.
 All of these could and should be explored in future research.
-In any event, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their publics will rally to them---is not supported by the current evidence.
+In any event, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their public will rally to them---is not supported by the current evidence.
 Those who would defend democracy have no grounds to be complacent.
 
 
@@ -920,7 +919,7 @@ Those who would defend democracy have no grounds to be complacent.
 
 # Online Supplementary Materials {-}
 # (APPENDIX) Appendix {-}
-# Data Recollection and Control Uncertainty in Control Variables. 
+# Data Recollection and Uncertainty in Control Variables {#dgp}
 
 Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to achieve a primary replication [@Grossman2020] based on survey data summarized in @Claassen2020a and @Claassen2020b's Dataverse files.
 
