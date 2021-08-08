@@ -211,10 +211,7 @@ Although measurement uncertainty has yet attracted attention in the field of com
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey2018, p.254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey2018, p. 254]. 
 Following this line, after replicating the original analyses with point estimates, we incorporate uncertainty in analysis models using our replication data.
-We take the distribution of the latent (explanatory) variable, the outcome variable, and control variables to account for the uncertainty.
-We take 900 draws from the posterior distribution of democratic support, outcome, and control variables with errors.
-We then duplicate each article's analysis dataset of variables "without" measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error. 
-We conduct inferences from the distributive data via a technique known as "method of composition" (MOC) [@Treier2008, p. 215].
+We conduct inferences from the distributive data via a technique known as "method of composition" (MOC) [@Tanner1996, p.52;@Treier2008, p. 215; @caughey2018,p.A15-16].
 See more details of the method and the operational process in Online Supplementary Material \@ref(moc).
 
 ```{r compare_n}
@@ -935,65 +932,11 @@ We extracted the posterior distributions of democratic indices, including Libera
 We drew 900 samples from the distribution of the Corruption Perception Index.
 Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.
 
-# Replication with Alternative Methods Accounting for Uncertainty {#moc}
-
-To ensure the robustness of our analysis, we apply another method to account for uncertainty.
-The method we employ is "method of composition" (MOC).
-It is a common method for Monte Carlo integration, but can also be applied for addressing uncertainty [@Treier2008].
-To compare these two methods, let's denote `y` as a vector of the outcome variable [either institutional democracy in @Claassen2020a or the changes in mass support of democracy in @Claassen2020b]. 
-Let $x$ (variables without subscript are used to denote vectors of observations, viz., $x$ = ($x_1$,......, $x_i$)) be a vector of the explanatory variable (e.g., mass support or institutional democracy) and $\theta$ be the parameter of interest.
-
-Rubin's Rules (RR, the method used in the main article) take variables with measurement error as missing value, and combine the point estimates and standard errors into single values yet accounting for both within and between imputation variances [@Rubin1987].
-
-Rubein's Rules is defined in the following formulas.
-
-\begin{equation}
-\bar{\theta}_{m} = \frac{1}{m}\sum_{i=1}^{m} \theta_{i}.
-\end{equation}
-
-\begin{equation}
-{V}_{B} = \frac{1}{m-1}\sum_{i=1}^{m} (\theta_{i}-\bar{\theta}_{m})^2.
-\end{equation}
-
-\begin{equation}
-{V}_{W} = \frac{1}{m}\sum_{i=1}^{m} SE_{i}^2.
-\end{equation}
-
-\begin{equation}
-{V}_{T} = {V}_{w} +(1+ \frac{1}{m})\frac{V_B}{m}.
-\end{equation}
-
-
-$\bar{\theta}_{M}$ is the pooled parameter estimate, $m$ is the number of imputed datasets, $V_{B}$ is between imputation variance, $V_{W}$ within imputation variance, $V_{T}$ is total variance.
-
-The general formula for confidence interval (CI) is defined as:
-
-\begin{equation}
-\bar{\theta} \pm t_{df,1-\alpha/2} *\sqrt{V_{T}}.
-\end{equation}
-
-$df$ is calculated by using $df_{Adjusted}$ [@barnard1999] and the Fraction of Missing information, lambda, is derived from between and total variance [@raghunathan2015, @van2018]. 
- 
-\begin{equation}
-{df_{Adjusted}} = \frac{df_{Old}*df_{Observed}}{df_{Old}+df_{Observed}}.
-\end{equation}
-
-\begin{equation}
-{df_{Old}} = \frac{(n-k)+1}{(n-k)+3} * (n-k)(1-lambda).
-\end{equation}
-
-\begin{equation}
-{df_{Observed}} = \frac{(n-k)+1}{(n-k)+3} * (n-k)(1-lambda).
-\end{equation}
-
-\begin{equation}
-{Lambda} = \frac{V_{B}+\frac{V_{B}}{m}}{V_{T}}
-\end{equation}
-
-One main idea behind RR is to account for both within imputation variance and sample variance which is due to the missing data (measurement error in our case). 
+# Replication with MOC Accounting for Uncertainty {#moc}
 
 In analysis models, we have latent variables in both sides of equations, public suppport for democracy, democracy indices and corruption index (The latter one is included in APSR analyses).
-Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1996,p52], which has been applied in analyses with latent variables [@Trei2008;@Caughey2018;@K2015].
+Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1996,p52], which has been applied in analyses with latent variables [@Treier2008;@Caughey2018;@Kastellec2015].
+
 As @Caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, intergrating over the uncertainty in latent variables $\theta$ (P A-15).
 More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
 
@@ -1005,30 +948,15 @@ where $\theta$ is latent varibles with measurement errors conditional on data Z 
 In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treie2008, 215].
 To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
 1. We sample $\theta^{s}$ from its posterior distribution $p(\theta|Z)$ and $y$ from $p(y|Z)$. 
-2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$. 
+2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$.
 3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{s}$ and variance-covariace matrix $V^{s}$.
 
 We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, liberal component index, and corruption perceptions index.
-
-
-MOC addresses the same issue from a slightly different angle.
-The method assumes that the explanatory and outcome variables are samples from their estimate functions, and their paired sample follows a joint density [@Tanner1993, p.31].
-From the joint density, one can decomposite the likelihood of the explanatory variable and its parameter to a product of their own probabilities.
-When x is measured with errors $w$, the probability becomes conditional:
-
-\begin{equation}
-\mathcal{L}(\theta, x|y, w) = p(\theta|x,y)p(x|w).
-\end{equation}
-
-Based on this decomposition, one can estimate the marginal density for &\theta&:
-
-\begin{equation}
-\mathcal{L}(\theta|y, x) \propto \int_{\chi} p(\theta|y,x)p(x|w)dx.
-\end{equation}
-
-Again, the gained parameter density can be combined into single values.
-A common way to do so is using the mean of $theta$ as the point estimate, and the variance from the density as the standard error.
-
+For each of these five latent variables, we take 900 draws from its posterior distribution. We duplicate the dataset of variables “without” measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error, which yields 900 dataset.
+In next step, we run each of analysis models with these 900 datesets independently and save the resulting estimates of coefficients and the matrix of variance-covariance for each run.
+We then draw one sample from the mulitivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
+This procedure finally yields 900 samples of estimated coefficients drawn from the joint density of $\beta$ and $\theta$.
+We calcluate point estimates and standard error based on these 900 samples.
 
 ```{r plot-mocAJPS, fig.cap= "The Effect of Public Support on Democracy ", eval = TRUE, fig.width=7, fig.height=10}
 terms <- factor(rev(
