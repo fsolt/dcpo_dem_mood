@@ -992,6 +992,25 @@ $df$ is calculated by using $df_{Adjusted}$ [@barnard1999] and the Fraction of M
 
 One main idea behind RR is to account for both within imputation variance and sample variance which is due to the missing data (measurement error in our case). 
 
+In analysis models, we have latent variables in both sides of equations, public suppport for democracy, democracy indices and corruption index (The latter one is included in APSR analyses).
+Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1996,p52], which has been applied in analyses with latent variables [@Trei2008;@Caughey2018;@K2015].
+As @Caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, intergrating over the uncertainty in latent variables $\theta$ (P A-15).
+More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
+
+\begin{equation}
+p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
+\end{equation}
+
+where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $X$, and $y$ is the outcome variable.
+In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treie2008, 215].
+To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
+1. We sample $\theta^{s}$ from its posterior distribution $p(\theta|Z)$ and $y$ from $p(y|Z)$. 
+2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$. 
+3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{s}$ and variance-covariace matrix $V^{s}$.
+
+We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, liberal component index, and corruption perceptions index.
+
+
 MOC addresses the same issue from a slightly different angle.
 The method assumes that the explanatory and outcome variables are samples from their estimate functions, and their paired sample follows a joint density [@Tanner1993, p.31].
 From the joint density, one can decomposite the likelihood of the explanatory variable and its parameter to a product of their own probabilities.
