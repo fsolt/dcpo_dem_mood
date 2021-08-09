@@ -280,7 +280,7 @@ The expansion ended with `r dcpo_input_ncyi` national opinions on democracy from
 
 Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries [@Claassen2020a, Model 1] in the left panel and separated by regime type (Model 2) on the right.
 The uppermost set of results replicate @Claassen2020a without uncertainty.
-The middle results introduce the uncertainty in the measurement of public support and democratic indices into the model.
+The middle results introduce the uncertainty in the measurement of public support and democracy indices into the model.
 And the lowermost set presents the results estimated with the expanded data with uncertainty. 
 
 In comparison to the original result, the positive coefficients for democratic support in both models accounting for the uncertainty are no longer statistically significant.
@@ -927,8 +927,8 @@ Specifically, we used Claassen's year coding to recode 85 unmatching country-yea
 V-Dem data was standardized in @Claassen2020b's analyses, but we did not figure out how the standardization was exactly performed.
 We standardized variables using Z-score, and the standardized values are different from Claassen's data. 
 
-We also include measurement errors in control variables, including three democratic indices and corruption index.
-We extracted the posterior distributions of democratic indices, including Liberal Democracy,polyarchy, and electoral democracy index, which are provided by [@coppedge2018].
+We also include measurement errors in control variables, including three democracy indices and corruption index.
+We extracted the posterior distributions of democracy indices, including Liberal Democracy,electoral democracy index and liberal component index, which are provided by [@coppedge2018].
 We drew 900 samples from the distribution of the Corruption Perception Index.
 Since Corruption Perception Index does not provide standard error before 2011, we imputed the missing standard error using the multiplication of a country's corruption index and the ratio of its available maximum standard error to its corresponding index.
 
