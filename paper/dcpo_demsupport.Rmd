@@ -112,6 +112,8 @@ knitr::opts_chunk$set(
 if (!require(pacman)) install.packages("pacman")
 library(pacman)
 
+if (!require(drhutools)) remotes::install_github("sammo3182/drhutools")
+
 # load all the packages you will use below 
 p_load(
   # data scrapping
@@ -194,8 +196,9 @@ mocresult_correctAJPS <- readRDS(here("output", "estimates_moc_correctAJPS.RDS")
 mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expcorAJPS.RDS"))
 mocresult_correctAPSR <- readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
 mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expcorAPSR.RDS"))
-mocdcpo_APSR <- readRDS(here("ouput","estimates_moc_dcpoAPSR.RDS"))
+mocdcpo_APSR <- readRDS(here("output","estimates_moc_dcpoAPSR.RDS"))
 mocresult_dcpoAJPS <- readRDS(here("output","estimates_moc_dcpoAJPS.RDS"))
+
 ```
 
 # Method
@@ -216,7 +219,7 @@ Although measurement uncertainty has yet attracted attention in the field of com
 Especially when measurement error is correlated with the outcome variable, the resulting bias could either attenuate or exaggerate the magnitude of the estimated effects [see, e.g., @Blackwell2017, p.360; @caughey2018, p.254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, p. 18; @Gandhi2020, p. 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, pp. 791-792; @caughey2018, p. 254]. 
 Following this line, after replicating the original analyses with point estimates, we incorporate uncertainty in analysis models using our replication data.
-We conduct inferences from the distributive data via a technique known as "method of composition" (MOC) [@Tanner1996, p.52;@Treier2008, p. 215; @caughey2018,p.A15-16].
+We conduct inferences from the distributive data via a technique known as "method of composition" (MOC) [@Tanner1993, p.52;@Treier2008, p. 215; @caughey2018,p.A15-16].
 See more details of the method and the operational process in Online Supplementary Material \@ref(moc).
 
 ```{r compare_n}
@@ -1169,7 +1172,20 @@ dwplot(df_plot) +
 
 ```
 
-
+```{r coefName-AJPS-dup}
+index_coefName <- c(
+    `Democracy\n (t-1)` = "Democracy[t-1]",
+    `Democracy\n (t-2)` = "Democracy[t-2]",
+    `Support\n (t-1)` = "Support[t-1]",
+    `Support\n demo only\n (t-1)` = "Support[t-1](demo~only)",
+    `Support\n auto only\n (t-1)` = "Support[t-1](auto~only)",
+    `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
+    `GDP per\n capita growth\n (t-1)` = "GDP~per~capita~growth[t-1]",
+    `Regional\n democracy\n (t-1)` = "Regional~democracy[t-1]",
+    `Percent\n Muslim\n (t-1)` = "Percent~Muslim[t-1]",
+    `Resource\n dependence\n (t-1)` = "Resource~dependence[t-1]"
+)
+```
 
 ```{r moc-dcpoAJPS, eval=FALSE}
 
@@ -1314,7 +1330,7 @@ dwplot(df_plot) +
 # Replication with MOC Accounting for Uncertainty {#moc}
 
 In analysis models, we have latent variables in both sides of equations, public suppport for democracy, democracy indices and corruption index (The latter one is included in APSR analyses).
-Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1996,p52], which has been applied in analyses with latent variables [@treier2008;@caughey2018;@Kastellec2015].
+Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1993,p52], which has been applied in analyses with latent variables [@Treier2008;@caughey2018;@Kastellec2015].
 
 As @caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, intergrating over the uncertainty in latent variables $\theta$ (P A-15).
 More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
@@ -1324,7 +1340,7 @@ p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
 \end{equation}
 
 where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $X$, and $y$ is the outcome variable.
-In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@treie2008, 215].
+In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
 To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
 1. We sample $\theta^{s}$ from its posterior distribution $p(\theta|Z)$ and $y$ from $p(y|Z)$. 
 2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$.
