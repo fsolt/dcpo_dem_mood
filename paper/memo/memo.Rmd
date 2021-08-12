@@ -4,7 +4,7 @@ output:
     citation_package: natbib
     keep_tex: true
     fig_caption: true
-    latex_engine: pdflatex
+    latex_engine: xelatex
     template: ../svm-latex-ms2.tex
 title: |
     | Democracy, Public Support, and Measurement Uncertainty
@@ -34,13 +34,19 @@ header-includes:
 ```{r setup, include=FALSE}
 options(tinytex.verbose = TRUE)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, dpi = 300)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  dpi = 300)
 
 # If you haven't install `DCPOtools`
 # remotes::install_github("fsolt/DCPOtools")
 
 if (!require(pacman)) install.packages("pacman")
 library(pacman)
+library(patchwork)
+library(rsdmx)
 
 # load all the packages you will use below 
 p_load(
@@ -82,19 +88,24 @@ Again, this is things to do only.  Remember to go back to the reviews and mine t
 [Issue 16](https://github.com/fsolt/dcpo_dem_mood/issues/16) Despite the MS's assertion of the "absolute necessity" of accounting for measurement error, the MS does not do so for any of the other variables in the analysis. Given that Treier and Jackman's analysis focused on uncertainty in measures of democracy, the most obvious omission is the V-DEM democracy measure itself (which, according to the V-DEM documentation, does appear to have associated uncertainty estimates). 
 
 ## Response 
-A major concern raised by Reviewers 1 & 2 was regard to the omission of measurement errors of DV and control variables in our analysis.
-It is a good point.
-Many variables in the analysis cannot be observed directly and are inherently contaminated by measurement errors.
-To address this concern, since Claassen used V-Dem Version 8 in his analyses, we incorporated measurement error for the V-Dem democracy index, electoral index, polyarchy index, and liberal index using the posterior distribution of Version 8 provided by V-Dem.
-Regarding the data used to replicate Claassen's analyses, we simulated 900 data set for democracy index from V-Dem Version 10, which did not provide available posterior distribution yet but standard error.
+A major concern raised by Reviewers 1 & 2 was regard to the omission of measurement errors of DV and control variables in our reanalysis.
+It is a good and reasonable suggestion.
+
+Many variables, dependent variable, key independent variables and control variables in original analysis, are latent variables, which cannot be observed directly and are inherently contaminated by measurement errors.
+To address this concern and justify the necessity of incorporating measurement uncertainty in latent variables, we take uncertainty into account for five variables, public support for democracy, liberal democracy index, electoral democracy index, liberal component index, and corruption perception index, in this version of manuscript.
+
+In respect of the key independent variable, public support for democracy, we used Claassen's Model 5 and recollected originalsource data to replicate the measure of public support and keep its posterior distrubtion.
+For expanded data, still, we used Model 5 and expanded source data to measure public support and perserve its posterior distribution. 
+In terms of three indices of democratic development, we incorporated measurement error using their posterior distribution from V-Dem Version 8 which covers 201 countries from 1789 to 2017 and is the version Claassen used in his analyses. 
+The posterior distributions are provided by V-Dem Project Team.
+Regarding the expanded data used to replicate Claassen's analyses, we use the same three democratic indices from V-Dem Version 10 which covers 202 countries from 1789 to 2019.
+However, since V-Dem project has not released posterior distributions for indices in version 10, we simulated 900 data set for democracy indices using their standard error.
 To account for measurement error in Corruption Perceptions Index, we simulated 900 draws from a distribution with the point estimate and standard error provided by CPI for the year from 2012 to 2018.
-We estimated the standard error for the year before 2012 by using the multiplication between countries' maximum relative error (standard error/cpi index) and their CPI index.
-We rerun the models following the same steps in our previous analysis but incorporating uncertainty in democracy index, democratic support, and corruption perception index.
-The relationship between the change of public support and the change of democracy disappears when uncertainty is accounted for in models either using Claassen's original data or expanded data with 25% more country-year data.
-The updated results are presented in Figure XXX on Page xx. 
+However, since CPI does not povide standard error for the years before 2012, we first estimated the standard error for these years by using the product of countries' maximum relative error (standard error/cpi index) and their CPI index, and then used the estimated standard error to simulate 900 draws. 
 
-*Need to explain the different results in AJPS*
-
+We used he posterior distributions of five variables in method of composition to address measurement errors. 
+By incorporating uncertainty in democracy indices, democratic support, and corruption perception index, the relationships between public support and democratic development and between the change of public support and the change of democracy disappear either using Claassen's original data or expanded data with one-third more source data.
+The results from models including measurement error for outcome, key independent and control variables again justify the importance of incorporating uncertainty in analysis.
 
 # Alternative Method for Incorporating uncertainty
 
@@ -109,19 +120,17 @@ The updated results are presented in Figure XXX on Page xx.
 [Issue 17](https://github.com/fsolt/dcpo_dem_mood/issues/17) We need more information on (1) how uncertainty is integrated into the models of Claassen, and (2) the DCPO models.
 
 ## Response 
-Both Reviewers 1 & 2 concern the validity of the approach used to incorporate measurement uncertainty. First, we added more explanations of how uncertainty is integrated into the models on Page xx of the main text and presented equations on Page xx in SI. Rubin's rule is indeed designed to address missing values by using multiple imputations (MI). However, as Reviewer 2 has already pointed out, @Blackwell2017 applied the logic of MI and Rubin's rule in their Multiple Overimputation (P309) to address measurement error and missing data, which is conceptualized as an extreme case of measurement error. 
+Reviewers 1 & 2 & d concern the validity of the approach used to incorporate measurement uncertainty.
+We appreciate Reviewers' suggestion on method of composition [@Tanner1996] (MOC) to take into account measurement error.
+After reviewing the logic of MOC and its application in articles with latent variables [@Treier2008; @caughey2018;@Kastellec2015], we believe that MOC is the approach that has been justified theoretically and methodologically to address measurement error in latent variables. 
+We follow reviewers' suggestion and employ MOC in our revised version. 
 
-The idea of our approach for propagating uncertainty is correcting both within and between imputation variance through Rubin's rule, and the idea of MOC is accounting for within imputation variance through drawing samples from the joint posterior distribution of the measurement and analysis model. 
+The idea of MOC is to account for uncertainty in both latent variables and effects of latent variables and other variables on outcome variable through drawing samples from the joint posterior distribution of the measurement and analysis model.
+Although MOC is known to methodologists, to approach a broader audiance and make MOC more accessible, we present each step in employing MOC in our reanalysis and provide R script for faciliating reproducibility and replication. 
+We followed MOC precedure and the results from MOC demonstrated that when uncertainty is allowed, the coefficients on public support and the change of democratic level are no longer distinguishable from zero on Figure 1 page 8 and Figure 2 page 9.
+The null results hold in robust check models and models with more control variables in Figure xx Page xx in Online Supplementary material.
 
-To address the performance of the method we used, we employed the "method of component" as an alternative way in SI.
-Our approach and MOC yield similar results from replicating APSR's analysis, that is, when uncertainty is allowed, the coefficients on the lagged public support and the change of democratic level are no longer distinguishable from zero in Page xx in MS and Page xx in SI.
-It is not surprising that the estimated effect of democracy is indistinguishable from zero given measurement errors in both democracy and democratic support measurements and cultural features of democratic values.
-As Reviewer3 pointed out, democratic value is formed and shaped by institution, history, and culture, and the cultural feature of democratic value determines that it cannot be impacted swiftly by the change of democracy.
-
-Our approach and MOC yield mixed results for AJPS's analysis. 
-
-In terms of the impact of measurement error on estimated effects, many studies have shown that when taking measurement uncertainty into account, the magnitude of coefficients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey2018,p. 254].
-
+We appreciate reviewers' suggestions on MOC, and the results from MOC not only justify but also provide us more confidence in our conclusion that the importance of accounting for uncertainty.
 
 # The Change of Democratic Support and Lagged Support
 
@@ -136,28 +145,140 @@ In terms of the impact of measurement error on estimated effects, many studies h
 
 ## Response
 
-First, we need to clarify that the DV in Figure2 is the change of public support for democracy rather than current public support.
-Second, when DV is the change of public support, Claassen's original results would not make any sense. 
-Claassen's original results indicate the change of public support in one year is positively changed by the public support in the previous year and negatively shifted by the previous two years.
-However, should we expect that public support can produce its demand and especially a conflicting demand?
-Can high public support this year ask for a change next year but resist a change in the next two years?
-In contrast, our null results of lagged support on change of support mood make more sense since the change of moods is supposed to be shaped by exogenous factors, such as democratic or economic environment, or especially a shock.
-Unfortunately, after acknowledging uncertainty, the estimated effect of the change of democracy is indistinguishable from zero, and the magnitude of the coefficient also moves to zero.
-As @Treier2008 emphasized, only in applications where democracy has a strong effect on the quantity of interest and models are simple enough, accounting of uncertainty rarely renders the insignificant effect of democracy.
-However, even in Claassen's original results, the estimated effects of both the change of democracy and other social and economic factors are minor.
-Given the measurement errors in both democratic indices and public support, it is not surprising to see the diminution of the estimated effects.
+Thanks to reviewers' feedback on Figure 2, we first need to clarify that the DV in Figure 2 is the _change_ of public support for democracy rather than current public support.
+Claassen examined the thermostatic effect of the change of democratic level on the _change_ of public support in his original APSR analysis.
+In our replication of the APSR article, the DV is also the _change_ of public support for democracy.
+Therefore, the question is that is there any theoretical reasons to suppor a significant relationship between the current _change_ of pubic support and the lagged public support.
+
+Claassen's original results indicate the _change_ of public support in current year is positively changed by the public support in the previous year and negatively shifted by the previous two years.
+For example, Claassen's results indicate that a high public support in 2020 leads to a bigger _change_ (either upturn or downturn) in mood in 2021 but a high support in 2019 leads to a smaller _change_ (either upturn or downturn) in mood in 2021.
+However, we do not have grounded theories to expect that public support can produce its positive demand in one year but backsliding demands in two years. 
+In contrast, our null results of lagged support on the _change_ of support mood indicate that the _change_ of moods might not be dependent on its previous situation.
+
+Theoretically, we should expect the change of public support is more likely to be shaped by exogenous factors, especially a shock in democratic or economic environment.
+However, in terms of the effects of social and economic environment on the change in mood, even in Claassen's original results (the uppermost results in Figure \@ref(fig:plot-mainAPSR)),  point estimates of the change in democracy, economic growth, corruption index as well as their lagged level, are close to zero in magnitude.
+Except for the change in democracy, all other estimated effects are not distinguishable from zero. 
+After acknowledging uncertainty, the estimated effect of the change in democracy is indistinguishable from zero, and the magnitude of the coefficient moves further to zero.
+
+Methodologically, given the measurement errors in public support, democratic indices, and corruption index, it should not be surprising to see the diminution of the estimated effects.
+Although it is rare that accounting of uncertainty disappears the significant effect of democracy, @Treier2008 [p213] emphasized, after allowing uncertainty, the significant effect of democracy holds mainly in applications where democracy strongly affects the quantity of interest and models are simple enough.
+Our results demonstrate that there at least is no a strong relationship between democracy and public support.
+Theoretically, as Reviewer3 pointed out, democratic value is formed and shaped by institution, history, and culture, and the nature of democratic value determines that it cannot be impacted swiftly by the change of democratic level.
+Moreover, the understanding of democracy which shapes democratic value has cultural bounds [@Brunkert2019; @Kirsch2019; @Kruse2019] but not yet incorporated in most current measure of democratic support.
+
+Thanks to reviewer2's comments on random walk, we do think we should discuss more on problems caused by random walk, which actually provides us another powerful explanation for our results.
+In order to isolate the effect of different priors on estimated measures, in revised version, we only employed Claassen's Model5 with original data, recollected data and expanded data, separately.
+
+By using the same measurement model, we exclude the effects which might be brought by different priors and a bigger size of observed data should reduce the possible dominance of priors.
+
+
+```{r expdata_summary_stats}
+
+load(here::here("data","exp_claassen_input.rda"))
+
+supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"),
+                   col_types = "cdcddcdc") %>% 
+  janitor::clean_names() %>% 
+  DCPOtools::with_min_yrs(2)
+
+supdem_ncy <- supdem %>%
+  dplyr::select(country, year) %>% 
+  distinct() %>% 
+  nrow() #1165
+
+process_dcpo_input_raw <- function(dcpo_input_raw_df) {
+  dcpo_input_raw_df %>% 
+  with_min_yrs(2) %>% 
+  with_min_cy(5) %>% 
+  group_by(country) %>% 
+  mutate(cc_rank = n()) %>% 
+  ungroup() %>% 
+  arrange(-cc_rank)
+} 
+
+exp_data <- process_dcpo_input_raw(exp_claassen_input[["data"]])
+
+n_surveys <- exp_data %>%
+  distinct(survey) %>% 
+  nrow()  #123
+
+n_items <- exp_data %>%
+  distinct(item) %>% 
+  nrow() #61 items
+
+n_countries <- exp_data %>%
+  distinct(country) %>% 
+  nrow()  #145
+
+n_cy <- exp_data %>%
+  distinct(country, year) %>% 
+  nrow() %>% 
+  scales::comma() #1443 country year
+
+n_years <- as.integer(summary(exp_data$year)[6]-summary(exp_data$year)[1]) #32 years
+
+spanned_cy <- exp_data %>% 
+  group_by(country) %>% 
+  summarize(years = max(year) - min(year) + 1) %>% 
+  summarize(n = sum(years)) %>% 
+  pull(n) %>% 
+  scales::comma() #2746
+
+total_cy <- {n_countries * n_years} %>% 
+  scales::comma()  
+
+year_range <- paste("from",
+                    summary(exp_data$year)[1], 
+                    "to",
+                    summary(exp_data$year)[6]) 
+n_cyi <- exp_data %>% 
+  distinct(country, year, item) %>% 
+  nrow() %>% 
+  scales::comma() 
+
+back_to_numeric <- function(string_number) {
+  string_number %>% 
+    str_replace(",", "") %>% 
+    as.numeric()
+}
+
+increase_cy <- back_to_numeric(n_cy) - back_to_numeric(supdem_ncy)
+
+```
+
+
+Since our expanded data added `r increase_cy` country-year, the estimates from the expanded data should be influenced less by priors than original data by inputing more data. 
+However, even though we put much effort to collect as much data as possible.
+At aggregated level, country-year data is super sparse. 
+
+However, if we have observations for every year in each country surveyed, the number would be `r total_cy`, and a complete set of country-year-items would encompass `r {n_countries * n_years * n_items} %>% scales::comma()` observations. 
+In fact, even collecting as many available national and cross-national data as possible, the current source data has `r n_cy` country-years and a total of `r n_cyi` country-year-item observations.
+The spareness is reflected from the complete-data perspective but also from the available data in the country-years span.
+Although we have the `r spanned_cy` country-years, only `r {back_to_numeric(n_cy)/back_to_numeric(spanned_cy) * 100} %>% round()`% of it has available information. 
+
+The sparseness of available data makes it possible that the changes of public mood are "smooth" out by modeling the temporal evolution in a simple local-level dynamic linear, which is also referred to as the random walk plus noise model.
+With random noise, the smoothed time series data might fail to capture a sudden change which is caused by exogenous factors.
+Given the sparsed available data and effects from random walk prior, it is highly possible that we cannot detect any significant effect from institution changes and other economic and social factors.
+Futhermore, scholars should be careful of using estimated latent variable as a dependent variable when source data is sparsed.
+We are planning to carry out more work on figuring out at what rate the sparseness of source data will post severe problems in statistical inference, which will faciliate scholars' usage of latent variable measures. 
+
+In terms of the impact of measurement error on estimated effects, as we illustrated in Appendix, point estimates of coefficients are calculated from samples drawn from joint distribution of estimated latent variable and coefficients, which incorporate both uncertainty in latent variable measurements and the relationship between outcome variables and covariates.
+Given the big uncertainty in two parts, we should expect the estimated effects are different from point estimates from models without accounting uncertainty. 
+Many studies have already shown that when taking measurement uncertainty into account, the magnitude of coefficients of latent variables can be either attenuated or enlarged substantively [e.g., @Treier2008, p. 211; @caughey2018,p. 254; @Crabtree2015,p. 6].
+
 
 # Test Full Models 
 ## Reviewer #1
 [Issue 22](https://github.com/fsolt/dcpo_dem_mood/issues/22) I have two additional concerns with the paper. First, the authors have not replicated all of Claassen's main results. Claassen 2020a argues that within-country analyses are desirable and uses generalized method of moments (GMM) estimators to obtain these. Claassen (2020b) uses first difference models; he also focuses on the separate effects of the electoral and liberal components of democracy. I suggest that the authors replicate all the main results from Claassen (2020a; 2020b), rather than an ad hoc subset of these. 
 
 ## Response
-Regarding Reviewer 1's request on replicating all specifications in the original two studies, we added alternate specifications on the relationship between public support and democracy, including GMM models, First Different Models, and sample split.
-Results do not change in all these models, presented on Page xxx, Figure xxx, and xxx in SI. 
-As the editor suggested, this letter should focus on the core point: the relationship between public support and democracy. We do not replicate specifications on other relationships. 
+As the editor suggested, we should focus on our main point in this letter, that is, reanalyzing the relationship between democracy and public support.
+We replicate additional models which examine this main relationship.
 
-*Need to add APSR models or more description on full models*
-
+We replicate @Claassen2020a's results using generalized method of moments (GMM) estimators for both pooled data and split data (democracy only and authoritarian country only).
+The results hold and presented in Figure \@ref(fig:plot-mocAJPS).
+We also replicate @Claassen2020b's results using First Different Models, including corruption index, and examing the separate effects of the electoral and liberal components of democracy.
+Still, the results hold in these robustness check models and specifications in Figure \@ref(fig:plot-mocAPSR).
 
 
 # Justification of DCPO 
@@ -170,11 +291,15 @@ As the editor suggested, this letter should focus on the core point: the relatio
 
 
 ## Response
-Thanks to the editor's suggestions, we agree that we should present and assess the effect of intermediate modification in an incremental way.
-To do this, in the revised manuscript, we replicated Claassen's measure for public democratic support by applying his measurement Model5 to his original data file and used the posterior distribution of the public support estimates to incorporate uncertainty. 
-Then, we added more survey data to improve source data quality and applied Model5 to this expanded data set, still keeping the full posterior distribution of estimates.
-In this way, we isolate the effects of measurement uncertainty and more data. 
-In the APSR analyses, it is uncertainty that accounts for the disappearing significance of public support. 
+Thanks to editor's suggestion, we agree that we should present and assess the effect of intermediate modification in an incremental way, holding analytical transparency.
+To do this, in the revised manuscript, we focus on replication by only employing Claassen's measurement Model 5 to measure public support for democracy. 
+
+We apply Model 5 to Claassen's original data file, recollected data based on his provided data source and expanded data. 
+In this way, the only two changed things are acccounting for uncertainty and adding more data.
+We incorporate uncertainty when using Model 5 estimated public support from recollected data to examine the effect of uncertainty.
+Then, we apply Model5 to the expanded data set which improves source data quality and should reduce the uncertainty.  
+In this way, we eliminate potential effects caused by different measurement models and make efforts to reduce the uncertainty caused by fragmented data. 
+Our results show that it is the incorporation of uncertainty that accounts for the differences between Claassen's original analyses and our reanalyses.
 
 
 # Substantive Discussion
@@ -183,11 +308,9 @@ In the APSR analyses, it is uncertainty that accounts for the disappearing signi
 [Issue 19](https://github.com/fsolt/dcpo_dem_mood/issues/19) First, I found the 'Discussion' section somewhat underwhelming. The discussion is mainly about data issues that could explain the lack of a relationship, not the substantive question. If that is the case, the letter makes a negligible contribution because it only finds that the findings of two specific studies are not robust (not that there is no relationship between public support for democracy and regime survival). I would like the author to engage a bit more in substantive debates. 
 
 ## Response
-Since we do acknowledge uncertainty in extant measurements, we can not unambiguously make a statement that there is no relationship between public support and regime survival, although it is possible.
-Examing theories in different contexts over time is a promising strategy for generalization [KKV].
-However, scholars' pursuit of models usually leads to ignorance for measurements that cost more time but determine the quality of data in analyses [@stegmueller2011].
-In this letter, we stress the necessity of incorporating measurement uncertainty in analyses with latent variables and encourage scholars to pay more attention to that.
-*need more on substantive discussion*
+Although we do acknowledge uncertainty in extant measurements and we can not unambiguously make a statement that there is no relationship between public support and regime survival, the relationship, if exists, is probably negligible, because the incorporation of measurement error swamping the significant effects of democracy in a strong relationship is rare [@Treier2008].
+
+<!--- need DISUCSSION --->
 
 # Compliement
 ## Reviewer #3
@@ -196,13 +319,6 @@ In this letter, we stress the necessity of incorporating measurement uncertainty
 
 [Issue 19](https://github.com/fsolt/dcpo_dem_mood/issues/19) Another reason why I doubt Claassen's findings is evidence showing that the same level of support for democracy hides over firmly encultured differences in how people in different countries understand democracy (Kirsch & Welzel 2018), which often leads people to mis-estimate their own countries' democraticness (Kruse, Ravlik & Welzel 2018). Hence, levels of support for democracy are strictly speaking incomparable across culturally diverse sets of societies. Also relevant in this context are findings showing that what matters for democratic regime stability and change is not how much people say that they support democracy but what values motivate them to do so. Specifically, mass support for democracy operates in favor of democracy only in conjunction with emancipative values but not in disconnection from these values (Brunkert, Kruse & Welzel 2018). Hence, to establish the regime-relevance of public opinion, looking merely at levels of democratic mass support is misleading. Instead, it is more promising to use value priorities to distinguish different types of democracy supporters and estimate their demographic distribution.
 
-Kirsch, H. & C. Welzel (2018). "Democracy Misunderstood: Authoritarian Notions of Democracy around the Globe." Social Forces 91: 1-33 (DOI: 10.1093/sf/soy114).
-
-Kruse, S., M. Ravlik & C. Welzel (2018). "Democracy Confused: When People Mistake the Absence of Democracy for Its Presence." Journal of Cross-Cultural Psychology 49: 1-21 (DOI: 10.1177/0022022118821437).
-
-Brunkert, L., S. Kruse & C. Welzel (2018). "A Tale of Culture-bound Regime Evolution: The Centennial Democratic Trend and Its Recent Reversal." Democratization 25: 1-23 (DOI: 10.1080/13510347.2018.1542430).
-
-
 ## Editor
 Both Reviewers 1 and 2 want more evidence, explanation, and/or justification of the alternative method used to incorporate measurement error. Reviewer 1 seems to specifically suggest a simulation study. If such a study already addresses the performance of the method (either analytically or with simulations) in a context with temporally and serially correlated errors, it would make sense to reference that work in the main text. 
 Reviewer 2 also asks for clarification and/or justification of the imputation and smoothing processes used in the analysis. 
@@ -210,10 +326,10 @@ Reviewers 1 & 2 also ask why measurement error in other variables are not includ
 Reviewers 1 & 2 also ask why lagged support is unrelated to current support. 
 
 ## Response
-We did not do a simulation study. Instead, we employ MOC suggested by Review 1 and 2 as a robust check and present results in SI. 
-We also elaborate on the imputation process in detail in MS and clarify the equations in SI.
-Measurement errors in other variables have been included in our reexaminations. 
-As for the concerns in Fig2, the first thing needing to clarify is that the DV is not current public support but the change of public support. 
+We did not do a simulation study. Instead, we employ MOC suggested by Review 1 and 2 in this revised version. 
+We illustrate MOC process in detail in SI.
+Measurement errors in other variables, including three democracy indices, public support and corruption perception index, have been included in our reexaminations. 
+As for the concerns in Fig2, the DV is not current public support but the change of public support. 
 We elaborate on why our null results make more sense than Claassen's original results. 
 
 ## Editor
@@ -221,12 +337,12 @@ Reviewers 1, 2, and 4 all ask why the results for Claassen's model but accountin
 If the different in point estimates is due to multiple deviations from Claassen's approach (e.g., in both the smoothing _and_ the use of the errors), I would suggest introducing and presenting each intermediate modification of the research design incrementally to avoid confusion and help readers assess how much of the change in results is due to the incorporation of measurement error vs. other modelling or measurement decisions. Analytical transparency is key.  
 
 ## Response
+We appreciate editor's suggestion on presenting each intermediate modificantion.
+Following this suggestion, we only focus on uncertainty in this revised version. 
 It is a misunderstanding that incorporating uncertainty only changes standard error.
 First, incorporating uncertainty might or might not cause the changes of standard error.
-For example, standard errors did not change after accounting for uncertainty in [@caughey2018] but became smaller in [@Treier2008].
-Second, the propagation of uncertainty can either attenuate or magnify the magnitude of estimated effects.
-*We can cite more lit if necessary*. 
-To avoid confusion, we only focus on uncertainty in this revised version.
+For example, standard errors did not change after accounting for uncertainty in [@caughey2018] became smaller in [@Treier2008] and bigger in [@Crabtree2015].
+Second, the propagation of uncertainty can either attenuate or magnify the magnitude of estimated effects [see @Treier2008; @caughey2018;@Crabtree2015].
 
 ## Editor
 Evidence to address these various methodological questions and issues issues may be included in the response to reviewers and/or the Supplemental Information (if it would help readers appreciate the methods used) as needed. *For instance, I could imagine some readers benefitting from having the estimating equations included in the Supplemental Information in order to appreciate how measurement error is incorporated into the estimates as well as more information about the levels of measurement used (mentioned as an important difference by Reviewer 3)*. 
@@ -235,8 +351,7 @@ While Reviewer 1 asks for all results from the original two studies be replicate
 As you expand the SI, please keep in mind our limit of 25 pages. Material solely for editors and reviewers that would not be relevant for readers can remain in the response to reviewers.   
 
 ## Response
-We might need to review the functions added in SI.
-
+In SI, we discussed methodology used in this article to address measurement errors.
 
 ## Editor
 Finally, Reviewers 2, 3, and 4 offer various suggestions for how to more effectively frame or discuss the substantive or theoretical (rather than measurement or methodological) implications of your contribution. We hope their feedback is useful as you revise your Letter.  

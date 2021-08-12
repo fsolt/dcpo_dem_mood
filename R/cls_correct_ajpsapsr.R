@@ -14,8 +14,8 @@ p_load(
 #osf_retrieve_file("kg7z4") %>%
 #     osf_download(here::here("data"))  ##pure corrected
 
-osf_retrieve_file("uvn4g") %>%
-    osf_download(here::here("data"))  ##corrected + expanded
+osf_retrieve_file("gk7nu") %>%
+     osf_download(here::here("data"))  ##corrected + expanded
 
 
 # Functions preload
@@ -35,19 +35,21 @@ reformat_dcpo_output <- function(x, parameter_name) {
 
 
 
-load(here("data", "claassen_m5_3k_07-27-15-40.rda")) 
-load(here::here("data","claassen_replication_input.rda"))
-claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##137*30 
+load(here("data", "claassen_m5_3k_07-05-11-16.rda")) 
+
+claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##derived from claassen_m5_3k_07-05-11-16
+##however, theta has 136 country instead of 137. 
+
+#cnt.names = as.character(sort(unique(sddem2$Country)))
 
 
-claassen_replication <- claassen_replication_input$data %>%
+#claassen_replication <- readRDS(here::here("data","claassen_replication.rds")) %>% 
+claassen_replication <- readRDS(here::here("data","claassen_replication_input.rda")) %>%
     janitor::clean_names() %>% 
     DCPOtools::with_min_yrs(2) 
+##need to use claassen_replication.rds. remember to mention which country is missing
 
-length(unique(claassen_replication$country)) ##137
-min(claassen_replication$year) #1988
-max(claassen_replication$year) #2017
-
+length(unique(claassen_replication$country))
 
 ls_year <- 1988:2017
 ls_country <- claassen_replication$country %>% unique()
@@ -58,7 +60,7 @@ correct_cls_theta_list <- purrr::map(1:900, function(anEntry) {
         reformat_dcpo_output("theta") 
 }
 )
-#year 30, country 137
+#year 30, country 136
 save(correct_cls_theta_list,file = here("data","correct_cls_theta_list.rda"))
 
 ################################################################
@@ -131,7 +133,7 @@ load(here("data","cls_apsr_cntrl.rda"))
 load(here("data","cls_poly_list.rda"))
 load(here("data","cls_liberal_list.rda"))
 load(here("data","cpi_list.rda"))
-cls_apsr_cntrl_list <- readRDS(here::here("data","cls_apsr_cntrl_list.rds"))
+#cls_apsr_cntrl_list <- readRDS(here::here("data","cls_apsr_cntrl_list.rds"))
 
 ## Standardize cls_libdem_list Libdem_z
 cls_libdem_z <- cls_libdem_list %>%
@@ -203,8 +205,9 @@ osf_retrieve_user("me") %>%
 
 demsup <- osf_retrieve_node("tnp2a")
 
-osf_upload(demsup, c(here("data","correct_cls_ajps.rda")),conflicts = "overwrite")
-osf_upload(demsup, c(here("data","correct_cls_apsr.rda")),conflicts = "overwrite")
+osf_upload(demsup, c(here("data","correct_cls_apsr.rda")))
+osf_upload(demsup, c(here("data","correct_cls_ajps.rda")))
+
 
 ###############Expanded_Claassen and Analysis Data##################
 ###############Input:  exp_claassen_m5_3k_07-23-10-50.rda ############################
