@@ -1,0 +1,99 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: xelatex
+    template: ../svm-latex-ms2.tex
+title: |
+    | Democracy, Public Support, and Measurement Uncertainty
+    | Memo to Reviewers
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+spacing: double
+bibliography: \dummy{`r file.path(file.path(getwd(), ".."), list.files(file.path(getwd(), ".."), ".bib$", recursive = TRUE))`}
+biblio-style: apsr
+citecolor: black
+linkcolor: black
+endnote: no
+header-includes:
+      - \usepackage{array}
+      - \usepackage{caption}
+      - \usepackage{graphicx}
+      - \usepackage{siunitx}
+      - \usepackage{colortbl}
+      - \usepackage{multirow}
+      - \usepackage{hhline}
+      - \usepackage{calc}
+      - \usepackage{tabularx}
+      - \usepackage{threeparttable}
+      - \usepackage{wrapfig}
+---
+
+```{r setup, include=FALSE}
+options(tinytex.verbose = TRUE)
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  dpi = 300)
+
+# If you haven't install `DCPOtools`
+# remotes::install_github("fsolt/DCPOtools")
+
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+library(patchwork)
+library(rsdmx)
+
+# load all the packages you will use below 
+p_load(
+  dataverse, # data scraping
+  DCPOtools,
+  boot, plm, # analysis
+  flextable, kableExtra, modelsummary, # tabulation
+  gridExtra,
+  latex2exp, # visualization
+  rstan, # Bayesian estimation
+  broom, tidyverse, janitor, # data wrangling
+  dotwhisker # visualization
+) 
+
+# Functions preload
+set.seed(313)
+
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+# Theme setup
+theme_set(theme_minimal())
+source(here::here("R", "uiowa_palette.R"))
+```
+
+
+Thank you for your helpful comments, as well as your general enthusiasm for this piece.
+As you will see below, the reviews were each very constructive individually---and together usually so, as concerns raised by one review were often met by suggestions made in another.
+Collectively, the reviews motivated us to ensure the piece, as a letter manuscript, was tightly focused on its twin main points: that, in general, researchers working with latent variables must take care to include in their analyses the uncertainty in these measures, and, specifically, taking uncertainty into account reveals that there is no evidence for the assertions that democracies' fates depend on public support and that their publics will rally to them if they are weakened.
+Indeed, your comments (and those of the editor) gave us the courage to be truly ruthless in stripping out any and all extraneous material that distracted from these crucial points.
+
+We set out a list of the specific points raised in the reviews and our responses to them below, roughly in the order they appear in the text:
+
+
+1. **Method: Incorporating Uncertainty** Reviewer 1 and Reviewer 2 both raised the question of whether the approach for incorporating uncertainty we employed was the most appropriate for this application.
+Although Reviewer 2 correctly noted that that approach is the same explicated by @Blackwell2017, [they](https://public.oed.com/blog/a-brief-history-of-singular-they/) also suggested we use the Method of Composition (MOC) that was first put forward by @Tanner1993 and introduced to political science by @Treier2008.
+As the MOC has become the standard method used to incorporate uncertainty in the subnational comparative public opinion literature using Multilevel Regression and Poststratification [see, e.g., @Kastellec2015; @caughey2018], we were pleased to adopt this suggestion.
+Further, to help ensure that incorporating uncertainty is as easy as possible for those working with latent variables of cross-national public opinion, we are including in our replication materials a suite of R functions implementing the MOC that are tailored to this application.
+
+1. 
+
+\pagebreak
+
+# References
+
+<div id="refs"></div>
