@@ -106,40 +106,29 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# If you haven't install `DCPOtools`
-# remotes::install_github("fsolt/DCPOtools")
-
 if (!require(pacman)) install.packages("pacman")
 library(pacman)
 
-if (!require(drhutools)) remotes::install_github("sammo3182/drhutools")
+p_install(janitor, force = FALSE)
+
+ls_pacGH <- c("fsolt/DCPOtools", "sammo3182/drhutools")
+remotes::install_github(ls_pacGH, force = FALSE)
+
 
 # load all the packages you will use below 
 p_load(
-  # data scrapping
-  dataverse, 
-  osfr,
-  DCPOtools,
-  mitools,
-  boot, 
-  here,
   # analysis
   plm, 
-  rstan, 
   # presentation
-  flextable, 
-  broomExtra, 
-  kableExtra, 
-  modelsummary, 
   gridExtra,
-  latex2exp,
   drhutools,
   dotwhisker, 
+  latex2exp,
   # data wrangling
+  here,
+  broom,
   tidyverse, 
-  janitor, 
-  glue, 
-  qs
+  glue
 ) 
 
 # Functions preload
@@ -158,36 +147,14 @@ theme_set(theme_minimal())
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
+load(here("data", "correct_cls_ajps.rda"))
+load(here("data", "correct_cls_apsr.rda"))
+load(here("data", "expcor_cls_ajps.rda"))
+load(here("data", "expcor_cls_apsr.rda"))
 load(here("data","claassen_replication_input.rda"))
 load(here("data","exp_claassen_input.rda"))
 load(here("data","dcpo_apsr.rda"))
 load(here("data","dcpo_ajps.rda"))
-
-# Removed the comments for the final replication file
-## Claasseen and extend data
-# 
-# osf_retrieve_file("hczmf") %>%
-#     osf_download(path = "../data")
-# 
-# osf_retrieve_file("wbu6m") %>%
-#     osf_download(path = "../data")
-# 
-# osf_retrieve_file("2jhbc") %>%
-#     osf_download(path = "../data")
-# 
-# osf_retrieve_file("u96m8") %>%
-#     osf_download(path = "../data", conflicts = "overwrite")
-
-# osf_retrieve_file("52u7n") %>%
-#     osf_download(path = "../data", conflicts = "overwrite") #corrected ajps
-# osf_retrieve_file("2hwqg") %>%
-#     osf_download(path = "../data", conflicts = "overwrite") #corrected apsr
-
-
-# load(here("data", "correct_cls_ajps.rda"))
-# load(here("data", "correct_cls_apsr.rda")) 
-# load(here("data", "expcor_cls_ajps.rda"))
-# load(here("data", "expcor_cls_apsr.rda")) 
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
@@ -654,7 +621,7 @@ mocresult_expAPSR <- map(ls_mod_apsrCLS, function(aMod){
 names(mocresult_expAPSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
                                 "fd1", "fd-regime1", "fd2", "fd-regime2")
 
-saveRDS(mocresult_expAPSR, file = here::here("ouput","estimates_moc_expcorAPSR.RDS"))
+saveRDS(mocresult_expAPSR, file = here::here("output","estimates_moc_expcorAPSR.RDS"))
 
 
 ```
@@ -943,32 +910,39 @@ Since Corruption Perception Index does not provide standard error before 2011, w
 # DCPO Replication {#dcpo}
 
 ```{r dcpo-APSR, eval=FALSE}
-
-
 dcpo_APSR <- purrr::map(1:900, function(anEntry) {
-  dcpo_apsr[[anEntry]] %>% 
+  dcpo_apsr[[anEntry]] %>%
     plm::pdata.frame(index = c("country", "year")) %>%
-    rename(SupDem_trim = theta_trim,
-          First_yr = first_year,
-          Libdem_z = Vdem_libdem_z,
-          Polyarchy_z = Vdem_polyarchy_z,
-          Liberal_z = Vdem_liberal_z,
-          Corrup_TI_z = corruption_z,
-          lnGDP_imp = lg_imp_mdpgdp)
-}
-)
+    rename(
+      SupDem_trim = theta_trim,
+      First_yr = first_year,
+      Libdem_z = Vdem_libdem_z,
+      Polyarchy_z = Vdem_polyarchy_z,
+      Liberal_z = Vdem_liberal_z,
+      Corrup_TI_z = corruption_z,
+      lnGDP_imp = lg_imp_mdpgdp
+    )
+})
 
 
-mocdcpo_APSR  <- map(ls_mod_apsrCLS, function(aMod){
-  result <- methodComposition3(dcpo_APSR,aMod)
-})  
+mocdcpo_APSR  <- map(ls_mod_apsrCLS, function(aMod) {
+  result <- methodComposition3(dcpo_APSR, aMod)
+})
 
- 
-names(mocdcpo_APSR) <- c("pooled1", "pooled-regime1", "pooled2", "pooled-regime2",
-                                "fd1", "fd-regime1", "fd2", "fd-regime2")
+names(mocdcpo_APSR) <-
+  c(
+    "pooled1",
+    "pooled-regime1",
+    "pooled2",
+    "pooled-regime2",
+    "fd1",
+    "fd-regime1",
+    "fd2",
+    "fd-regime2"
+  )
 
-
-saveRDS(mocdcpo_APSR, file = here::here("ouput","estimates_moc_dcpoAPSR.RDS"))
+saveRDS(mocdcpo_APSR,
+        file = here::here("output", "estimates_moc_dcpoAPSR.RDS"))
 ```
 
 
