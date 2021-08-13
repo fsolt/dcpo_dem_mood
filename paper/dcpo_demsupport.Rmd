@@ -147,14 +147,14 @@ theme_set(theme_minimal())
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
 
-load(here("data", "correct_cls_ajps.rda"))
-load(here("data", "correct_cls_apsr.rda"))
-load(here("data", "expcor_cls_ajps.rda"))
-load(here("data", "expcor_cls_apsr.rda"))
+load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
+load(here("data", "correct_cls_apsr.rda")) # https://osf.io/2hwqg/download
+load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/wfm3c/download
+load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/rvc92/download
 load(here("data","claassen_replication_input.rda"))
 load(here("data","exp_claassen_input.rda"))
-load(here("data","dcpo_apsr.rda"))
-load(here("data","dcpo_ajps.rda"))
+#load(here("data","dcpo_apsr.rda"))
+#load(here("data","dcpo_ajps.rda"))
 
 result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
 result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
