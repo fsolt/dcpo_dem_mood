@@ -1,4 +1,4 @@
-survey,item_con,item,variable,values,non_response
+survey,item_con,item,variable,values,nonresponses
 afrob1,threestate_dcn,threestate_afrob,supdem,c(3:1),"c(4,98)"
 afrob1,strong5,strong_afrob,rejdic,c(5:1),"c(6,98)"
 afrob1,army_approve5,army_afrob,rejmil,c(5:1),"c(6,98)"
@@ -296,6 +296,10 @@ wvs4_swe,strong_bad4,strong_wvs,v164,c(1:4),"c(-1,-2)"
 wvs4_swe,army_bad4,army_wvs,v166,c(1:4),"c(-1,-2)"
 wvs4_swe,dem_good4a,evdemoc_wvs,v167,c(4:1),"c(-1,-2)"
 wvs4_swe,church4,church_wvs,v172,c(4:1),"c(-1,-2)"
+wvs6_bahrain,strong_bad4,strong_wvs,v127,c(1:4),"c(-1,-2)"
+wvs6_bahrain,army_bad4,army_wvs,v129,c(1:4),"c(-1,-2)"
+wvs6_bahrain,dem_good4a,evdemoc_wvs,v130,c(4:1),"c(-1,-2)"
+wvs6_bahrain,imp10,impdemoc_wvs,v140,c(1:10),"c(-1,-2)"
 wvs7,strong_bad4,strong_wvs,q235,c(1:4),"c(-1,-2)"
 wvs7,army_bad4,army_wvs,q237,c(1:4),"c(-1,-2)"
 wvs7,dem_good4a,evdemoc_wvs,q238,c(4:1),"c(-1,-2)"
