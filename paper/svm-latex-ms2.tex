@@ -115,6 +115,14 @@ $if(listings)$
 \usepackage{listings}
 $endif$
 
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{CSLReferences}%
+  {$if(csl-hanging-indent)$\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces$endif$}%
+  {\par}
+$endif$
 
 \newtheorem{hypothesis}{Hypothesis}
 \usepackage{setspace}
