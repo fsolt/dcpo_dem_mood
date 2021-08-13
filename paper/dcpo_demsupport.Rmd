@@ -4,6 +4,7 @@ output:
     fig_caption: yes
     keep_tex: yes
     toc: FALSE
+    number_sections: FALSE
     latex_engine: xelatex
     
 title: "Democracy, Public Support, and Measurement Uncertainty"
@@ -52,6 +53,9 @@ header-includes:
       - \usepackage{pdflscape} #\usepackage{lscape} better for printing, page displayed vertically, content in landscape mode, \usepackage{pdflscape} better for screen, page displayed horizontally, content in landscape mode
       - \newcommand{\blandscape}{\begin{landscape}}
       - \newcommand{\elandscape}{\end{landscape}}
+      - \usepackage{titlesec}
+      - \titleformat*{\section}{\normalsize\bfseries}
+      - \titleformat*{\subsection}{\normalsize\itshape}
 ---
 
 (Word count: 3628)
@@ -81,8 +85,8 @@ That is, once measurement uncertainty is accounted for, there is no empirical su
 There are many plausible explanations for these null results, both theoretical and methodological.
 From a theoretical perspective, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
 Similarly, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
-Whether the public support has a pro-democratic or anti-authoritarian effect is also bounded by the emancipative value that, as a belief-anchored orientation, shapes the public's understanding of democracy [see @Brunkert2019; @Kirsch2019; @Kruse2019].
-Moreover, the cultural and historical attributes of the emancipative value decide that it cannot be shifted shortly by institutional changes.
+_Whether the public support has a pro-democratic or anti-authoritarian effect is also bounded by the emancipative value that, as a belief-anchored orientation, shapes the public's understanding of democracy [see @Brunkert2019; @Kirsch2019; @Kruse2019].
+Moreover, the cultural and historical attributes of the emancipative value decide that it cannot be shifted shortly by institutional changes._
 Of course, it could in fact be that democratic change does not actually depend on public opinion of any sort at all but instead is an elite-driven phenomenon [see, e.g., @levitsky_how_2018].
 
 Methodologically, one possible issue is that support for democracy is multidimensional, and the survey questions used to measure it simply do not capture all of the dimensions relevant to democratic change, such as commitments to political equality and freedom of expression [see @Schedler2007; @Wuttke2020].
@@ -141,8 +145,9 @@ source(here("R", "customFunctions.R"))
 
 # Theme setup
 theme_set(theme_minimal())
+```
 
-# Data input
+```{r data-input, include=FALSE, cache=TRUE}
 
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year")) 
@@ -1304,9 +1309,9 @@ dwplot(df_plot) +
 # Replication with MOC Accounting for Uncertainty {#moc}
 
 In analysis models, we have latent variables in both sides of equations, public suppport for democracy, democracy indices and corruption index (The latter one is included in APSR analyses).
-Since measurement uncertainty associated with these latent variables can propogate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1993,p52], which has been applied in analyses with latent variables [@Treier2008;@caughey2018;@Kastellec2015].
+Since measurement uncertainty associated with these latent variables can propagate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1993,p52], which has been applied in analyses with latent variables [@Treier2008;@caughey2018;@Kastellec2015].
 
-As @caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, intergrating over the uncertainty in latent variables $\theta$ (P A-15).
+As @caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, integrating over the uncertainty in latent variables $\theta$ (P A-15).
 More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
 
 \begin{equation}
