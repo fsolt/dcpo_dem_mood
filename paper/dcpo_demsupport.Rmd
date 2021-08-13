@@ -951,16 +951,16 @@ saveRDS(mocdcpo_APSR,
 
 result_ecm1 <- bind_rows(
   mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled1"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["pooled1"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["pooled1"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["pooled1"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "ECM")
 
 
 result_fd1 <- bind_rows(
   mutate(result_clsAPSR[["fd1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd1"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["fd1"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["fd1"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["fd1"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -981,7 +981,7 @@ result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Uncertianty+ExpData", "Uncertianty+DCPO+ExpData"))
+    model = factor(model, levels = c("Original","Uncertainty+ExpData", "Uncertainty+DCPO+ExpData"))
   )
 
 result_apsrPooled <- result_APSR1 %>% 
@@ -993,16 +993,16 @@ result_apsrPooled <- result_APSR1 %>%
 
 result_ecmReg1 <- bind_rows(
   mutate(result_clsAPSR[["pooled-regime1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime1"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["pooled-regime1"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime1"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["pooled-regime1"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "ECM")
 
 
 result_fdReg1 <- bind_rows(
   mutate(result_clsAPSR[["fd-regime1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime1"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["fd-regime1"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime1"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["fd-regime1"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -1027,7 +1027,7 @@ result_RegAPSR1 <- bind_rows(result_ecmReg1, result_fdReg1) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Uncertianty+ExpData", "Uncertianty+DCPO+ExpData"))
+    model = factor(model, levels = c("Original","Uncertainty+ExpData", "Uncertainty+DCPO+ExpData"))
   )
 
 result_apsrRegime <- result_RegAPSR1 %>% 
@@ -1039,15 +1039,15 @@ result_apsrRegime <- result_RegAPSR1 %>%
 
 result_ecm2 <- bind_rows(
   mutate(result_clsAPSR[["pooled2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled2"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["pooled2"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["pooled2"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["pooled2"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "ECM")
 
 result_fd2 <- bind_rows(
   mutate(result_clsAPSR[["fd2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd2"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["fd2"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm2(mocresult_expAPSR[["fd2"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["fd2"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "First Difference")
 
@@ -1072,21 +1072,21 @@ result_APSR2 <- bind_rows(result_ecm2, result_fd2) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Uncertianty+ExpData", "Uncertianty+DCPO+ExpData"))
+    model = factor(model, levels = c("Original","Uncertainty+ExpData", "Uncertainty+DCPO+ExpData"))
   )
 
 # Institution Corruption--------------------------------
 
 result_ecmReg2 <- bind_rows(
   mutate(result_clsAPSR[["pooled-regime2"]][[1]][,1:3], model = "Original"),
- mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["pooled-regime2"]]), model = "Uncertianty+DCPO+ExpData")) %>%
+ mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["pooled-regime2"]]), model = "Uncertainty+DCPO+ExpData")) %>%
   mutate(type = "ECM")
 
 result_fdReg2 <- bind_rows(
   mutate(result_clsAPSR[["fd-regime2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime2"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm2(mocdcpo_APSR[["fd-regime2"]]), model = "Uncertianty+DCPO+ExpData")) %>% 
+  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime2"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm2(mocdcpo_APSR[["fd-regime2"]]), model = "Uncertainty+DCPO+ExpData")) %>% 
   mutate(type = "First Difference")
 
 result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
@@ -1113,7 +1113,7 @@ result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
         time = 3
       )),
     type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","Uncertianty+ExpData", "Uncertianty+DCPO+ExpData"))
+    model = factor(model, levels = c("Original","Uncertainty+ExpData", "Uncertainty+DCPO+ExpData"))
   )
 ```
 
@@ -1121,7 +1121,7 @@ result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
 
 ```{r plot-mainDCPOAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", fig.width=7, fig.height=10}
 type_model <-
-    c("Original", "Uncertianty+ExpData", "Uncertianty+DCPO+ExpData")
+    c("Original", "Uncertainty+ExpData", "Uncertainty+DCPO+ExpData")
 
 df_plot <- bind_rows(result_apsrPooled, result_apsrRegime) %>%
     mutate(
@@ -1203,15 +1203,15 @@ saveRDS(mocresult_dcpoAJPS, file =here("output","estimates_moc_dcpoAJPS.RDS"))
 ```{r formatDCPOResult-AJPS}
 result_pooled <- bind_rows(
   mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Original"),
- mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertianty+ExpData"),
- mutate(MOCsumm(mocresult_dcpoAJPS[["pooled"]]), model = "Uncertianty+DCPO+ExpData")
+ mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertainty+ExpData"),
+ mutate(MOCsumm(mocresult_dcpoAJPS[["pooled"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "Pooled")
 
 result_gmm <- bind_rows(
   mutate(result_clsAJPS[["gmm"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_expAJPS[["gmm"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm(mocresult_dcpoAJPS[["gmm"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm(mocresult_expAJPS[["gmm"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm(mocresult_dcpoAJPS[["gmm"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "GMM")
 
@@ -1229,7 +1229,7 @@ result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
         "Resource\n dependence\n (t-1)"),
       time = 6), 
     type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original", "Uncertianty+ExpData", "Uncertianty+DCPO+ExpData")))
+    model = factor(model, levels = c("Original", "Uncertainty+ExpData", "Uncertainty+DCPO+ExpData")))
 
 result_ajpsPooled <- result_pooledAJPS %>% 
     filter(type == "Pooled")
@@ -1237,15 +1237,15 @@ result_ajpsPooled <- result_pooledAJPS %>%
 
 result_regime <- bind_rows(
   mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_expAJPS[["pooled-regime"]]), model = "Uncertianty+ExpData"),
-  mutate(MOCsumm(mocresult_dcpoAJPS[["pooled-regime"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm(mocresult_expAJPS[["pooled-regime"]]), model = "Uncertainty+ExpData"),
+  mutate(MOCsumm(mocresult_dcpoAJPS[["pooled-regime"]]), model = "Uncertainty+DCPO+ExpData")
 ) %>% 
   mutate(type = "Pooled")
 
 result_regimeGmm <- bind_rows(
   mutate(result_clsAJPS[["gmm-regime"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_expAJPS[["gmm-regime"]]), model = "Uncertianty+ExpData"),
- mutate(MOCsumm(mocresult_dcpoAJPS[["gmm-regime"]]), model = "Uncertianty+DCPO+ExpData")
+  mutate(MOCsumm(mocresult_expAJPS[["gmm-regime"]]), model = "Uncertainty+ExpData"),
+ mutate(MOCsumm(mocresult_dcpoAJPS[["gmm-regime"]]), model = "Uncertainty+DCPO+ExpData")
 )%>% 
   mutate(type = "GMM")
 
@@ -1264,7 +1264,7 @@ result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
         "Resource\n dependence\n (t-1)"),
       time = 6), 
     type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original","Uncertianty+ExpData", "Uncertianty+DCPO+ExpData")))
+    model = factor(model, levels = c("Original","Uncertainty+ExpData", "Uncertainty+DCPO+ExpData")))
 
 result_ajpsRegime <- result_regimeAJPS %>%
     filter(type == "Pooled") %>% 
@@ -1276,7 +1276,7 @@ result_ajpsRegime <- result_regimeAJPS %>%
 ```{r plotdcpo-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=7, fig.height=10, fig.align='center'}
 
 type_model <-
-  c("Original", "Uncertianty+ExpData", "Uncertianty+DCPO+ExpData")
+  c("Original", "Uncertainty+ExpData", "Uncertainty+DCPO+ExpData")
 
 
 df_plot <- bind_rows(result_ajpsPooled, result_ajpsRegime) %>% 
