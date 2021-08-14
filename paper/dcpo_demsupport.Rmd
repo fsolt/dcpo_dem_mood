@@ -934,7 +934,7 @@ We used this estimated standard error to simulate 900 draws for each country-yea
 
 In the following section, we illustrate how we utilize these simulated distributions to take uncertainty into account in analysis models.
 
-# Appendix C: The Method of Composition {#moc}
+# Appendix B: The Method of Composition {#moc}
 
 In analysis models, we have latent variables in both sides of equations, public suppport for democracy, democracy indices, and corruption index (The latter one is included in APSR analyses).
 Since measurement uncertainty associated with these latent variables can propagate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1993,p52], which has been applied in analyses with latent variables [@Treier2008;@caughey2018;@Kastellec2015].
@@ -963,7 +963,7 @@ We then draw one sample from the mulitivariate normal distribution with the mean
 This procedure finally yields 900 samples of estimated coefficients drawn from the joint density of $\beta$ and $\theta$.
 We calculate point estimates and standard error based on these 900 samples.
 
-# Appendix D: Secondary Models from Claassen (2020$a$, 2020$b$)
+# Appendix C: Secondary Models from Claassen (2020$a$, 2020$b$)
 
 ```{r formatResult-AJPS-dup}
 result_pooled <- bind_rows(
@@ -1530,7 +1530,7 @@ Figure \@ref(fig:plot-mocAJPS) and \@ref(fig:plot-mocAPSR) presents the results 
 The results are consistent as we gained from the MO method (cf. Figure \@ref(fig:plot-mainAJPS) and \@ref(fig:plot-mainAPSR)).
 
 
-# Appendix B: DCPO Replication {#dcpo}
+# Appendix D: DCPO Replication {#dcpo}
 
 As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
 The DCPO model has several advantages over the @Claassen2019 model used in Claassen [-@Claassen2020a; -@Claassen2020b].
@@ -1539,7 +1539,12 @@ Second, as the DCPO model includes both parameters for the dispersion of each su
 Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
 Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
 
-We employed the superior DCPO model to the expanded data using the `DCPO` package for R [@Solt2020b].
+We employ the superior DCPO model to the expanded data using the `DCPO` package for R [@Solt2020b].
+We use the estimated public support from DCPO model to replicate analyses by following the same steps.
+Then, we compare the DCPO results with two types of replication results from Model 5: estimation of original data and without uncertainty and estimation of expanded data and with uncertainty.
+
+The comparison is presented in Appendix B.
+Still, even with the superior DCPO model and expanded data, there is no evidence to support that public support can sustain democratic development or public support responds thermostatically to changes in democracy.
 
 
 ```{r moc-dcpoAJPS, eval=FALSE}
