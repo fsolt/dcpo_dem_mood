@@ -128,7 +128,7 @@ We follow reviewers' suggestion and employ MOC in our revised version.
 The idea of MOC is to account for uncertainty in both latent variables and effects of latent variables and other variables on outcome variable through drawing samples from the joint posterior distribution of the measurement and analysis model.
 Although MOC is known to methodologists, to approach a broader audiance and make MOC more accessible, we present each step in employing MOC in our reanalysis and provide R script for faciliating reproducibility and replication. 
 We followed MOC precedure and the results from MOC demonstrated that when uncertainty is allowed, the coefficients on public support and the change of democratic level are no longer distinguishable from zero on Figure 1 page 8 and Figure 2 page 9.
-The null results hold in robust check models and models with more control variables in Figure xx Page xx in Online Supplementary material.
+The null results hold in robust check models and models with more control variables in Appendix C in Online Supplementary material.
 
 We appreciate reviewers' suggestions on MOC, and the results from MOC not only justify but also provide us more confidence in our conclusion that the importance of accounting for uncertainty.
 
@@ -292,7 +292,8 @@ Still, the results hold in these robustness check models and specifications in F
 
 ## Response
 Thanks to editor's suggestion, we agree that we should present and assess the effect of intermediate modification in an incremental way, holding analytical transparency.
-To do this, in the revised manuscript, we focus on replication by only employing Claassen's measurement Model 5 to measure public support for democracy. 
+To do this, in revised manuscript, we focus on replication by only employing Claassen's measurement Model 5 to measure public support for democracy.
+We take DCPO results as a robust check and discuss it in Appendix.
 
 We apply Model 5 to Claassen's original data file, recollected data based on his provided data source and expanded data. 
 In this way, the only two changed things are acccounting for uncertainty and adding more data.
