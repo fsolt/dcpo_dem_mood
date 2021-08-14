@@ -91,21 +91,21 @@ Again, this is things to do only.  Remember to go back to the reviews and mine t
 A major concern raised by Reviewers 1 & 2 was regard to the omission of measurement errors of DV and control variables in our reanalysis.
 It is a good and reasonable suggestion.
 
-Many variables, dependent variable, key independent variables and control variables in original analysis, are latent variables, which cannot be observed directly and are inherently contaminated by measurement errors.
-To address this concern and justify the necessity of incorporating measurement uncertainty in latent variables, we take uncertainty into account for five variables, public support for democracy, liberal democracy index, electoral democracy index, liberal component index, and corruption perception index, in this version of manuscript.
+Many variables, dependent variables, key independent variables, and control variables in the original analysis, are latent variables, which cannot be observed directly and are inherently contaminated by measurement errors.
+To address this concern and justify the necessity of incorporating measurement uncertainty in latent variables, we take uncertainty into account for five variables, public support for democracy, liberal democracy index, electoral democracy index, liberal component index, and corruption perception index, in the revised version.
 
-In respect of the key independent variable, public support for democracy, we used Claassen's Model 5 and recollected originalsource data to replicate the measure of public support and keep its posterior distrubtion.
-For expanded data, still, we used Model 5 and expanded source data to measure public support and perserve its posterior distribution. 
+In respect of the key independent variable, public support for democracy, we used Claassen's Model 5 and recollected original source data to replicate the measure of public support and keep its posterior distribution.
+For expanded data, still, we used Model 5 and expanded source data to measure public support and preserve its posterior distribution. 
 In terms of three indices of democratic development, we incorporated measurement error using their posterior distribution from V-Dem Version 8 which covers 201 countries from 1789 to 2017 and is the version Claassen used in his analyses. 
 The posterior distributions are provided by V-Dem Project Team.
 Regarding the expanded data used to replicate Claassen's analyses, we use the same three democratic indices from V-Dem Version 10 which covers 202 countries from 1789 to 2019.
 However, since V-Dem project has not released posterior distributions for indices in version 10, we simulated 900 data set for democracy indices using their standard error.
 To account for measurement error in Corruption Perceptions Index, we simulated 900 draws from a distribution with the point estimate and standard error provided by CPI for the year from 2012 to 2018.
-However, since CPI does not povide standard error for the years before 2012, we first estimated the standard error for these years by using the product of countries' maximum relative error (standard error/cpi index) and their CPI index, and then used the estimated standard error to simulate 900 draws. 
+However, since CPI does not provide standard error for the years before 2012, we first estimated the standard error for these years by using the product of countries' maximum relative error (standard error/cpi index) and their CPI index and then used the estimated standard error to simulate 900 draws. 
 
-We used he posterior distributions of five variables in method of composition to address measurement errors. 
+We used the posterior distributions of five variables in method of composition to address measurement errors. 
 By incorporating uncertainty in democracy indices, democratic support, and corruption perception index, the relationships between public support and democratic development and between the change of public support and the change of democracy disappear either using Claassen's original data or expanded data with one-third more source data.
-The results from models including measurement error for outcome, key independent and control variables again justify the importance of incorporating uncertainty in analysis.
+The results from models including measurement error for outcome, key independent, and control variables again justify the importance of incorporating uncertainty in analyses.
 
 # Alternative Method for Incorporating uncertainty
 
