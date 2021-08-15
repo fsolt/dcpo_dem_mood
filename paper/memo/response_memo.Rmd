@@ -94,12 +94,16 @@ As this technique has become the standard method for incorporating uncertainty i
 We provide a full description of the MOC technique in the Supplementary Materials.
 Further, to help ensure that incorporating uncertainty is as easy as possible for scholars working with latent variables of cross-national public opinion, we are including in our replication materials a suite of R functions implementing the MOC that are tailored to this application.
 
+1. **Method: Incorporating Uncertainty** R4 suggested that it would be helpful to provide citations for the point that neglecting to include uncertainty can bias coefficients along with standard errors.
+We agree and so drop cites here to @Blackwell2017 [, 318-319] and @Blackwell2017a [, 360-361], who present simulations that, while aimed at other issues, nonetheless illustrate the point neatly.
+We also cite to @caughey2018 [, 254], who, like others familiar with the problem, simply state the fact and move on.
+
 1. **Method: ~~Better Estimates of Public Support and More Data~~ Adding Data** R1 and R4 asked for more detail on the differences between the DCPO model and the latent variable model used by Claassen.
 R2 indirectly raised the same issue, asking about the consequences for thermostatic models of employing a random-walk prior in the DCPO model of democratic support---when actually both DCPO and the Claassen model use the same random-walk prior.
 Given that the DCPO model's advantages ultimately do not have a payoff in this case, we concluded that its inclusion in this 4000-word letter is an unnecessary distraction from our main points.
 So we took the _other_ suggestion from R1 on this topic to simply drop DCPO from the text entirely and moved the analyses with the DCPO estimates to the Supplementary Materials.
 
-1. **Method: Adding Data** Not directly related to a specific comment, but the opportunity to revise and resubmit allowed us to incorporate even more survey data that was released since our original submission (most notably from the ongoing release of Wave 7 of the World Values Survey).  Thanks!
+1. **Method: Adding Data** Not directly related to a specific comment, but the opportunity to revise and resubmit allowed us to incorporate even more survey data that was released since our original submission (most notably from the ongoing release of Wave 7 of the World Values Survey).  Thanks again!
 
 1. **Results** R1 and R2 expressed concern about the results of the models of democratic support presented in Figure 2, and especially that the coefficients for the lags of democratic support in the models incorporating uncertainty were approximately zero.
 R1 wrote, "The effects of lagged democratic support are also zero, which is even more implausible because it suggests that democratic support in one year is entirely disconnected from its levels in previous years. In other words, Denmark is as likely to have a low value next year as China is likely to have a high value."
@@ -113,7 +117,8 @@ Ignoring the uncertainty in the estimates averages away this randomness and may,
 1. **Results** R1 noted that in addition to the pooled OLS models we present in Figure 1 and the ECMs we present in Figure 2, @Claassen2020a includes a pair of system GMM models and @Claassen2020b includes a pair of first-difference models.
 We include the results of our three-tiered replication and extension for Claassen's secondary models in the Supplementary Materials; these additional analyses yield the same substantive conclusions as those we present in the text.
 
-[need #15, #19, #21]
+
+[need #19, #21]
 
 \pagebreak
 
