@@ -147,14 +147,15 @@ source(here("R", "customFunctions.R"))
 
 # dotwhisker::small_multiple() hacks
 body(small_multiple)[[17]] <- substitute(
-    p <- ggplot(df, aes(y = estimate, ymin = conf.low, ymax = conf.high, 
-                        x = as.factor(model), colour = submodel)) +
-        do.call(geom_pointrange, point_args) + ylab("") + xlab("") + 
-        facet_grid(term ~ .,
-                   scales = "free_y",
-                   labeller = label_parsed,    # enable LaTeX facet labels
-                   switch = "y") +             # put facet labels on left
-        scale_y_continuous(position = "right") # put axis label on right
+  p <- ggplot(df, aes(y = estimate, ymin = conf.low, ymax = conf.high, 
+                      x = as.factor(model), colour = submodel)) +
+    do.call(geom_pointrange, point_args) + 
+    ylab("") + xlab("") + 
+    facet_grid(term ~ .,
+               scales = "free",
+               labeller = label_parsed,    # enable LaTeX facet labels
+               switch = "y") +             # put facet labels on left
+    scale_y_continuous(position = "right") # put axis label on right
 )
 ```
 
@@ -406,116 +407,133 @@ saveRDS(mocresult_expAJPS, file =here("output","estimates_moc_expcorAJPS.RDS"))
 
 ```{r formatResult-AJPS}
 result_pooled <- bind_rows(
-  mutate(result_clsAJPS[["pooled"]][[1]][,1:3], model = "Original"),
- mutate(MOCsumm(mocresult_correctAJPS[["pooled"]]), model = "W. Uncertainty"),
- mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAJPS[["pooled"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm(mocresult_correctAJPS[["pooled"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm(mocresult_expAJPS[["pooled"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "Pooled")
-
+    mutate(type = "Pooled~OLS",
+           model = "Model 1 (Pooled OLS)")
 
 result_gmm <- bind_rows(
-  mutate(result_clsAJPS[["gmm"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_correctAJPS[["gmm"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm(mocresult_expAJPS[["gmm"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAJPS[["gmm"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm(mocresult_correctAJPS[["gmm"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm(mocresult_expAJPS[["gmm"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "GMM")
+    mutate(type = "System~GMM",
+           model = "Model 3 (System GMM)")
 
 result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-        "Support\n (t-1)",
-        "Log GDP\n per capita\n (t-1)",
-        "GDP per\n capita growth\n (t-1)",
-        "Regional\n democracy\n (t-1)",
-        "Percent\n Muslim\n (t-1)",
-        "Resource\n dependence\n (t-1)"),
-      time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original", "W. Uncertainty", "Uncertainty+Expanded Data")))
-
-result_ajpsPooled <- result_pooledAJPS %>% 
-    filter(type == "Pooled")
-
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = rep(
+            c("Democracy\n (t-1)",
+              "Democracy\n (t-2)",
+              "Support\n (t-1)",
+              "Log GDP\n per capita\n (t-1)",
+              "GDP per\n capita growth\n (t-1)",
+              "Regional\n democracy\n (t-1)",
+              "Percent\n Muslim\n (t-1)",
+              "Resource\n dependence\n (t-1)"),
+            time = 6), 
+        type = factor(type, levels = c("Pooled~OLS", "System~GMM")),
+        submodel = factor(submodel, levels = c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", rep(1:4), rep(c(" (Pooled OLS)", " (System GMM)"), each = 2)))
+    )
 
 result_regime <- bind_rows(
-  mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_correctAJPS[["pooled-regime"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm(mocresult_expAJPS[["pooled-regime"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm(mocresult_correctAJPS[["pooled-regime"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm(mocresult_expAJPS[["pooled-regime"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "Pooled")
+    mutate(type = "Pooled~OLS",
+           model = "Model 2 (Pooled OLS)")
 
 result_regimeGmm <- bind_rows(
-  mutate(result_clsAJPS[["gmm-regime"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm(mocresult_correctAJPS[["gmm-regime"]]), model = "W. Uncertainty"),
- mutate(MOCsumm(mocresult_expAJPS[["gmm-regime"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAJPS[["gmm-regime"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm(mocresult_correctAJPS[["gmm-regime"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm(mocresult_expAJPS[["gmm-regime"]]), submodel = "Uncertainty & More Data")
 )%>% 
-  mutate(type = "GMM")
+    mutate(type = "System~GMM",
+           model = "Model 4 (System GMM)")
 
 result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = rep(
-      c("Democracy\n (t-1)",
-        "Democracy\n (t-2)",
-        "Support\n demo only\n (t-1)",
-        "Support\n auto only\n (t-1)",
-        "Log GDP\n per capita\n (t-1)",
-        "GDP per\n capita growth\n (t-1)",
-        "Regional\n democracy\n (t-1)",
-        "Percent\n Muslim\n (t-1)",
-        "Resource\n dependence\n (t-1)"),
-      time = 6), 
-    type = factor(type, levels = c("Pooled", "GMM")),
-    model = factor(model, levels = c("Original","W. Uncertainty", "Uncertainty+Expanded Data")))
-
-result_ajpsRegime <- result_regimeAJPS %>%
-    filter(type == "Pooled") %>% 
-    mutate(type = "Regime Specified")
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = rep(
+            c("Democracy\n (t-1)",
+              "Democracy\n (t-2)",
+              "Support\n demo only\n (t-1)",
+              "Support\n auto only\n (t-1)",
+              "Log GDP\n per capita\n (t-1)",
+              "GDP per\n capita growth\n (t-1)",
+              "Regional\n democracy\n (t-1)",
+              "Percent\n Muslim\n (t-1)",
+              "Resource\n dependence\n (t-1)"),
+            time = 6), 
+        type = factor(type, levels = c("Pooled~OLS", "System~GMM")),
+        submodel = factor(submodel, levels = c("Point Estimates Only","With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", rep(1:4), rep(c(" (Pooled OLS)", " (System GMM)"), each = 2))))
 
 ```
 
-```{r coefName-AJPS}
-index_coefName <- c(
-    `Democracy\n (t-1)` = "Democracy[t-1]",
-    `Democracy\n (t-2)` = "Democracy[t-2]",
-    `Support\n (t-1)` = "Support[t-1]",
-    `Support\n demo only\n (t-1)` = "Support[t-1](demo~only)",
-    `Support\n auto only\n (t-1)` = "Support[t-1](auto~only)",
-    `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
-    `GDP per\n capita growth\n (t-1)` = "GDP~per~capita~growth[t-1]",
-    `Regional\n democracy\n (t-1)` = "Regional~democracy[t-1]",
-    `Percent\n Muslim\n (t-1)` = "Percent~Muslim[t-1]",
-    `Resource\n dependence\n (t-1)` = "Resource~dependence[t-1]"
-)
-```
+# ```{r coefName-AJPS}
+# index_coefName <- c(
+#     `Democracy\n (t-1)` = "Democracy[t-1]",
+#     `Democracy\n (t-2)` = "Democracy[t-2]",
+#     `Support\n (t-1)` = "Support[t-1]",
+#     `Support\n demo only\n (t-1)` = "Support[t-1](demo~only)",
+#     `Support\n auto only\n (t-1)` = "Support[t-1](auto~only)",
+#     `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
+#     `GDP per\n capita growth\n (t-1)` = "GDP~per~capita~growth[t-1]",
+#     `Regional\n democracy\n (t-1)` = "Regional~democracy[t-1]",
+#     `Percent\n Muslim\n (t-1)` = "Percent~Muslim[t-1]",
+#     `Resource\n dependence\n (t-1)` = "Resource~dependence[t-1]"
+# )
+# ```
 
-```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=7, fig.height=10, fig.align='center'}
+```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=5, fig.height=10, fig.align='center'}
 
-type_model <-
-  c("Original", "W. Uncertainty", "Uncertainty+Expanded Data")
+df_plot <- bind_rows(result_pooledAJPS, result_regimeAJPS) %>% 
+    mutate(term = case_when(term0 == 'Democracy\n (t-1)' ~ "Democracy[t-1]",
+                            term0 == 'Democracy\n (t-2)' ~ "Democracy[t-2]",
+                            term0 == 'Support\n (t-1)' ~ "Democratic~Support[t-1]",
+                            term0 == 'Support\n demo only\n (t-1)' ~ "Democratic~Support[t-1]~(democracies)",
+                            term0 == 'Support\n auto only\n (t-1)' ~ "Democratic~Support[t-1]~(autocracies)",
+                            term0 == 'Log GDP\n per capita\n (t-1)' ~ "Log~GDP~per~capita[t-1]",
+                            term0 == 'GDP per\n capita growth\n (t-1)' ~ "GDP~per~capita~growth[t-1]",
+                            term0 == 'Regional\n democracy\n (t-1)' ~ "Regional~Democracy[t-1]",
+                            term0 == 'Percent\n Muslim\n (t-1)' ~ "Percent~Muslim[t-1]",
+                            term0 == 'Resource\n dependence\n (t-1)' ~ "Resource~Dependence[t-1]",
+                            TRUE ~ str_replace(term0, " ", "~")), 
+           term = factor(term, levels =  c(
+               "Democracy[t-1]",
+               "Democracy[t-2]",
+               "Democratic~Support[t-1]",
+               "Democratic~Support[t-1]~(democracies)",
+               "Democratic~Support[t-1]~(autocracies)",
+               "Log~GDP~per~capita[t-1]",
+               "GDP~per~capita~growth[t-1]",
+               "Regional~Democracy[t-1]",
+               "Percent~Muslim[t-1]",
+               "Resource~Dependence[t-1]")))
 
-
-df_plot <- bind_rows(result_ajpsPooled, result_ajpsRegime) %>% 
-    mutate(term = index_coefName[term],
-           term = factor(term, levels = unique(index_coefName)))
- 
-dwplot(df_plot) +
-    geom_vline(xintercept = 0,
-               colour = "grey80",
-               linetype = 2) +
-    theme_minimal() +
-    ggtitle("DV: Liberal Democracy (Vdem)") +
-    xlab("Coefficient Estimate") +
-    theme(
-        axis.title.y = element_blank(),
-        legend.position = "bottom",
-      legend.title = element_blank()
-    ) +
-    scale_color_gb(palette = "digitMixed") +
-    facet_wrap(~ type)
+small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
+    theme_bw() +
+    geom_hline(yintercept = 0, colour = "grey50", linetype = 2) +
+    scale_color_grey(start = 0.8, end = 0.4, 
+                     name = "Replication",
+                     breaks=c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data"),
+                     labels=c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data")) +
+    theme(axis.text.x  = element_text(angle = 90, hjust = .5),
+          strip.text.y.left = element_text(angle = 0),
+          legend.position = c(-0.115, -.01),
+          legend.justification = c(1, 1), 
+          legend.title = element_text(size = 9, face = "bold"),
+          legend.title.align = 0.5,
+          legend.text = element_text(size = 9),
+          legend.background = element_rect(color="gray90"),
+          legend.spacing = unit(-3, "pt"),
+          legend.key.size = unit(9, "mm"))
 
 ```
 
@@ -1003,10 +1021,6 @@ result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
       time = 6), 
     type = factor(type, levels = c("Pooled", "GMM")),
     model = factor(model, levels = c("Original", "W. Uncertainty", "Uncertainty+Expanded Data")))
-
-result_ajpsPooled <- result_pooledAJPS %>% 
-    filter(type == "Pooled")
-
 
 result_regime <- bind_rows(
   mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], model = "Original"),
