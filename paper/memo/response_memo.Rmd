@@ -91,32 +91,33 @@ We are extremely grateful to R1 and R2 for alerting us to the beam in our own ey
 1. **Method: Incorporating Uncertainty** R1 and R2 both raised the question of whether the approach for incorporating uncertainty we used was the most appropriate for this application, and R4 asked for additional detail on how uncertainty was incorporated.
 Although R2 correctly (and helpfully!) noted that the approach we had employed is the same one explicated by @Blackwell2017, [they](https://public.oed.com/blog/a-brief-history-of-singular-they/) also suggested we use the Method of Composition (MOC) that was first put forward by @Tanner1993 and introduced to political science by @Treier2008.
 As this technique has become the standard method for incorporating uncertainty in the Americanist literature using Multilevel Regression and Poststratification [see, e.g., @Kastellec2015; @caughey2018], which is after all also a latent variable model of public opinion, we were pleased to adopt this suggestion.
-We provide a full description of the MOC technique in the Supplementary Materials.
+We provide a full description of the MOC technique in the Supplementary Information.
 Further, to help ensure that incorporating uncertainty is as easy as possible for scholars working with latent variables of cross-national public opinion, we are including in our replication materials a suite of R functions implementing the MOC that are tailored to this application.
 
 1. **Method: Incorporating Uncertainty** R4 suggested that it would be helpful to provide citations for the point that neglecting to include uncertainty can bias coefficients along with standard errors.
 We agree and so drop cites here to @Blackwell2017 [, 318-319] and @Blackwell2017a [, 360-361], who present simulations that, while aimed at other issues, nonetheless illustrate the point neatly.
 We also cite to @caughey2018 [, 254], who, like others familiar with the problem, simply state the fact and move on.
 
-1. **Method: ~~Better Estimates of Public Support and More Data~~ Adding Data** R1 and R4 asked for more detail on the differences between the DCPO model and the latent variable model used by Claassen.
+1. **Method: ~~Better Estimates of Public Support and~~ Adding More Data** R1 and R4 asked for more detail on the differences between the DCPO model and the latent variable model used by Claassen.
 R2 indirectly raised the same issue, asking about the consequences for thermostatic models of employing a random-walk prior in the DCPO model of democratic support---when actually both DCPO and the Claassen model use the same random-walk prior.
 Given that the DCPO model's advantages ultimately do not have a payoff in this case, we concluded that its inclusion in this 4000-word letter is an unnecessary distraction from our main points.
-So we took the _other_ suggestion from R1 on this topic to simply drop DCPO from the text entirely and moved the analyses with the DCPO estimates to the Supplementary Materials.
+So we took the _other_ suggestion from R1 on this topic to simply drop DCPO from the text entirely and moved the analyses with the DCPO estimates to the Supplementary Information.
 
-1. **Method: Adding Data** Not directly related to a specific comment, but the opportunity to revise and resubmit allowed us to incorporate even more survey data that was released since our original submission (most notably from the ongoing release of Wave 7 of the World Values Survey).  Thanks again!
+1. **Method: Adding More Data** Not directly related to a specific comment, but the opportunity to revise and resubmit allowed us to incorporate even more survey data that was released since our original submission (most notably from the ongoing release of Wave 7 of the World Values Survey).  Thanks again!
 
 1. **Results** R1 and R2 expressed concern about the results of the models of democratic support presented in Figure 2, and especially that the coefficients for the lags of democratic support in the models incorporating uncertainty were approximately zero.
 R1 wrote, "The effects of lagged democratic support are also zero, which is even more implausible because it suggests that democratic support in one year is entirely disconnected from its levels in previous years. In other words, Denmark is as likely to have a low value next year as China is likely to have a high value."
 R2 summarized the issue even more pithily, "some explanation is required, or else readers will think that some mistake has been made."
-The explanation is that the analyses from @Claassen2020b are error correction models, and so the dependent variable is not the level of democratic support but the _change_ in democratic support; in other words, the mistake was that our captioning to the figure was badly misleading (it read simply, "DV: Public Support for Democracy" and "The Effect of Democracy on Public Support"), and there was nothing in our discussion to bring readers back on track.
-So: it is not the case that Denmark is as likely to have a low value as China is to have a high one, but rather that Denmark is as likely to have a decline as China is to have a gain.
+The explanation is that the analyses from @Claassen2020b are error correction models, and so the dependent variable is not the level of democratic support but the _change_ in democratic support; the mistake was that our captioning to the figure was badly misleading (it read simply, "DV: Public Support for Democracy" and "The Effect of Democracy on Public Support"), and there was nothing in our discussion to bring readers back on track.
+In other words, it is not the case that Denmark is as likely to have a low value as China is to have a high one, but rather that Denmark is as likely to have a decline as China is to have a gain.
 We have labeled the plot correctly now.
 These results, we note, give further grounds for R2's concern about random-walk priors in latent variable models of public opinion when the estimates are then used in  thermostatic models: much of the year-to-year change in democratic support is simply random---only 44% of the country-years in Claassen's sample are estimated from survey data, leaving most with only the prior---so it is not surprising that these changes are not well predicted by the variables in Claassen's model.
 Ignoring the uncertainty in the estimates averages away this randomness and may, as here, yield conclusions that cannot be supported.
 
-1. **Results** R1 noted that in addition to the pooled OLS models we present in Figure 1 and the ECMs we present in Figure 2, @Claassen2020a includes a pair of system GMM models and @Claassen2020b includes a pair of first-difference models.
-We include the results of our three-tiered replication and extension for Claassen's secondary models in the Supplementary Materials; these additional analyses yield the same substantive conclusions as those we present in the text.
+1. **Results** R1 noted that in addition to the pooled OLS models we had presented in Figure 1 and the ECMs we had present in Figure 2, @Claassen2020a includes a pair of system GMM models and @Claassen2020b includes an additional specification that examines different aspects of democracy and a set of first-difference models.
+We now present the results of all of these secondary models as well. (As the analyses presented in Table 2 of @Claassen2020a consider the relative strengths of the performances of democratic support and democratic satisfaction, rather than the relationship between democracy and democratic support that we focus on here, we followed the APSR editor's advice and did not replicate those.)
 
+1. **Discussion** 
 
 [need #19, #21]
 
