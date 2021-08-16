@@ -476,46 +476,26 @@ result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
 
 ```
 
-# ```{r coefName-AJPS}
-# index_coefName <- c(
-#     `Democracy\n (t-1)` = "Democracy[t-1]",
-#     `Democracy\n (t-2)` = "Democracy[t-2]",
-#     `Support\n (t-1)` = "Support[t-1]",
-#     `Support\n demo only\n (t-1)` = "Support[t-1](demo~only)",
-#     `Support\n auto only\n (t-1)` = "Support[t-1](auto~only)",
-#     `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
-#     `GDP per\n capita growth\n (t-1)` = "GDP~per~capita~growth[t-1]",
-#     `Regional\n democracy\n (t-1)` = "Regional~democracy[t-1]",
-#     `Percent\n Muslim\n (t-1)` = "Percent~Muslim[t-1]",
-#     `Resource\n dependence\n (t-1)` = "Resource~dependence[t-1]"
-# )
-# ```
+```{r coefName-AJPS}
+index_coefName <- c(
+    `Democracy\n (t-1)` = "Democracy[t-1]",
+    `Democracy\n (t-2)` = "Democracy[t-2]",
+    `Support\n (t-1)` = "Democratic~Support[t-1]",
+    `Support\n demo only\n (t-1)` = "Democratic~Support[t-1]~(democracies)",
+    `Support\n auto only\n (t-1)` = "Democratic~Support[t-1]~(autocracies)",
+    `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
+    `GDP per\n capita growth\n (t-1)` = "GDP~per~capita~Growth[t-1]",
+    `Regional\n democracy\n (t-1)` = "Regional~Democracy[t-1]",
+    `Percent\n Muslim\n (t-1)` = "Percent~Muslim[t-1]",
+    `Resource\n dependence\n (t-1)` = "Resource~Dependence[t-1]"
+)
+```
 
 ```{r plot-mainAJPS, fig.cap= "The Effect of Public Support on Democracy with Uncertainty", fig.width=5, fig.height=10, fig.align='center'}
 
 df_plot <- bind_rows(result_pooledAJPS, result_regimeAJPS) %>% 
-    mutate(term = case_when(term0 == 'Democracy\n (t-1)' ~ "Democracy[t-1]",
-                            term0 == 'Democracy\n (t-2)' ~ "Democracy[t-2]",
-                            term0 == 'Support\n (t-1)' ~ "Democratic~Support[t-1]",
-                            term0 == 'Support\n demo only\n (t-1)' ~ "Democratic~Support[t-1]~(democracies)",
-                            term0 == 'Support\n auto only\n (t-1)' ~ "Democratic~Support[t-1]~(autocracies)",
-                            term0 == 'Log GDP\n per capita\n (t-1)' ~ "Log~GDP~per~capita[t-1]",
-                            term0 == 'GDP per\n capita growth\n (t-1)' ~ "GDP~per~capita~growth[t-1]",
-                            term0 == 'Regional\n democracy\n (t-1)' ~ "Regional~Democracy[t-1]",
-                            term0 == 'Percent\n Muslim\n (t-1)' ~ "Percent~Muslim[t-1]",
-                            term0 == 'Resource\n dependence\n (t-1)' ~ "Resource~Dependence[t-1]",
-                            TRUE ~ str_replace(term0, " ", "~")), 
-           term = factor(term, levels =  c(
-               "Democracy[t-1]",
-               "Democracy[t-2]",
-               "Democratic~Support[t-1]",
-               "Democratic~Support[t-1]~(democracies)",
-               "Democratic~Support[t-1]~(autocracies)",
-               "Log~GDP~per~capita[t-1]",
-               "GDP~per~capita~growth[t-1]",
-               "Regional~Democracy[t-1]",
-               "Percent~Muslim[t-1]",
-               "Resource~Dependence[t-1]")))
+  mutate(term = index_coefName[term0], 
+           term = factor(term, levels = unique(index_coefName)))
 
 small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     theme_bw() +
@@ -533,7 +513,8 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
           legend.text = element_text(size = 9),
           legend.background = element_rect(color="gray90"),
           legend.spacing = unit(-3, "pt"),
-          legend.key.size = unit(9, "mm"))
+          legend.key.size = unit(9, "mm")) +
+  ggtitle("DV: V-Dem Liberal Democracy Index")
 
 ```
 
@@ -663,212 +644,247 @@ saveRDS(mocresult_expAPSR, file = here::here("output","estimates_moc_expcorAPSR.
 # Pooled---------------------------------------
 
 result_ecm1 <- bind_rows(
-  mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled1"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled1"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["pooled1"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["pooled1"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["pooled1"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "ECM")
+    mutate(type = "Error-Correction Model",
+           model = "Model 1.1 (ECM)")
 
 
 result_fd1 <- bind_rows(
-  mutate(result_clsAPSR[["fd1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd1"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd1"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["fd1"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["fd1"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["fd1"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "First Difference")
+    mutate(type = "First-Difference Model",
+           model = "Model 1.3 (FD)")
 
 result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-        "Liberal Democracy\n (Difference)",
-        "Liberal Democracy\n (t-1)",
-        "Log GDP\n per capita\n (Difference)",
-        "Log GDP\n (t-1)"),
-      time = 3),
-      rep(
-        c("Liberal Democracy\n (Difference)", 
-          "Log GDP\n per capita\n (Difference)"), 
-        time = 3
-      )),
-    type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","W. Uncertainty", "Uncertainty+Expanded Data"))
-  )
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = c(rep(
+            c("Democratic Mood\n (t-1)",
+              "Democratic Mood\n (t-2)",
+              "Liberal Democracy\n (Difference)",
+              "Liberal Democracy\n (t-1)",
+              "Log GDP\n per capita\n (Difference)",
+              "Log GDP\n (t-1)"),
+            time = 3),
+            rep(
+                c("Liberal Democracy\n (Difference)", 
+                  "Log GDP\n per capita\n (Difference)"), 
+                time = 3
+            )),
+        type = factor(type,  levels = c("Error-Correction Model", "First-Difference Model")),
+        submodel = factor(submodel, levels = c("Point Estimates Only","With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", 
+                                              rep(1:2, each = 4), ".", rep(1:4, 2),
+                                              " (",
+                                              rep(c("ECM", "ECM", "FD", "FD"), 2),
+                                              ")"))
+    )
 
-result_apsrPooled <- result_APSR1 %>% 
-    filter(type == "ECM") %>% 
-    mutate(type = "Pooled")
+# result_apsrPooled <- result_APSR1 %>% 
+#     filter(type == "Error-Correction Model") %>% 
+#     mutate(type = "Pooled")
+
 
 
 # Institution----------------------------------
 
 result_ecmReg1 <- bind_rows(
-  mutate(result_clsAPSR[["pooled-regime1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime1"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime1"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["pooled-regime1"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime1"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime1"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "ECM")
+    mutate(type = "Error-Correction Model",
+           model = "Model 2.1 (ECM)")
 
 
 result_fdReg1 <- bind_rows(
-  mutate(result_clsAPSR[["fd-regime1"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime1"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime1"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["fd-regime1"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime1"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["fd-regime1"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "First Difference")
+    mutate(type = "First-Difference Model",
+           model = "Model 2.3 (FD)")
 
 
 result_RegAPSR1 <- bind_rows(result_ecmReg1, result_fdReg1) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-        "Electoral Democracy\n (Difference)",
-        "Electoral Democracy\n (t-1)",
-        "Minoritarian Democracy\n (Difference)",
-        "Minoritarian Democracy\n (t-1)",
-        "Log GDP\n per capita\n (Difference)",
-        "Log GDP\n (t-1)"),
-      time = 3),
-      rep(
-        c("Electoral Democracy\n (Difference)", 
-          "Minoritarian Democracy\n (Difference)",
-          "Log GDP\n per capita\n (Difference)"), 
-        time = 3
-      )),
-    type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","W. Uncertainty", "Uncertainty+Expanded Data"))
-  )
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = c(rep(
+            c("Democratic Mood\n (t-1)",
+              "Democratic Mood\n (t-2)",
+              "Electoral Democracy\n (Difference)",
+              "Electoral Democracy\n (t-1)",
+              "Minoritarian Democracy\n (Difference)",
+              "Minoritarian Democracy\n (t-1)",
+              "Log GDP\n per capita\n (Difference)",
+              "Log GDP\n (t-1)"),
+            time = 3),
+            rep(
+                c("Electoral Democracy\n (Difference)", 
+                  "Minoritarian Democracy\n (Difference)",
+                  "Log GDP\n per capita\n (Difference)"), 
+                time = 3
+            )),
+        type = factor(type,  levels = c("Error-Correction Model", "First-Difference Model")),
+        submodel = factor(submodel, levels = c("Point Estimates Only","With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", 
+                                              rep(1:2, each = 4), ".", rep(1:4, 2),
+                                              " (",
+                                              rep(c("ECM", "ECM", "FD", "FD"), 2),
+                                              ")"))
+    )
 
-result_apsrRegime <- result_RegAPSR1 %>% 
-    filter(type == "ECM") %>% 
-    mutate(type = "Institution Specified")
+# result_apsrRegime <- result_RegAPSR1 %>% 
+#     filter(type == "Error-Correction Model") %>% 
+#     mutate(type = "Institution Specified")
 
 
 # Pooled-corruption------------------------------
 
 result_ecm2 <- bind_rows(
-  mutate(result_clsAPSR[["pooled2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["pooled2"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled2"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["pooled2"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["pooled2"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["pooled2"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "ECM")
+    mutate(type = "Error-Correction Model",
+           model = "Model 1.2 (ECM)")
 
 result_fd2 <- bind_rows(
-  mutate(result_clsAPSR[["fd2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd2"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd2"]]), model = "Uncertainty+Expanded Data")
+    mutate(result_clsAPSR[["fd2"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["fd2"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["fd2"]]), submodel = "Uncertainty & More Data")
 ) %>% 
-  mutate(type = "First Difference")
+    mutate(type = "First-Difference Model",
+           model = "Model 1.4 (FD)")
 
 result_APSR2 <- bind_rows(result_ecm2, result_fd2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-        "Liberal Democracy\n (Difference)",
-        "Liberal Democracy\n (t-1)",
-        "Log GDP\n per capita\n (Difference)",
-        "Log GDP\n (t-1)",
-        "Corruption\n (Difference)",
-        "Corruption\n (t-1)"
-      ),
-      time = 3),
-      rep(
-        c("Liberal Democracy\n (Difference)", 
-          "Log GDP\n per capita\n (Difference)",
-          "Corruption\n (Difference)"), 
-        time = 3
-      )),
-    type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","W. Uncertainty", "Uncertainty+Expanded Data"))
-  )
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = c(rep(
+            c("Democratic Mood\n (t-1)",
+              "Democratic Mood\n (t-2)",
+              "Liberal Democracy\n (Difference)",
+              "Liberal Democracy\n (t-1)",
+              "Log GDP\n per capita\n (Difference)",
+              "Log GDP\n (t-1)",
+              "Corruption\n (Difference)",
+              "Corruption\n (t-1)"
+            ),
+            time = 3),
+            rep(
+                c("Liberal Democracy\n (Difference)", 
+                  "Log GDP\n per capita\n (Difference)",
+                  "Corruption\n (Difference)"), 
+                time = 3
+            )),
+        type = factor(type,  levels = c("Error-Correction Model", "First-Difference Model")),
+        submodel = factor(submodel, levels = c("Point Estimates Only","With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", 
+                                                      rep(1:2, each = 4), ".", rep(1:4, 2),
+                                                      " (",
+                                                      rep(c("ECM", "ECM", "FD", "FD"), 2),
+                                                      ")"))
+    )
 
 # Institution Corruption--------------------------------
 
 result_ecmReg2 <- bind_rows(
-  mutate(result_clsAPSR[["pooled-regime2"]][[1]][,1:3], model = "Original"),
- mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime2"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), model = "Uncertainty+Expanded Data")) %>%
-  mutate(type = "ECM")
+    mutate(result_clsAPSR[["pooled-regime2"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["pooled-regime2"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["pooled-regime2"]]), submodel = "Uncertainty & More Data")) %>%
+    mutate(type = "Error-Correction Model",
+           model = "Model 2.2 (ECM)")
 
 result_fdReg2 <- bind_rows(
-  mutate(result_clsAPSR[["fd-regime2"]][[1]][,1:3], model = "Original"),
-  mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime2"]]), model = "W. Uncertainty"),
-  mutate(MOCsumm2(mocresult_expAPSR[["fd-regime2"]]), model = "Uncertainty+Expanded Data")) %>% 
-  mutate(type = "First Difference")
+    mutate(result_clsAPSR[["fd-regime2"]][[1]][,1:3], submodel = "Point Estimates Only"),
+    mutate(MOCsumm2(mocresult_correctAPSR[["fd-regime2"]]), submodel = "With Uncertainty"),
+    mutate(MOCsumm2(mocresult_expAPSR[["fd-regime2"]]), submodel = "Uncertainty & More Data")) %>% 
+    mutate(type = "First-Difference Model",
+           model = "Model 2.4 (FD)")
 
 result_RegAPSR2 <- bind_rows(result_ecmReg2, result_fdReg2) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    term = c(rep(
-      c("Democratic Mood\n (t-1)",
-        "Democratic Mood\n (t-2)",
-        "Electoral Democracy\n (Difference)",
-        "Electoral Democracy\n (t-1)",
-        "Minoritarian Democracy\n (Difference)",
-        "Minoritarian Democracy\n (t-1)",
-        "Log GDP\n per capita\n (Difference)",
-        "Log GDP\n (t-1)",
-        "Corruption\n (Difference)",
-        "Corruption\n (t-1)"
-      ),
-      time = 3),
-      rep(
-        c("Electoral Democracy\n (Difference)", 
-          "Minoritarian Democracy\n (Difference)",
-          "Log GDP\n per capita\n (Difference)",
-          "Corruption\n (Difference)"), 
-        time = 3
-      )),
-    type = factor(type,  levels = c("ECM", "First Difference")),
-    model = factor(model, levels = c("Original","W. Uncertainty", "Uncertainty+Expanded Data"))
-  )
+    filter(term != "(Intercept)") %>%
+    mutate(
+        term0 = c(rep(
+            c("Democratic Mood\n (t-1)",
+              "Democratic Mood\n (t-2)",
+              "Electoral Democracy\n (Difference)",
+              "Electoral Democracy\n (t-1)",
+              "Minoritarian Democracy\n (Difference)",
+              "Minoritarian Democracy\n (t-1)",
+              "Log GDP\n per capita\n (Difference)",
+              "Log GDP\n (t-1)",
+              "Corruption\n (Difference)",
+              "Corruption\n (t-1)"
+            ),
+            time = 3),
+            rep(
+                c("Electoral Democracy\n (Difference)", 
+                  "Minoritarian Democracy\n (Difference)",
+                  "Log GDP\n per capita\n (Difference)",
+                  "Corruption\n (Difference)"), 
+                time = 3
+            )),
+        type = factor(type,  levels = c("Error-Correction Model", "First-Difference Model")),
+        submodel = factor(submodel, levels = c("Point Estimates Only","With Uncertainty", "Uncertainty & More Data")),
+        model = factor(model, levels = paste0("Model ", 
+                                              rep(1:2, each = 4), ".", rep(1:4, 2),
+                                              " (",
+                                              rep(c("ECM", "ECM", "FD", "FD"), 2),
+                                              ")"))
+    )
 ```
 
 ```{r coefName-APSR}
 index_coefName <- c(
-    `Democratic Mood\n (t-1)` = "Support[t-1]",
-    `Democratic Mood\n (t-2)` = "Support[t-2]",
+    `Democratic Mood\n (t-1)` = "Democratic~Support[t-1]",
+    `Democratic Mood\n (t-2)` = "Democratic~Support[t-2]",
     `Liberal Democracy\n (Difference)` = "Delta~Liberal~democracy",
-    `Liberal Democracy\n (t-1)` = "Liberal~democracy[t-1]",
-    `Electoral Democracy\n (Difference)` = "Delta~Electoral~democracy",
-    `Electoral Democracy\n (t-1)` = "Electoral~democracy[t-1]",
-    `Minoritarian Democracy\n (Difference)` = "Delta~Minoritarian~democracy",
-    `Minoritarian Democracy\n (t-1)` = "Minoritarian~democracy[t-1]",
+    `Liberal Democracy\n (t-1)` = "Liberal~Democracy[t-1]",
+    `Electoral Democracy\n (Difference)` = "Delta~Electoral~Democracy",
+    `Electoral Democracy\n (t-1)` = "Electoral~Democracy[t-1]",
+    `Minoritarian Democracy\n (Difference)` = "Delta~Minoritarian~Democracy",
+    `Minoritarian Democracy\n (t-1)` = "Minoritarian~Democracy[t-1]",
     `Log GDP\n per capita\n (Difference)` = "Delta~Log~GDP~per~capita",
-    `Log GDP\n (t-1)` = "Log~GDP[t-1]"
+    `Log GDP\n (t-1)` = "Log~GDP[t-1]",
+    `Corruption\n (Difference)` = "Delta~Corruption",
+    `Corruption\n (t-1)` = "Corruption[t-1]"
 )
 ```
 
-```{r plot-mainAPSR, fig.cap= "The Effect of Democracy on the Change of Public Support", fig.width=7, fig.height=10}
-type_model <-
-    c("Original", "W. Uncertainty", "Uncertainty+Expanded Data")
+```{r plot-mainAPSR, fig.cap= "The Effect of Democracy on Change in Public Support with Uncertainty", fig.width=7, fig.height=10}
+df_plot <- bind_rows(result_APSR1, result_APSR2,
+                     result_RegAPSR1, result_RegAPSR2) %>% 
+    mutate(term = index_coefName[term0], 
+           term = factor(term, levels = unique(index_coefName)))
 
-df_plot <- bind_rows(result_apsrPooled, result_apsrRegime) %>%
-    mutate(
-        term = index_coefName[term],
-        term = factor(term, levels = unique(index_coefName)),
-        type = factor(type, levels = c("Pooled", "Institution Specified"))
-    )
-
-dwplot(df_plot) +
-    geom_vline(xintercept = 0,
-               colour = "grey80",
-               linetype = 2) +
-    ggtitle("DV: The Change of Public Support for Democracy") +
-    xlab("Coefficient Estimate") +
-    theme(
-        axis.title.y = element_blank(),
-        legend.position = "bottom",
-        legend.title = element_blank()
-    ) +
-    facet_wrap(~ type)  +
-    scale_color_gb(palette = "digitMixed")
+small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
+    theme_bw() +
+    geom_hline(yintercept = 0, colour = "grey50", linetype = 2) +
+    scale_color_grey(start = 0.8, end = 0.4, 
+                     name = "Replication",
+                     breaks=c("Point Estimates Only",
+                              "With Uncertainty",
+                              "Uncertainty & More Data"),
+                     labels=c("Point Estimates Only",
+                              "With Uncertainty",
+                              "Uncertainty & More Data")) +
+    theme(axis.text.x  = element_text(angle = 90, hjust = .5),
+          strip.text.y.left = element_text(angle = 0),
+          legend.position = c(0, -.01),
+          legend.justification = c(1, 1), 
+          legend.title = element_text(size = 9, face = "bold"),
+          legend.title.align = 0.5,
+          legend.text = element_text(size = 8),
+          legend.background = element_rect(color="gray90"),
+          legend.spacing = unit(-3, "pt"),
+          legend.key.size = unit(7, "mm")) +
+    ggtitle("DV: Change in Public Support for Democracy")
 
 ```
 
