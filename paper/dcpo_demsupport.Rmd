@@ -506,14 +506,15 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
                      labels=c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data")) +
     theme(axis.text.x  = element_text(angle = 90, hjust = .5),
           strip.text.y.left = element_text(angle = 0),
-          legend.position = c(-0.115, -.01),
+          legend.position = c(-0.06, -.01),
           legend.justification = c(1, 1), 
           legend.title = element_text(size = 9, face = "bold"),
           legend.title.align = 0.5,
           legend.text = element_text(size = 9),
           legend.background = element_rect(color="gray90"),
-          legend.spacing = unit(-3, "pt"),
-          legend.key.size = unit(9, "mm")) +
+          legend.spacing = unit(-5, "pt"),
+          legend.key.size = unit(8, "mm")) +
+  guides(color = guide_legend(override.aes = list(size=.3))) +
   ggtitle("DV: V-Dem Liberal Democracy Index")
 
 ```
@@ -684,11 +685,6 @@ result_APSR1 <- bind_rows(result_ecm1, result_fd1) %>%
                                               rep(c("ECM", "ECM", "FD", "FD"), 2),
                                               ")"))
     )
-
-# result_apsrPooled <- result_APSR1 %>% 
-#     filter(type == "Error-Correction Model") %>% 
-#     mutate(type = "Pooled")
-
 
 
 # Institution----------------------------------
@@ -876,15 +872,17 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
                               "Uncertainty & More Data")) +
     theme(axis.text.x  = element_text(angle = 90, hjust = .5),
           strip.text.y.left = element_text(angle = 0),
-          legend.position = c(0, -.01),
+          legend.position = c(0.006, -.01),
           legend.justification = c(1, 1), 
           legend.title = element_text(size = 9, face = "bold"),
           legend.title.align = 0.5,
           legend.text = element_text(size = 8),
           legend.background = element_rect(color="gray90"),
-          legend.spacing = unit(-3, "pt"),
-          legend.key.size = unit(7, "mm")) +
-    ggtitle("DV: Change in Public Support for Democracy")
+          legend.spacing = unit(-5, "pt"),
+          legend.key.width = unit(4.5, "mm"),
+          legend.key.height = unit(7, "mm")) +
+  guides(color = guide_legend(override.aes = list(size=.3))) +
+  ggtitle("DV: Change in Public Support for Democracy")
 
 ```
 
