@@ -200,7 +200,7 @@ In light of this, recent studies measuring other latent variables have recommend
 
 Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in analysis models using our replication data.
 We conduct inferences from the distributive data via the technique known as the "method of composition" [@Tanner1993, 52; @Treier2008, 215; @caughey2018, A15-16].
-For additional detail on this technique, see the Supplementary Materials.
+For additional detail on this technique, see the Supplementary Information.
 
 ```{r compare_n}
 
@@ -276,7 +276,7 @@ The bottom results also incorporate uncertainty but additionally replace the est
 
 _In comparison to the original result, the positive coefficients for democratic support in both models accounting for the uncertainty are no longer statistically significant.
 This result is robust when using separated regime types in the explanatory variable. 
-Nor do applying system GMM models or controlling for corruption alter the conclusion (see the Supplementary Materials)._
+Nor do applying system GMM models or controlling for corruption alter the conclusion (see the Supplementary Information)._
 
 Adding more data is indeed helpful for increasing the certainty to the analytic estimates. 
 The confidence intervals of the explanatory variable (and some control variables) are considerably narrower than the cases just bringing the uncertainty back---or even the original case when uncertainty was completely ignored. 
@@ -480,7 +480,7 @@ result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
 index_coefName <- c(
     `Democracy\n (t-1)` = "Democracy[t-1]",
     `Democracy\n (t-2)` = "Democracy[t-2]",
-    `Support\n (t-1)` = "Democratic~Support[t-1]",
+    `Support\n (t-1)` = "Democratic~Support[t-1]~(all~regimes)",
     `Support\n demo only\n (t-1)` = "Democratic~Support[t-1]~(democracies)",
     `Support\n auto only\n (t-1)` = "Democratic~Support[t-1]~(autocracies)",
     `Log GDP\n per capita\n (t-1)` = "Log~GDP~per~capita[t-1]",
@@ -496,6 +496,8 @@ index_coefName <- c(
 df_plot <- bind_rows(result_pooledAJPS, result_regimeAJPS) %>% 
   mutate(term = index_coefName[term0], 
            term = factor(term, levels = unique(index_coefName)))
+
+ajps_caption <- "Replications of Claassen (2020a), Table 1, 128."
 
 small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     theme_bw() +
@@ -513,9 +515,12 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
           legend.text = element_text(size = 9),
           legend.background = element_rect(color="gray90"),
           legend.spacing = unit(-5, "pt"),
-          legend.key.size = unit(8, "mm")) +
+          legend.key.size = unit(8, "mm"),
+          plot.title = element_text(hjust = 1.4),
+          plot.caption = element_text(size = 10, hjust = 0.2, margin = margin(t=15))) +
   guides(color = guide_legend(override.aes = list(size=.3))) +
-  ggtitle("DV: V-Dem Liberal Democracy Index")
+  ggtitle("Dependent Variable: Level of Democracy") +
+  labs(caption = ajps_caption)
 
 ```
 
@@ -859,6 +864,10 @@ df_plot <- bind_rows(result_APSR1, result_APSR2,
     mutate(term = index_coefName[term0], 
            term = factor(term, levels = unique(index_coefName)))
 
+apsr_caption <- "Replications of Claassen (2020b), Table 1, 47, and Table 2, 49.  Models denoted 'ECM' are error-correction models; those marked 'FD' are first-difference models." %>% 
+  strwrap(85) %>% 
+  paste0(sep="", collapse="\n")
+
 small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     theme_bw() +
     geom_hline(yintercept = 0, colour = "grey50", linetype = 2) +
@@ -880,9 +889,11 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
           legend.background = element_rect(color="gray90"),
           legend.spacing = unit(-5, "pt"),
           legend.key.width = unit(4.5, "mm"),
-          legend.key.height = unit(7, "mm")) +
+          legend.key.height = unit(7, "mm"),
+          plot.caption = element_text(size = 10, hjust = 0.2, margin = margin(t=15))) +
   guides(color = guide_legend(override.aes = list(size=.3))) +
-  ggtitle("DV: Change in Public Support for Democracy")
+  ggtitle("Dependent Variable: Change in Public Democratic Support") +
+  labs(caption = apsr_caption)
 
 ```
 
@@ -936,7 +947,7 @@ Those who would defend democracy have no grounds to be complacent.
 
 \pagebreak
 
-# Online Supplementary Materials {-}
+# Online Supplementary Information {-}
 # (APPENDIX) Appendix {-}
 \setcounter{page}{1}
 \renewcommand{\thepage}{A\arabic{page}}
