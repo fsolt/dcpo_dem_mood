@@ -267,27 +267,12 @@ To provide a further test of the classic arguments on democracy and public suppo
 
 # Results
 
-Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy, with democratic support pooled for all countries [@Claassen2020a, 128, Model 1] in the left panel and democratic support separated by regime type (Model 2) on the right.
-The uppermost set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty, and reproduce that article's findings.
+Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy [@Claassen2020a, Table 1, 128].
+The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (democracy and corruption), and they reproduce that article's findings.
 The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
-<!-- In both models, the positive coefficients for democratic support are no longer statistically significant. -->
-The bottom results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on the expanded dataset; this change works to increase the number of observations analyzed as well.
-<!-- Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.  -->
-
-_In comparison to the original result, the positive coefficients for democratic support in both models accounting for the uncertainty are no longer statistically significant.
-This result is robust when using separated regime types in the explanatory variable. 
-Nor do applying system GMM models or controlling for corruption alter the conclusion (see the Supplementary Information)._
-
-Adding more data is indeed helpful for increasing the certainty to the analytic estimates. 
-The confidence intervals of the explanatory variable (and some control variables) are considerably narrower than the cases just bringing the uncertainty back---or even the original case when uncertainty was completely ignored. 
-Nonetheless, the insignificance remains and is robust across different model specifications.
-
-Moreover, the results expose another risk for ignoring uncertainty: missestimation. 
-As shown in Figure \@ref(fig:plot-mainAJPS), besides the confidence intervals the (point) estimates also shift. 
-Methodologically, the shifts indicate that the 900 regressions of public support on democracy do not yield consistent results, although the explanatory and control variables were drawn from the same distribution. 
-In this sense, the coefficients produced simply by the means of the variable distributions are no more than a one-time guess of the true parameters and apparently not a robust one. 
-More importantly, what this methodological difference leads to is a substantively opposite conclusion of the relationship between public opinions and institutional democratization.
-Our replication results manifest the uncertainty ignorance with mounting risk.
+In all four models, the positive coefficients for democratic support are no longer statistically significant.
+The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
+Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
 ```{r pointAJPS}
 ls_iv <- c("plm::lag(SupDem_trim, 1)",
@@ -524,11 +509,11 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 
 ```
 
-The importance for taking the measurement uncertainty into account appear more evident when the relevant variable plays as the outcome variable. 
-In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [p. 47, Models 1.1 and 1.2]. 
-When the uncertainty is ignored, the coefficient of $\Delta$liberal democracy (the uppermost set), the yearly changes of the institutional feature is negative inferring that the change in democratic mood decreases as change in democracy increases and vice versa. 
-However, when the measurement uncertainty is properly accounted (the middle set), the point estimate shifts towards zero and the coefficient is no longer significant.
-More data (the lowermost set), again, only adjusts the confidence intervals but not direction nor significance. 
+In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [47, Table 1, 49, Table 2].
+The negative coefficient estimates for change in liberal democracy in the lefthand set of results, which do not take uncertainty into account, imply that the immediate effect of a increase in the level of democracy is a decline in public support for democracy and of a decrease in democracy an expansion of support---that democratic support indeed does respond thermostatically to democracy. 
+However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
+And again, the righthand results reveal that the additional data of our extension do not provide support for the original conclusion.
+<!-- In fact, once uncertainty is taken into account, the models of @Claassen2020b detect very little pattern in the year-to-year changes of public support for democracy at all. -->
 
 ```{r pointAPSR}
 # Reusing the sd.plm object, thus input data here rather than earlier
@@ -852,7 +837,7 @@ index_coefName <- c(
     `Minoritarian Democracy\n (Difference)` = "Delta~Minoritarian~Democracy",
     `Minoritarian Democracy\n (t-1)` = "Minoritarian~Democracy[t-1]",
     `Log GDP\n per capita\n (Difference)` = "Delta~Log~GDP~per~capita",
-    `Log GDP\n (t-1)` = "Log~GDP[t-1]",
+    `Log GDP\n (t-1)` = "Log~GDP~per~capita[t-1]",
     `Corruption\n (Difference)` = "Delta~Corruption",
     `Corruption\n (t-1)` = "Corruption[t-1]"
 )
@@ -899,44 +884,44 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 
 # Discussion
 
-In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and change in democracy a negative effect on change in support are not empirically supported once measurement uncertainty is taken into account, even when more data are used.
+In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support has a positive effect on democracy and change in democracy a negative effect on change in support are not empirically supported once measurement uncertainty is taken into account, even when more data are used.  These null results have a number of important substantive implications.
 
-There are theoretical explanations for the null results.
-With regard to how levels of democracy affect public support, we note that even the proponents of the classic argument did not contend that the mere existence of democratic institutions, no matter how consistently feckless and ineffective, would generate support among the public: instead, they maintained, public support would be gained through experience with government performance that was generally effective [@lipset_social_1959, 86-89; @Easton1965, 119-120].
-There is some empirical support for this, with government effectiveness positively related to public support among democracies and negatively related in non-democracies [@Magalhaes2014]. 
+First, they underscore that recognizing the conditional aspects of the classic argument regarding democracy and democratic support is crucial.
+With regard to how levels of democracy affect public support, even the early proponents of the classic argument did not contend that the mere existence of democratic institutions, no matter how consistently feckless and ineffective, would generate support among the public: instead, they maintained, public support would be gained through experience with government performance that was generally effective [@lipset_social_1959, 86-89; @Easton1965, 119-120].
+There is some empirical evidence for this, with government effectiveness positively related to public support among democracies and negatively related in non-democracies [@Magalhaes2014]. 
 The finding of @Krieckhaus2014 that income inequality is strongly negatively related to public support in democracies suggests that performance regarding redistribution is particularly important.
-Relatedly, on the reverse part of the classic argument, @Qi2011 suggests that democratic support alone cannot be expected to generate democratic change and oppose backsliding.
+On the reverse part of the classic argument, @Qi2011 suggests that democratic support alone cannot be expected to generate democratic change and oppose backsliding.
 Instead, that work contends, it is the combination of democratic support and dissatisfaction with current regime performance that generates demand for greater democracy.
-The effects of public support also have cultural-bound.
-@Brunkert2019[p. 423] contends outspoken support for democracy is a "deceptive indicator of public's affinity to democracy"  and finds public support has neither pro-democratic nor anti-authoritarian effect without controlling emancipative values.
-Empirical results show that the meaning of support for democracy is dependent on emancipation values and is reversed to its own negation in a society with weak emancipative values [see, e.g.,@Kirsch2019, 83-85].
-And we must be open to the possibility that no theoretical elaboration, no respecification of these models will reveal relationships between public opinion and democracy.
-Democratic backsliding may simply be primarily a matter of elite decision making [see, e.g., @levitsky_how_2018].
+Whether these conditional relationships exist among the newly available latent-variable data on democracy and democratic support is a promising avenue for future research. 
 
-There are several potential methodological explanations for these null results as well.
-One issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
-If only those who profess to prefer democracy to its alternatives _and also_ value freedom of expression, freedom of association, and pluralism of opinion will take appropriate action when democracy is threatened, then this measure is inadequate to its purpose [see, e.g., @Schedler2007].
-Moreover, given the multi-faceted nature of democratic attitudes, even the inclusion of such questions in unidimensional public opinion models such as those provided by @Claassen2019 or @Solt2020a are unlikely to be sufficient [see, e.g., @Wuttke2020].
-Another issue is that even if these survey questions do capture support for the generic concept of democracy, these measurement models might still be incapable of suitably capturing democratic support due to the variation in understanding the concept across countries or over time within countries [@Wuttke2021]. 
-Yet another is that this measure provides no assessment of the _relative_ importance the public affords democracy.
-It provides no information on the extent to which other values, such as policy preferences or partisanship, weigh more heavily---and there is growing evidence that, at least in the United States, there are many for whom these other considerations excuse substantial transgressions against democracy [see @bartels_ethnic_2020; @Carey2020; @graham_democracy_2020; @McCoy2020]. 
+Further, these null results suggest a careful reconsideration of the relationship between concept and measure for those seeking to construct latent-variable measures of democratic support.
+The most concerning issue is that the survey items employed---which ask respondents to assess the desirability or appropriateness of democracy, to compare democracy to some undemocratic alternative, or to assess one of these alternatives---may not capture every aspect of democratic support necessary for it to play its hypothesized roles in the classic theory.
+One possibility is that only those who profess to prefer democracy to its alternatives _and also_ value freedom of expression, freedom of association, and pluralism of opinion will take appropriate action when democracy is threatened [see, e.g., @Schedler2007].
+Another is that respondents' other values, such as their policy preferences or partisanship, may weigh more heavily than their support for democracy: there is growing evidence that, at least in the United States, there are many for whom these other considerations excuse substantial transgressions against democracy [see @bartels_ethnic_2020; @Carey2020; @graham_democracy_2020; @McCoy2020].
+Yet another is that the answers to the above items reflect actual support for democracy only when respondents also hold a robust understanding of what democracy means: otherwise, positive responses indicate support for autocracy instead [see, e.g., @Brunkert2019, @Kirsch2019, @Wuttke2021].
+Taking any or all of these into account requires considering the _combination_ of attitudes: even the inclusion of additional questions in a unidimensional public opinion model such as that provided by @Claassen2019 will not be sufficient [see, e.g., @Wuttke2020].
+
+Finally, by failing to provide evidence for a straightforward relationship between democratic support and democracy, these null findings lend additional support to rival understandings of regime change.
+There are compelling arguments that democratic transitions [see, e.g., @ODonnell1986; @Karl1987] and backsliding [see, e.g., @levitsky_how_2018, @Haggard2021] are primarily a matter of elite decision making.
+<!-- [But Norris critique] -->
+
 Regardless, these explanations indicate that there remains much work to be done in the empirical study of public support and democracy.
 
 
 # Conclusion
 
-In this letter, we reexamine the findings from Claassen [-@Claassen2020a; -@Claassen2020b], two articles that maintain that public support helps the survival of democracy and democratic development has a thermostatic effect on public support.
-We demonstrate the importance of incorporating measurement uncertainty in analyzing the relationship between public support and democracy.
-Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we added considerable more data.
+In this letter, we reexamined the findings from Claassen [-@Claassen2020a; -@Claassen2020b], two articles that maintain that public support helps the survival of democracy and democratic development has a thermostatic effect on public support.
+We demonstrated the importance of incorporating measurement uncertainty in analyzing the relationship between public support and democracy.
+Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we added considerable additional data.
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
-Measurement issues have never had a prominent place in comparative political studies because they need more time to estimate models, but they ground the quality of data and the basis of analysis [@stegmueller2011, 484].
 As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
 
-The null results reached in this letter could arise from several sources.
-There are theoretically grounded reasons of government effectiveness, democratic understanding, and generical-or-behavioral support to suspect that the relationships are in fact negligible.
-We also identified a number of potential shortcomings in the measurement of democratic support and ways in which the analysis models might be underspecified.
-All of these could and should be explored in future research.
+The null results reached in this letter have several implications.
+<!-- There are theoretically grounded reasons of government effectiveness, democratic understanding, and generical-or-behavioral support to suspect that the relationships are in fact negligible. -->
+<!-- We also identified a number of potential shortcomings in the measurement of democratic support and ways in which the analysis models might be underspecified. -->
+<!-- All of these could and should be explored in future research. -->
+
 In any event, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their public will rally to them---is not supported by the current evidence.
 Those who would defend democracy have no grounds to be complacent.
 
