@@ -12,7 +12,7 @@ title: |
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 fontsize: 11pt
 spacing: single
-bibliography: \dummy{`r file.path(file.path(getwd(), ".."), list.files(file.path(getwd(), ".."), ".bib$", recursive = TRUE))`}
+bibliography: ../dcpo-demsupport.bib
 biblio-style: apsr
 citecolor: black
 linkcolor: black
@@ -95,7 +95,7 @@ As this technique has become the standard method for incorporating uncertainty i
 We provide a full description of the MOC technique in Supplementary Information Appendix B.
 
 1. **Method: Incorporating Uncertainty** R4's comments suggested that it would be helpful to provide citations for the point that neglecting to include uncertainty can bias coefficients along with standard errors.
-We drop cites here to Blackwell, Honaker, and King [-@Blackwell2017, 318-319; -@Blackwell2017a, 360-361]---who present simulations that, while aimed at other issues, nonetheless illustrate the point neatly---as well as to @caughey2018 [254].
+We drop cites here to @Blackwell2017 [, 318-319]---who present a simulation that, while aimed at other issues, nonetheless illustrates the point neatly---as well as to @caughey2018 [254].
 
 1. **Method: ~~Better Estimates of Public Support and~~ Adding More Data** R1 and R4 asked for more detail on the differences between Solt's [-@Solt2020a] DCPO model and the latent variable model used by Claassen.
 R2 indirectly raised the same issue, asking about the consequences for thermostatic models of employing a random-walk prior in the DCPO model of democratic support---when actually both DCPO and the Claassen model use the same random-walk prior.
