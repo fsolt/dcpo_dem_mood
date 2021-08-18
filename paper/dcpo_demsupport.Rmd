@@ -189,7 +189,7 @@ We proceed in three steps.
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.^[Additional details on this data replication process are found in Supplementary Information Appendix \@ref(dgp).]
 As democracy is also a latent variable in these analyses, we include the uncertainty in its estimates as well, along with that for corruption in the models of @Claassen2020b.
-In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing the DCPO model [@Solt2020a], which unlike the [@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to these data [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see Supplementary Information Appendix \@ref(dcpo).]
+In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing the DCPO model [@Solt2020a], which unlike the [@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to the data on democratic support [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see Supplementary Information Appendix \@ref(dcpo).]
 
 ## Incorporating Uncertainty {-}
 
@@ -932,44 +932,40 @@ Those who would defend democracy have no grounds to be complacent.
 
 # Replication Notes {#dgp}
 
-Replicating the analyses of @Claassen2020a and @Claassen2020b while incorporating the quantified uncertainty in their variables was not possible from those article's Dataverse files.
+Because the Dataverse replication files for @Claassen2020a and @Claassen2020b included only the point estimates of their variables, replicating those articles' analyses while incorporating the quantified uncertainty in their latent variables was not possible using only those files.
 Instead, it required re-collecting all of the data employed in those articles directly from their original sources, that is, in the terminology of @Grossman2020, it required a primary replication rather than a secondary one.
-We describe this process here.
+We describe this process for the latent variables here.
 
-First, we identified the variable names of each survey item in each survey dataset as well as their corresponding values. 
-We then used the `DCPOtools` R package to automate the process of generating a dataset of survey marginals.
-Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to locate 5 country-year-items: including South Sudan in Arab Barometer Wave 4, Dominican Republic in 2003 Latinobarometer, XXXX, and Spain in 2005 Latinobarometer. 
-In addition, we still have different sample size and number of respondents answering supportively by following approaches of cleanning data and treatment of non-responses described in @Claassen2020a's supplementary materials.
-Specifically, we used Claassen's year coding to recode 85 unmatching country-year observations and added one more item "strong leader 2" in Arabbarometer which has different response categories but was conflated into "strong leader 1".  
+## Democratic Support {-}
 
-V-Dem data was standardized in @Claassen2020b's analyses, but we did not figure out how the standardization was exactly performed.
-We standardized variables using Z-score, and the standardized values are different from Claassen's data.
+First, for each item used in the two articles' measure of democratic support, we identified the original variable names and corresponding values in each survey dataset. 
+We then used the `dcpo_setup` and `format_claassen` functions of the `DCPOtools` R package to automate the process of generating a dataset of survey marginals.
+These survey marginals were then used to generate estimates of democratic support in Stan using the `supdem.stan.mod5.stan` script from the @Claassen2020a Dataverse materials.
+Draws from the posterior distribution quantify the uncertainty in the estimates.
 
-Since many variables, dependent variables, key independent variables, and control variables in the original analysis are latent variables, which cannot be observed directly and are inherently contaminated by measurement errors.
-We include measurement errors in five variables, public support for democracy, liberal democracy index, electoral democracy index, liberal component index, and corruption perception index.
+## Democracy {-}
 
-In respect of the key independent variable, public support for democracy, we preserve its posterior distribution from Model 5 using recollected and expanded data, separately.
+The democracy variables in the two articles are drawn from Version 8 of the V-Dem Dataset [@coppedge2018].
+This version of the dataset includes draws from the posterior distribution of the estimates to quantify their uncertainty.
+In our extension (the rightmost replication of each model in our Figures 1 and 2), we are able to extend the time series beyond the last year of Version 8, 2017, so we use the updated Version 10 instead.
+Version 10, however, does not include posterior draws of the estimates, but rather standard errors.
+For the purposes of incorporating this uncertainty into our analyses, we assumed a normal distribution around the point estimates.
 
-For the three indices of democratic development, we take two strategies.
-Regarding original data and recollected data, we use three democratic indices from V-Dem Version 8 which covers 201 countries from 1789 to 2017 and is the version Claassen used in his analyses.
-We use their posterior distribution provided by @coppedge2018.
-Regarding the expanded data used to replicate Claassen's analyses, we use the same three democratic indices but from V-Dem Version 10 because its year range from 1789 to 2019 is compatible with the expanded data.
-However, since V-Dem project has not released posterior distributions for indices in version 10, we simulated 900 data set for each democracy index using their standard error.
+## Corruption {-}
 
-Finally, to account for measurement error in Corruption Perceptions Index, we simulated 900 draws from a distribution with the point estimate and standard error provided by CPI for the year from 2012 to 2018.
-However, CPI does not provide standard error for the years before 2012.
-To simulate "posterior distribution", we first estimated the standard error for the country-year index.
-For each country, we identified its maximum relative standard error (standard error/cpi index) during these years and then calculated the estimated country-year standard error by multiplying the country's maximum relative error and its year CPI index.
-We used this estimated standard error to simulate 900 draws for each country-year.
+The corruption variable used in @Claassen2020b is the Corruption Perceptions Index, which provides point estimates and standard errors for the years from 2012 to 2018.
+For country-years beyond that range, we estimated standard errors for by first identifying the country's maximum relative standard error (standard error/point estimate) during 2012-2018 and then multiplying this quantity by the country-year's point estimate.
+For the purposes of incorporating this uncertainty into our analyses, we again assumed a normal distribution around the point estimates.
 
-In the following section, we illustrate how we utilize these simulated distributions to take uncertainty into account in analysis models.
+In Appendix \@ref(moc), we illustrate how we employed these simulated distributions to take uncertainty into account in our analysis models.
 
+\pagebreak
 # The Method of Composition {#moc}
 
-In analysis models, we have latent variables in both sides of equations, public support for democracy, democracy indices, and corruption index (The latter one is included in APSR analyses).
-Since measurement uncertainty associated with these latent variables can propagate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing "Method of Composition" [@Tanner1993,p52], which has been applied in analyses with latent variables [@Treier2008;@caughey2018;@Kastellec2015].
+In our analysis models, we have latent variables in both sides of the equations: public democratic support, democracy, and corruption.
+Since measurement uncertainty associated with these latent variables can propagate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing the "Method of Composition" [@Tanner1993, 52], which has often been applied in analyses with latent variables in political science [see, e.g., @Treier2008; @caughey2018; @Kastellec2015].
 
-As @caughey2018 explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, integrating over the uncertainty in latent variables $\theta$ (P A-15).
+As @caughey2018 [A-15] explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, integrating over the uncertainty in latent variables $\theta$.
 More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
 
 \begin{equation}
@@ -986,29 +982,28 @@ To sample from the conditional dentsity and the marginal density in the right si
 
 3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{s}$ and variance-covariace matrix $V^{s}$.
 
-We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, liberal component index, and corruption perceptions index.
+We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
 For each of these five latent variables, we take 900 draws from its posterior distribution. We duplicate the dataset of variables “without” measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error, which yields 900 dataset.
 In next step, we run each of analysis models with these 900 datesets independently and save the resulting estimates of coefficients and the matrix of variance-covariance for each run.
 We then draw one sample from the mulitivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
 This procedure finally yields 900 samples of estimated coefficients drawn from the joint density of $\beta$ and $\theta$.
 We calculate point estimates and standard error based on these 900 samples.
 
-
+\pagebreak
 # DCPO Replication {#dcpo}
 
-As a further test of the classic arguments on democracy and public support, we apply the superior DCPO model to a bigger data set.
+To make fuller use of the available survey data, we also replicated the tests of the classic arguments on democracy and public support using the DCPO model put forward in @Solt2020a on our expanded data set.
 The DCPO model has several advantages over the @Claassen2019 model used in Claassen [-@Claassen2020a; -@Claassen2020b].
-First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, p.5].
-Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, pp.3-4; see also @McGann2014].
-Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, p.229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, p.8].
-Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, pp.10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
+First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, 5].
+Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, 3-4; see also @McGann2014].
+Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
+Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [, 10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
 
-We employ the superior DCPO model to the expanded data using the `DCPO` package for R [@Solt2020b].
-We use the estimated public support from DCPO model to replicate analyses by following the same steps.
-Then, we compare the DCPO results with two types of replication results from Model 5: estimation of original data and without uncertainty and estimation of expanded data and with uncertainty.
+We employ the superior DCPO model to our expanded dataset using the `DCPO` package for R [@Solt2020b].
+We then use the estimated public support from the DCPO model to replicate all of the analyses presented in the text.
+Figures A.1 and A.2 display these results as the righthand set of results, with the replication of the articles' original results based only on point estimates on the left and our extension with uncertainty and more data, but the articles' original, @Claassen2019, model in the middle for comparison.
 
-The comparison is presented in Appendix B.
-Still, even with the superior DCPO model and expanded data, there is no evidence to support that public support can sustain democratic development or public support responds thermostatically to changes in democracy.
+Even with the advantages of the DCPO model, there is no evidence to support the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support sustains democratic regimes or public support responds thermostatically to changes in democracy.
 
 
 ```{r dcpo-AJPS, eval=FALSE}
