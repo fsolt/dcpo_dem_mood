@@ -75,28 +75,25 @@ A pair of prominent recent works took advantage of this latent variable approach
 These works concluded, first and supporting the classic argument, that mass support had a positive impact on democratic change, especially the endurance of democracy [@Claassen2020a, pp. 127-130], and, second and directly contrary to it, democratic change has a thermostatic effect on public support, that is that, rather than generating its own support, deepening democracy provokes a backlash and it is instead democratic backsliding that calls forth greater public support [@Claassen2020b, 46-50].
 
 The models employed in these studies' analyses, though, do not account for uncertainty in their measurement of democratic support.
-Measurement error challenges statistical analyses, especially when it is correlated with an outcome variable which is the case of democratic support, but it is often ignored in the analysis [@Blackwell2017; @Blackwell2017a].
 Because they are unobserved, latent variables are inherently accompanied by measurement uncertainty.
 To leave this uncertainty unacknowledged is to make the implausible assumption that the latent variables are measured perfectly, an assumption which distorts both statistical and substantive inference [see, e.g., @Crabtree2015; @juhl_measurement_2019].
 
 In this letter, we reexamine the classic arguments about support for democracy and democratic change tested in these two pieces while correcting this oversight.
-In addition to incorporating the measurement uncertainty, we also sought to reduce it by correcting and expanding survey data to including 144 countries for up to 33 years between 1988 and 2020 (based on 26% more questions and 33% more survey sources).
-Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and with expanded data.
+In addition to incorporating the measurement uncertainty, we also sought to reduce it by expanding considerably the survey data drawn upon and re-estimating democratic support for 144 countries for up to 33 years between 1988 and 2020.
+Our analyses reveal that the significant relationships between public support and democratic change disappear once measurement uncertainty is taken into account, both in replications with the studies' original data and in our extension analyses that incorporate the additional data.
 That is, once measurement uncertainty is accounted for, there is no empirical support for either claim put forward in these two works: declining democratic support does not signal subsequent democratic backsliding, and changes in democracy do not spur a thermostatic response in democratic support.
   
 There are several important implications of these null results.
 They point to a need for closer attention to the conditional aspects of the classic theory [see @lipset_social_1959, 86-89; @Easton1965, 119-20].
 On the one side, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
 On the other, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance; that is, that it is not democratic support that is important to democratic change, but rather unsatisfied democratic demand [see @Qi2011].
-
 Similarly, the results presented here are further evidence that the survey items commonly employed to measure democratic support are inadequate to the task.
-Without additional information on respondents' support for democracy relative to other values with which it may come into conflict, such as their partisanship [see, e.g., @Carey2020; @graham_democracy_2020; @McCoy2020]---or on whether respondents even understand the meaning of the democracy they are claiming to support [see, e.g., @Kirsch2019; @Wuttke2020]---these questions appear to miss capturing the true extent of support democracy would find among the public when public support was actually needed [see @Carey2020; @graham_democracy_2020; @McCoy2020].
-
-Our results also reinforce the views that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short-term is instead best understood as an elite-driven phenomenon [see, e.g., @levitsky_how_2018; @Haggard2021].
+Without additional information on respondents' support for democracy relative to other values with which it may come into conflict, such as their partisanship [see, e.g., @Carey2020; @graham_democracy_2020; @McCoy2020]---or on whether respondents even understand the meaning of the democracy they are claiming to support [see, e.g., @Kirsch2019; @Wuttke2020]---these questions appear to miss capturing the true extent of support democracy would find among the public when public support was actually needed.
+Our results also reinforce arguments that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short-term is instead best understood as an elite-driven phenomenon [see, e.g., @levitsky_how_2018; @Haggard2021].
 
 We draw two conclusions, one methodological and one substantive.
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, p. 51].
+And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not support them.
 There is no room for complacency.
 
@@ -189,8 +186,8 @@ mocresult_dcpoAJPS <- readRDS(here("output","estimates_moc_dcpoAJPS.RDS"))
 We proceed in three steps.
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
-As democracy is also a latent variable in these analyses, we include the uncertainty in its estimates as well, along with that for corruption in the second analysis of @Claassen2020b.
-In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing Solt's [-@Solt2020a; -@Solt2020b] DCPO model, which unlike Claassen's [-@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to these data [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see the Supplemental Information.]
+As democracy is also a latent variable in these analyses, we include the uncertainty in its estimates as well, along with that for corruption in the models of @Claassen2020b.
+In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing the DCPO model [@Solt2020a; @Solt2020b], which unlike the [@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to these data [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see the Supplemental Information.]
 
 ## Incorporating Uncertainty
 
@@ -886,7 +883,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 # Discussion
 
 These null results have a number of important substantive implications.
-First, they underscore that recognizing the conditional aspects of the classic argument regarding democracy and democratic support is crucial.
+First, they underscore that it is crucial to recognize the conditional aspects of the classic argument regarding democracy and democratic support.
 With regard to how levels of democracy affect public support, even the early proponents of the classic argument did not contend that the mere existence of democratic institutions, no matter how consistently feckless and ineffective, would generate support among the public: instead, they maintained, public support would be gained through experience with government performance that was generally effective [@lipset_social_1959, 86-89; @Easton1965, 119-120].
 There is some empirical evidence for this, with government effectiveness positively related to public support among democracies and negatively related in non-democracies [@Magalhaes2014]. 
 The finding of @Krieckhaus2014 that income inequality is strongly negatively related to public support in democracies suggests that performance regarding redistribution is particularly important.
