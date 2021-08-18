@@ -18,7 +18,7 @@ framed.sty
 # data/dcpo_output.rda
 # data/*/claassen_m5*.rda
 # data/df_dcpo.rda
-# paper/*cache/
+paper/*cache/
 # paper/figures/old/
 # paper/lit/
 # paper/cda/
