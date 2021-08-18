@@ -265,7 +265,7 @@ To provide a further test of the classic arguments on democracy and public suppo
 
 # Results {-}
 
-Figure \@ref(fig:plot-mainAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy [@Claassen2020a, Table 1, 128].
+Figure \@ref(fig:plot-fullAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy [@Claassen2020a, Table 1, 128].
 The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (democracy and corruption), and they reproduce that article's findings.
 The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
@@ -396,7 +396,6 @@ result_pooled <- bind_rows(
 ) %>% 
     mutate(type = "Pooled~OLS",
            model = "Model 1 (Pooled OLS)")
-
 result_gmm <- bind_rows(
     mutate(result_clsAJPS[["gmm"]][[1]][,1:3], submodel = "Point Estimates Only"),
     mutate(MOCsumm(mocresult_correctAJPS[["gmm"]]), submodel = "With Uncertainty"),
@@ -404,7 +403,6 @@ result_gmm <- bind_rows(
 ) %>% 
     mutate(type = "System~GMM",
            model = "Model 3 (System GMM)")
-
 result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
     filter(term != "(Intercept)") %>%
     mutate(
@@ -422,7 +420,6 @@ result_pooledAJPS <- bind_rows(result_pooled, result_gmm) %>%
         submodel = factor(submodel, levels = c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data")),
         model = factor(model, levels = paste0("Model ", rep(1:4), rep(c(" (Pooled OLS)", " (System GMM)"), each = 2)))
     )
-
 result_regime <- bind_rows(
     mutate(result_clsAJPS[["pooled-regime"]][[1]][,1:3], submodel = "Point Estimates Only"),
     mutate(MOCsumm(mocresult_correctAJPS[["pooled-regime"]]), submodel = "With Uncertainty"),
@@ -430,7 +427,6 @@ result_regime <- bind_rows(
 ) %>% 
     mutate(type = "Pooled~OLS",
            model = "Model 2 (Pooled OLS)")
-
 result_regimeGmm <- bind_rows(
     mutate(result_clsAJPS[["gmm-regime"]][[1]][,1:3], submodel = "Point Estimates Only"),
     mutate(MOCsumm(mocresult_correctAJPS[["gmm-regime"]]), submodel = "With Uncertainty"),
@@ -438,7 +434,6 @@ result_regimeGmm <- bind_rows(
 )%>% 
     mutate(type = "System~GMM",
            model = "Model 4 (System GMM)")
-
 result_regimeAJPS <- bind_rows(result_regime, result_regimeGmm) %>%
     filter(term != "(Intercept)") %>%
     mutate(
@@ -479,15 +474,14 @@ index_coefName <- c(
 df_plot <- bind_rows(result_pooledAJPS, result_regimeAJPS) %>% 
   mutate(term = index_coefName[term0], 
            term = factor(term, levels = unique(index_coefName)))
-
 ajps_caption <- "Replications of Claassen (2020a), Table 1, 128."
-
 small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
+    theme_bw() +
     geom_hline(yintercept = 0, colour = "grey50", linetype = 2) +
     scale_color_grey(start = 0.8, end = 0.4, 
                      name = "Replication",
-                     breaks=c("Point Estimates Only", "Uncertainty & More Data", "Uncertainty & DCPO"),
-                     labels=c("Point Estimates Only", "Uncertainty & More Data", "Uncertainty & DCPO")) +
+                     breaks=c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data"),
+                     labels=c("Point Estimates Only", "With Uncertainty", "Uncertainty & More Data")) +
     theme(axis.text.x  = element_text(angle = 90, hjust = .5),
           strip.text.y.left = element_text(angle = 0),
           legend.position = c(-0.06, -.01),
@@ -506,7 +500,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 
 ```
 
-In Figure \@ref(fig:plot-mainAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [47, Table 1, 49, Table 2].
+In Figure \@ref(fig:plot-fullAPSR), we examine the thermostatic model of democratic support per @Claassen2020b [47, Table 1, 49, Table 2].
 The negative coefficient estimates for change in liberal democracy in the lefthand set of results, which do not take uncertainty into account, imply that the immediate effect of a increase in the level of democracy is a decline in public support for democracy and of a decrease in democracy an expansion of support---that democratic support indeed does respond thermostatically to democracy. 
 However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
 And again, the righthand results reveal that the additional data of our extension do not provide support for the original conclusion.
@@ -936,11 +930,8 @@ Those who would defend democracy have no grounds to be complacent.
 \setcounter{figure}{0}
 \renewcommand{\thefigure}{A.\arabic{figure}}
 
-<<<<<<< HEAD
-# Data Recollection and Uncertainty in Control Variables {#dgp}
-=======
-# Supplementary Appendix A: Replication Notes {#dgp}
->>>>>>> 481b8a10692704abecd4e0d1eaae4ec6f296eab0
+
+# Replication Notes {#dgp}
 
 Replicating the analyses of @Claassen2020a and @Claassen2020b while incorporating the quantified uncertainty in their variables was not possible from those article's Dataverse files.
 Instead, it required re-collecting all of the data employed in those articles directly from their original sources, that is, in the terminology of @Grossman2020, it required a primary replication rather than a secondary one.
