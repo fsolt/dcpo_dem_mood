@@ -187,9 +187,9 @@ mocresult_dcpoAJPS <- readRDS(here("output","estimates_moc_dcpoAJPS.RDS"))
 
 We proceed in three steps.
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020b], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
-Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.
+Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.^[Additional details on this data replication process are found in Supplementary Information Appendix \@ref(dgp).]
 As democracy is also a latent variable in these analyses, we include the uncertainty in its estimates as well, along with that for corruption in the models of @Claassen2020b.
-In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing the DCPO model [@Solt2020a], which unlike the [@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to these data [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see the Supplemental Information.]
+In the third step, we collect even more survey data---increasing these source data by one-third---and re-estimate the two articles' analyses once more, again maintaining the full distribution of estimates to preserve measurement uncertainty.^[We also attempted to make fuller use of the available survey data by employing the DCPO model [@Solt2020a], which unlike the [@Claassen2019] model does not dichotomize ordinal responses.  The better fit of the DCPO model to these data [see @Solt2020a, 10-12] and the additional information it incorporates, however, did not yield substantively different results; see Supplementary Information Appendix \@ref(dcpo).]
 
 ## Incorporating Uncertainty {-}
 
@@ -197,8 +197,7 @@ Although measurement uncertainty has not yet attracted attention in the field of
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey2018, 254]. 
 
 Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in analysis models using our replication data.
-We conduct inferences from the distributive data via the technique known as the "method of composition" [@Tanner1993, 52; @Treier2008, 215; @caughey2018, A15-16].
-For additional detail on this technique, see the Supplementary Information.
+We conduct inferences from the distributive data via the technique known as the "method of composition" [@Tanner1993, 52; @Treier2008, 215; @caughey2018, A15-16].^[For additional details on this technique, see Supplementary Information Appendix \@ref(moc).]
 
 ```{r compare_n}
 
@@ -940,7 +939,7 @@ We describe this process here.
 First, we identified the variable names of each survey item in each survey dataset as well as their corresponding values. 
 We then used the `DCPOtools` R package to automate the process of generating a dataset of survey marginals.
 Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to locate 5 country-year-items: including South Sudan in Arab Barometer Wave 4, Dominican Republic in 2003 Latinobarometer, XXXX, and Spain in 2005 Latinobarometer. 
-In addition, we still have different sample size and number of respondents answering supportively by following approaches of cleanning data and treatment of non-responses described in @Claassen2020a's supplementatry materials.
+In addition, we still have different sample size and number of respondents answering supportively by following approaches of cleanning data and treatment of non-responses described in @Claassen2020a's supplementary materials.
 Specifically, we used Claassen's year coding to recode 85 unmatching country-year observations and added one more item "strong leader 2" in Arabbarometer which has different response categories but was conflated into "strong leader 1".  
 
 V-Dem data was standardized in @Claassen2020b's analyses, but we did not figure out how the standardization was exactly performed.
