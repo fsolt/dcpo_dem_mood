@@ -883,7 +883,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 # Discussion
 
 These null results have a number of important substantive implications.
-First, they underscore that it is crucial to recognize the conditional aspects of the classic argument regarding democracy and democratic support.
+First, they underscore that it is crucial to recognize the conditional aspects of the classic theory regarding democracy and democratic support.
 With regard to how levels of democracy affect public support, even the early proponents of the classic argument did not contend that the mere existence of democratic institutions, no matter how consistently feckless and ineffective, would generate support among the public: instead, they maintained, public support would be gained through experience with government performance that was generally effective [@lipset_social_1959, 86-89; @Easton1965, 119-120].
 There is some empirical evidence for this, with government effectiveness positively related to public support among democracies and negatively related in non-democracies [@Magalhaes2014]. 
 The finding of @Krieckhaus2014 that income inequality is strongly negatively related to public support in democracies suggests that performance regarding redistribution is particularly important.
@@ -934,11 +934,15 @@ Those who would defend democracy have no grounds to be complacent.
 \setcounter{figure}{0}
 \renewcommand{\thefigure}{A.\arabic{figure}}
 
-# Supplementary Appendix A: Data Recollection and Uncertainty in Control Variables {#dgp}
+# Supplementary Appendix A: Replication Notes {#dgp}
 
-Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to achieve a primary replication [@Grossman2020] based on survey data summarized in @Claassen2020a and @Claassen2020b's Dataverse files.
+Replicating the analyses of @Claassen2020a and @Claassen2020b while incorporating the quantified uncertainty in their variables was not possible from those article's Dataverse files.
+Instead, it required re-collecting all of the data employed in those articles directly from their original sources, that is, in the terminology of @Grossman2020, it required a primary replication rather than a secondary one.
+We describe this process here.
 
-Specifically, we are not able to identify 5 country-year surveys, including South Sudan in Arab Barometer Wave 4, Dominican Republic in 2003 Latinobarometer, XXXX, and Spain in 2005 Latinobarometer. 
+First, we identified the variable names of each survey item in each survey dataset as well as their corresponding values. 
+We then used the `DCPOtools` R package to automate the process of generating a dataset of survey marginals.
+Due to revisions to the underlying datasets (and, possibly, transcription errors), we were not able to locate 5 country-year-items: including South Sudan in Arab Barometer Wave 4, Dominican Republic in 2003 Latinobarometer, XXXX, and Spain in 2005 Latinobarometer. 
 In addition, we still have different sample size and number of respondents answering supportively by following approaches of cleanning data and treatment of non-responses described in @Claassen2020a's supplementatry materials.
 Specifically, we used Claassen's year coding to recode 85 unmatching country-year observations and added one more item "strong leader 2" in Arabbarometer which has different response categories but was conflated into "strong leader 1".  
 
