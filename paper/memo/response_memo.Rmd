@@ -92,15 +92,15 @@ All of the replications that include uncertainty now do so for _all_ of the vari
 1. **Method: Incorporating Uncertainty** R1 and R2 both raised the question of whether the approach for incorporating uncertainty we used was the most appropriate for this application, and R4 asked for additional detail on how uncertainty was incorporated.
 Although R2 correctly (and helpfully!) noted that the approach we had employed is the same explicated by @Blackwell2017, [they](https://public.oed.com/blog/a-brief-history-of-singular-they/) also suggested we use the Method of Composition (MOC) that was first put forward by @Tanner1993 and introduced to political science by @Treier2008.
 As this technique has become the standard method for incorporating uncertainty in the Americanist literature using Multilevel Regression and Poststratification [see, e.g., @Kastellec2015; @caughey2018], which is after all also a latent variable model of public opinion, we were pleased to adopt this suggestion.
-We provide a full description of the MOC technique in the Supplementary Information.
+We provide a full description of the MOC technique in Supplementary Information Appendix B.
 
-1. **Method: Incorporating Uncertainty** R4 suggested that it would be helpful to provide citations for the point that neglecting to include uncertainty can bias coefficients along with standard errors.
-We agree and so drop cites here to Blackwell, Honaker, and King [-@Blackwell2017, 318-319; -@Blackwell2017a, 360-361]---who present simulations that, while aimed at other issues, nonetheless illustrate the point neatly---as well as to @caughey2018 [, 254].
+1. **Method: Incorporating Uncertainty** R4's comments suggested that it would be helpful to provide citations for the point that neglecting to include uncertainty can bias coefficients along with standard errors.
+We drop cites here to Blackwell, Honaker, and King [-@Blackwell2017, 318-319; -@Blackwell2017a, 360-361]---who present simulations that, while aimed at other issues, nonetheless illustrate the point neatly---as well as to @caughey2018 [254].
 
-1. **Method: ~~Better Estimates of Public Support and~~ Adding More Data** R1 and R4 asked for more detail on the differences between Solt's [-@Solt2020b] DCPO model and the latent variable model used by Claassen.
+1. **Method: ~~Better Estimates of Public Support and~~ Adding More Data** R1 and R4 asked for more detail on the differences between Solt's [-@Solt2020a] DCPO model and the latent variable model used by Claassen.
 R2 indirectly raised the same issue, asking about the consequences for thermostatic models of employing a random-walk prior in the DCPO model of democratic support---when actually both DCPO and the Claassen model use the same random-walk prior.
 Given that the DCPO model's advantages ultimately do not have a payoff in this case, we concluded that its inclusion in this 4000-word letter is an unnecessary distraction from our main points.
-So we took the _other_ suggestion from R1 on this topic, hinted at by R2 as well, to simply drop DCPO from the text entirely and move the analyses with the DCPO estimates to the Supplementary Information.
+So we took the _other_ suggestion from R1 on this topic, hinted at by R2 as well, to simply drop DCPO from the text entirely and move the analyses with the DCPO estimates to Appendix C in the Supplementary Information.
 
 1. **Method: Adding More Data** Not directly related to a specific comment, but the opportunity to revise and resubmit allowed us to incorporate even more survey data that was released since our original submission (most notably from the ongoing release of Wave 7 of the World Values Survey).  Thanks again!
 
