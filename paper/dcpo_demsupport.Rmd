@@ -11,20 +11,14 @@ output:
 title: |
   | Democracy, Public Support, 
   | and Measurement Uncertainty
-# thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: `r format(Sys.time(), '%B %d, %Y')`."
+thanks: "The authors contributed equally to this work.  Corresponding author: [yuehu@mail.tsinghua.edu.cn](mailto:yuehu@mail.tsinghua.edu.cn).  Current version: August 20, 2021."
 
-# author:
-# - name: Yuehong 'Cassandra' Tai
-#   affiliation: University of Iowa
-# - name: Yue Hu
-#   affiliation: Tsinghua University
-# - name: Frederick Solt
-#   affiliation: University of Iowa
+author: "Yuehong 'Cassandra' Tai^[University of Iowa], Yue Hu^[Tsinghua University], and Frederick Solt$^{\\dagger}$"
   
 abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take measurement uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by incorporating additional survey data. Even with this expanded evidentiary base, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [144/150 words]"
 keywords: "Democratization, public support, regime survival, measurement uncertainty, latent variables"
 
-date: " "
+date: "August 20, 2021"
 editor_options: 
   markdown: 
     wrap: sentence
