@@ -15,7 +15,7 @@ thanks: "The authors contributed equally to this work.  Corresponding author: [y
 
 author: "Yuehong 'Cassandra' Tai^[University of Iowa], Yue Hu^[Tsinghua University], and Frederick Solt$^{\\dagger}$"
   
-abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take measurement uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by incorporating additional survey data. Even with this expanded evidentiary base, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty. [144/150 words]"
+abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. But such approaches come with concomitant measurement uncertainty, and neither study incorporated this uncertainty into its analyses. In this letter, we correctly take measurement uncertainty in account and show that there is no support for the conclusion of either study. We then work to minimize the measurement uncertainty in public support by incorporating additional survey data. Even with this expanded evidentiary base, however, our analyses fail to yield evidence in support of either hypothesis, underscoring the necessity of accounting for measurement uncertainty."
 keywords: "Democratization, public support, regime survival, measurement uncertainty, latent variables"
 
 date: "August 20, 2021"
@@ -55,8 +55,6 @@ header-includes:
       - \titleformat*{\section}{\normalsize\bfseries}
       - \titleformat*{\subsection}{\normalsize\itshape}
 ---
-
-(Word count: 3986)
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
