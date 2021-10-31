@@ -966,20 +966,26 @@ More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ 
 p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
 \end{equation}
 
-where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $X$, and $y$ is the outcome variable.
+where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $\theta$, and $y$ is the outcome variable.
 In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
-To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
+To sample from the conditional density and the marginal density in the right side of the equation, we follow iterative Monte Carlo procedure described by @Treier2008, at iteration t,
 
-1. We sample $\theta^{s}$ from its posterior distribution $p(\theta|Z)$ and $y$ from $p(y|Z)$.
+1. We sample $\theta^{t}$ from its posterior distribution $p(\theta|Z)$.
 
-2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$.
+2. For each analysis model, we run the model with $\theta^{t}$, and $w$, and save the coefficient estimates $\beta^{t}$ and variance-covariance matrix of $\hat{\beta^{t}}$, $\hat{V^{t}}$, both of which change due to the uncertainty in $\theta$.
 
-3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{s}$ and variance-covariace matrix $V^{s}$.
+3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{t}$ and variance-covariance matrix $V^{t}$.
 
-We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
+In the step 3, the marginal distribution of a parameter vector $\beta$ was estimated, intergrating over $p(\theta|Z)$:
+
+\begin{equation}
+p(\beta|w,y) = \[ \int_{\theta} p(\beta|\theta,w,y)p(\theta|Z) \,d\theta\]
+\end{equation}
+
+In our re-analyses, we incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
 For each of these five latent variables, we take 900 draws from its posterior distribution. We duplicate the dataset of variables “without” measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error, which yields 900 dataset.
 In next step, we run each of analysis models with these 900 datesets independently and save the resulting estimates of coefficients and the matrix of variance-covariance for each run.
-We then draw one sample from the mulitivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
+We then draw one sample from the multivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
 This procedure finally yields 900 samples of estimated coefficients drawn from the joint density of $\beta$ and $\theta$.
 We calculate point estimates and standard error based on these 900 samples.
 
