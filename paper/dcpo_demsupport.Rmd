@@ -966,6 +966,90 @@ In Appendix \@ref(moc), we illustrate how we employed these simulated distributi
 
 \pagebreak
 
+
+## Numeric Results for Replicating Claassen 2020a {#fullAJPS}
+
+```{r num-labelAJPS, eval=TRUE}
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(Libdem_VD, 1:2)1" = "Democracy[t-1]",
+  "plm::lag(Libdem_VD, 1:2)2"  = "Democracy[t-2]",
+  "plm::lag(SupDem_trim, 1)" = "Support[t-1]",
+  "plm::lag(SupDem_Democ, 1)" = "Support in Democracy",
+  "plm::lag(theta_dem_trim, 1)" = "Support in Democracy",
+  "plm::lag(SupDem_Autoc, 1)" = "Support in Autocracy",
+  "plm::lag(theta_aut_trim, 1)" = "Support in Autocracy",
+  "plm::lag(lnGDP_imp, 1)" = "Log GDP Per Capita[t-1]",
+  "plm::lag(GDP_imp_grth, 1)"  = "GDP Per Capita Growth[t-1]",
+  "plm::lag(Libdem_regUN, 1)" = "Regional Democracy[t-1]",
+  "plm::lag(Pr_Muslim, 1)" = "Percent Muslim[t-1]",
+  "plm::lag(Res_cp_WDI_di, 1)" = "Resource Dependence[t-1]"
+)
+```
+
+```{r num-pointAJPS, results='asis', eval=TRUE}
+tb_result_cls <- purrr::map(result_clsAJPS, ~ {
+  names(.) <- c("tidy", "glance")
+  class(.) <- "modelsummary_list"
+  return(.)})
+names(tb_result_cls) <- c("Pooled", "Pooled-Regime", 
+                          "GMM", "GMM-Regime")
+modelsummary(tb_result_cls,  
+             statistic = "conf.int",
+             coef_map = names_coef, 
+             output = "latex", 
+             title = "Original") %>%
+  
+  kableExtra::kable_styling(font_size = 8) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+\blandscape
+
+## Numeric Results of Figure \@ref(fig:plot-fullAPSR) {#fullAPSR}
+
+```{r num-labelAPSR, eval=TRUE}
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(SupDem_trim, 1:2)1" = "Democratic Mood (t-1)",
+  "plm::lag(SupDem_trim, 1:2)2" = "Democratic Mood (t-2)",
+  "diff(Libdem_z, lag = 1)" = "Liberal Democracy (Difference)",
+  "Libdem_z" = "Liberal Democracy (Difference)",
+  "plm::lag(Libdem_z, 1)" = "Liberal Democracy (t-1)",
+  "diff(Polyarchy_z, lag = 1)" = "Electoral Democracy (Difference)",
+  "Polyarchy_z" = "Electoral Democracy (Difference)",
+  "plm::lag(Polyarchy_z, 1)" = "Electoral Democracy (t-1)",
+  "diff(Liberal_z, lag = 1)" = "Minoritarian Democracy (Difference)",
+  "Liberal_z" = "Minoritarian Democracy (Difference)",
+  "plm::lag(Liberal_z, 1)" = "Minoritarian Democracy (t-1)",
+  "diff(lnGDP_imp, lag = 1)" = "Log GDP Per Capita (Difference)",
+  "lnGDP_imp" = "Log GDP per capita (Difference)",
+  "plm::lag(lnGDP_imp, 1)" = "Log GDP (t-1)",
+  "diff(Corrup_TI_z, lag = 1)" = "Corruption (Difference)",
+  "Corrup_TI_z" = "Corruption (Difference)",
+  "plm::lag(Corrup_TI_z, 1)" = "Corruption (t-1)"
+)
+```
+
+```{r num-pointAPSR, results='asis', eval=TRUE}
+tb_result_clsAPSR <- map(result_clsAPSR, ~ {
+  names(.) <- c("tidy", "glance")
+  class(.) <- "modelsummary_list"
+  return(.)}) %>% 
+  .[c("pooled1", "pooled-regime1", "fd1", "fd-regime1",
+      "pooled2", "pooled-regime2", "fd2", "fd-regime2")]
+names(tb_result_clsAPSR) <- c("ECM", "ECM-Regime", "FD", "FD-Regime","ECM Corrup", "ECM Corrup-Regime", "FD Corrup", "FD Corrup-Regime")
+modelsummary(tb_result_clsAPSR, 
+             stars = TRUE,
+             coef_map = names_coef, 
+             output = "latex", 
+             title = "The Effect of Public Support on Democracy with Uncertainty (Original)") %>% 
+  kableExtra::kable_styling(font_size = 7) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+\elandscape
+
+
 # The Method of Composition {#moc}
 
 In our analysis models, we have latent variables in both sides of the equations: public democratic support, democracy, and corruption.
@@ -978,6 +1062,23 @@ More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ 
 p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
 \end{equation}
 
+where $\theta$ is latent variables with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $\theta$, and $y$ is the outcome variable.
+In this way, we incorporate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
+To sample from the conditional density and the marginal density in the right side of the equation, we follow iterative Monte Carlo procedure described by @Treier2008, at iteration t,
+
+1. We sample $\theta^{t}$ from its posterior distribution $p(\theta|Z)$.
+
+2. For each analysis model, we run the model with $\theta^{t}$, and $w$, and save the coefficient estimates $\beta^{t}$ and variance-covariance matrix of $\hat{\beta^{t}}$, $\hat{V^{t}}$, both of which change due to the uncertainty in $\theta$.
+
+3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{t}$ and variance-covariance matrix $V^{t}$.
+
+In the step 3, the marginal distribution of a parameter vector $\beta$ was estimated, intergrating over $p(\theta|Z)$:
+
+\begin{equation}
+p(\beta|w,y) = \int_{\theta} p(\beta|\theta,w,y)p(\theta|Z) \,d\theta
+\end{equation}
+
+In our re-analyses, we incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
 where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $X$, and $y$ is the outcome variable.
 In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
 To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
@@ -1466,5 +1567,6 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
 ```
 
 # References  {-}
+
 
 <div id = 'refs_app'></div>
