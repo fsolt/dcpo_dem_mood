@@ -7,7 +7,7 @@ output:
     number_sections: yes
     latex_engine: xelatex
     pandoc_args: --lua-filter=multiple-bibliographies.lua
-    
+  
 title: |
   | Democracy, Public Support, 
   | and Measurement Uncertainty
@@ -125,6 +125,7 @@ p_load(
   plm, 
   # presentation
   gridExtra,
+  modelsummary,
   # drhutools, # for colorful plots
   dotwhisker, 
   latex2exp,
@@ -144,7 +145,7 @@ source(here("R", "moc_summary.R"))
 source(here("R", "customFunctions.R"))
 
 # dotwhisker::small_multiple() hacks
-body(small_multiple)[[17]] <- substitute(
+body(small_multiple)[[19]] <- substitute(
   p <- ggplot(df, aes(y = estimate, ymin = conf.low, ymax = conf.high, 
                       x = as.factor(model), colour = submodel)) +
     do.call(geom_pointrange, point_args) + 
