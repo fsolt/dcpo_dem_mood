@@ -70,8 +70,7 @@ tidy.pgmm <- function(x,
     result
 }
 
-
-glance.pgmm <- function(x, ...) {
+glance.plm <- function(x, ...) {
     s <- summary(x)
     as_glance_tibble(
         # chisq.sargan = unname(s$sargan$statistic),
@@ -89,7 +88,8 @@ glance.pgmm <- function(x, ...) {
     )
 }
 
-glance.plm <- function(x, ...) {
+
+glance.pgmm <- function(x, ...) {
     s <- summary(x)
     as_glance_tibble(
         # chisq.sargan = unname(s$sargan$statistic),
@@ -102,7 +102,7 @@ glance.plm <- function(x, ...) {
         # arellano.bond2 = unname(x$m2$statistic[1,]),
         nobs = stats::nobs(x),
         n.country = pdim(x)$nT$n,
-        # n.inst = dim(x$W[[1]])[2],
-        na_types = "ii"
+        n.inst = dim(x$W[[1]])[2],
+        na_types = "iii"
     )
 }
