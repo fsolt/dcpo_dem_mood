@@ -322,3 +322,39 @@ osf_retrieve_user("me") %>%
 demsup <- osf_retrieve_node("tnp2a")
 osf_upload(demsup, c(here("data","expcor_cls_apsr.rda")),conflicts = "overwrite")
 osf_upload(demsup, c(here("data","expcor_cls_ajps.rda")),conflicts = "overwrite")
+
+####num.of observation
+cor_cls_ajps_trim <- correct_cls_ajps[[1]] %>%
+    group_by(country) %>% 
+    arrange(year, .by_group = TRUE) %>% 
+    mutate(SupDem_m1 = lag(SupDem_trim))
+
+cor_cls_ajps_trim %>%
+    filter(!is.na(Libdem_VD) & !is.na(SupDem_m1)) %>%
+    nrow()
+#2435
+length(unique(cor_cls_ajps_trim$country))
+#137
+cor_cls_ajps_trim %>%
+    filter(!is.na(Libdem_VD) & !is.na(SupDem_m1)) %>%
+    distinct(country) %>%
+    nrow()
+#135
+
+expcor_cls_ajps_trim <- expcor_cls_ajps[[1]] %>%
+    group_by(country) %>% 
+    arrange(year, .by_group = TRUE) %>% 
+    mutate(SupDem_m1 = lag(SupDem_trim))
+
+expcor_cls_ajps_trim %>%
+    filter(!is.na(Libdem_VD) & !is.na(SupDem_m1)) %>%
+    nrow()
+#2787
+length(unique(expcor_cls_ajps_trim$country))
+#145
+
+expcor_cls_ajps_trim %>%
+    filter(!is.na(Libdem_VD) & !is.na(SupDem_m1)) %>%
+    distinct(country) %>%
+    nrow()
+#140
