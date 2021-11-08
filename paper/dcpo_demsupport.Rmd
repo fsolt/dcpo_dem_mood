@@ -104,81 +104,100 @@ There is no room for complacency.
 options(tinytex.verbose = TRUE)
 
 knitr::opts_chunk$set(
-  echo = FALSE,
-  message = FALSE,
-  warning = FALSE,
-  dpi = 300
+    echo = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    dpi = 300
 )
 
-if (!require(pacman)) install.packages("pacman")
+if (!require(pacman))
+    install.packages("pacman")
 library(pacman)
-
-p_install(janitor, force = FALSE)
 
 # ls_pacGH <- c("fsolt/DCPOtools", "sammo3182/drhutools")
 # remotes::install_github(ls_pacGH, force = FALSE)
 
+p_install(janitor, force = FALSE)
 
-# load all the packages you will use below 
+# load all the packages you will use below
 p_load(
-  # analysis
-  plm, 
-  # presentation
-  gridExtra,
-  modelsummary,
-  # drhutools, # for colorful plots
-  dotwhisker, 
-  latex2exp,
-  # data wrangling
-  here,
-  broom,
-  tidyverse, 
-  glue
-) 
+    # analysis
+    plm,
+    
+    # presentation
+    gridExtra,
+    modelsummary,
+    drhutools, ## for colorful plots
+    dotwhisker,
+    latex2exp,
+    
+    # data wrangling
+    here,
+    broom,
+    tidyverse,
+    glue)
 
 # Functions preload
 set.seed(313)
 
-source(here("R", "tidy_pgmm.r"))
-source(here("R", "moc_function.R")) 
-source(here("R", "moc_summary.R")) 
-source(here("R", "customFunctions.R"))
-
-# dotwhisker::small_multiple() hacks
-body(small_multiple)[[19]] <- substitute(
-  p <- ggplot(df, aes(y = estimate, ymin = conf.low, ymax = conf.high, 
-                      x = as.factor(model), colour = submodel)) +
-    do.call(geom_pointrange, point_args) + 
-    ylab("") + xlab("") + 
-    facet_grid(term ~ .,
-               scales = "free",
-               labeller = label_parsed,    # enable LaTeX facet labels
-               switch = "y") +             # put facet labels on left
-    scale_y_continuous(position = "right") # put axis label on right
-)
+source(here("R", "customFunctions.R")) ## analyzing and presenting functions
 
 theme_set(theme_bw())
+
+## dotwhisker::small_multiple() hacks
+body(small_multiple)[[19]] <- substitute(
+    p <-
+        ggplot(
+            df,
+            aes(
+                y = estimate,
+                ymin = conf.low,
+                ymax = conf.high,
+                x = as.factor(model),
+                colour = submodel
+            )
+        ) +
+        do.call(geom_pointrange, point_args) +
+        ylab("") + xlab("") +
+        facet_grid(
+            term ~ .,
+            scales = "free",
+            labeller = label_parsed,
+            # enable LaTeX facet labels
+            switch = "y"
+        ) +             # put facet labels on left
+        scale_y_continuous(position = "right") # put axis label on right
+)
+
 ```
 
 ```{r data-input, include=FALSE, cache=TRUE}
+## Replication data
 load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
 load(here("data", "correct_cls_apsr.rda")) # https://osf.io/2hwqg/download
 load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/wfm3c/download
 load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/rvc92/download
-load(here("data","claassen_replication_input.rda"))
-load(here("data","exp_claassen_input.rda"))
-#load(here("data","dcpo_apsr.rda"))
-#load(here("data","dcpo_ajps.rda"))
+load(here("data", "exp_claassen_input.rda")) # Source???
 
-result_clsAPSR <- readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
-result_clsAJPS <- readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
+## Preload chunk-produced results to speed up the compiling
+## One can find how they were created by locating the corresponding chunks
 
-mocresult_correctAJPS <- readRDS(here("output", "estimates_moc_correctAJPS.RDS")) 
-mocresult_expAJPS <- readRDS(here("output", "estimates_moc_expcorAJPS.RDS"))
-mocresult_correctAPSR <- readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
-mocresult_expAPSR <- readRDS(here("output", "estimates_moc_expcorAPSR.RDS"))
-mocdcpo_APSR <- readRDS(here("output","estimates_moc_dcpoAPSR.RDS"))
-mocresult_dcpoAJPS <- readRDS(here("output","estimates_moc_dcpoAJPS.RDS"))
+result_clsAPSR <-
+    readRDS(here("output", "estimates_clsMeanAPSR.RDS"))
+result_clsAJPS <-
+    readRDS(here("output", "estimates_clsMeanAJPS.RDS"))
+
+mocresult_correctAJPS <-
+    readRDS(here("output", "estimates_moc_correctAJPS.RDS"))
+mocresult_expAJPS <-
+    readRDS(here("output", "estimates_moc_expcorAJPS.RDS"))
+mocresult_correctAPSR <-
+    readRDS(here("output", "estimates_moc_correctAPSR.RDS"))
+mocresult_expAPSR <-
+    readRDS(here("output", "estimates_moc_expcorAPSR.RDS"))
+mocdcpo_APSR <- readRDS(here("output", "estimates_moc_dcpoAPSR.RDS"))
+mocresult_dcpoAJPS <-
+    readRDS(here("output", "estimates_moc_dcpoAJPS.RDS"))
 ```
 
 # Method {-}
@@ -970,7 +989,18 @@ In Appendix \@ref(moc), we illustrate how we employed these simulated distributi
 
 ## Numeric Results for Figure \@ref(fig:plot-fullAJPS) and Figure \@ref(fig:plot-fullAPSR)
 
-Note that, for the GMM models, the original publication presented the observation number based on the trimmed data, i.e., "2435", while the tabulating function in the replication file (line 86) uses the full used-observation number, "4735." 
+During the replications of @Claassen2020a;@Claassen2020b, we found several miscoding across the original data.
+For example, in @Claassen2020b that the author coded the option "Necesitamos un líder fuerte que no tenga que ser elegid" as "strong_lapop_2" for the question:
+
+> Hay gente que dice que necesitamos un líder fuerte que no tenga que ser elegido a través del voto. AUT1 Otros dicen que aunque las cosas no funcionen, la democracia electoral, o sea el voto popular, es siempre
+lo mejor. ¿Qué piensa usted? [Leer alternativas]
+
+But according to the description of the question, this ought to be "strong_amb_1."
+Another example involves a miscount of the midpoint of its three-point scale as a positive, democracy-supporting response, when the original work coded "evdemoc_asiab" in the Asian Barometer.
+In a separate ongoing research project, we will identify the main types of miscoding and evaluate the extent to which they affect on the inferences.
+In this work, we use the corrected data for the replications with uncertainty to ensure that the data quality would not distort the results.
+
+Moreover, for the GMM models, the original publication presented the observation number based on the trimmed data, i.e., "2435", while the tabulating function in the replication file (line 86) uses the full used-observation number, "4735." 
 We follow the replication file in the following tables.
 
 ```{r num-labelAJPS}
