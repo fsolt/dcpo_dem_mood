@@ -1742,6 +1742,34 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     labs(caption = ajps_caption)
 ```
 
+```{r num-dcpoAJPS, results='asis'}
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(Libdem_VD, 1:2)1" = "Democracy (t-1)",
+  "plm::lag(Libdem_VD, 1:2)2"  = "Democracy (t-2)",
+  "plm::lag(SupDem_trim, 1)" = "Support (t-1)",
+  "plm::lag(SupDem_Democ, 1)" = "Support in Democracy",
+  "plm::lag(theta_dem_trim, 1)" = "Support in Democracy",
+  "plm::lag(SupDem_Autoc, 1)" = "Support in Autocracy",
+  "plm::lag(theta_aut_trim, 1)" = "Support in Autocracy",
+  "plm::lag(lnGDP_imp, 1)" = "Log GDP Per Capita (t-1)",
+  "plm::lag(GDP_imp_grth, 1)"  = "GDP Per Capita Growth (t-1)",
+  "plm::lag(Libdem_regUN, 1)" = "Regional Democracy (t-1)",
+  "plm::lag(Pr_Muslim, 1)" = "Percent Muslim (t-1)",
+  "plm::lag(Res_cp_WDI_di, 1)" = "Resource Dependence (t-1)"
+)
+
+tb_dcpoAJPS <- format_resultAJPS(condition = "Uncertainty & DCPO",
+                                      input_data = expcor_cls_ajps[[1]])
+modelsummary(tb_dcpoAJPS, 
+             coef_map = names_coef,
+             gof_map = names_gof,
+             output = "latex", 
+             title = "The Effect of Democracy on Change in Public Support (Uncertainty \\& DCPO)") %>%
+  kableExtra::kable_styling(font_size = 8) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
 ```{r dcpo-APSR, eval=FALSE}
 dcpo_APSR <- purrr::map(1:900, function(anEntry) {
     dcpo_apsr[[anEntry]] %>%
@@ -2102,6 +2130,45 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     ggtitle("Outcome Variable: Change in Public Democratic Support") +
     labs(caption = apsr_caption)
 ```
+
+\blandscape
+
+```{r num-dcpoAPSR, results='asis'}
+names_coef <- c(
+  "(Intercept)" = "(Intercept)",
+  "plm::lag(SupDem_trim, 1:2)1" = "Democratic Mood (t-1)",
+  "plm::lag(SupDem_trim, 1:2)2" = "Democratic Mood (t-2)",
+  "diff(Libdem_z, lag = 1)" = "Liberal Democracy (Difference)",
+  "Libdem_z" = "Liberal Democracy (Difference)",
+  "plm::lag(Libdem_z, 1)" = "Liberal Democracy (t-1)",
+  "diff(Polyarchy_z, lag = 1)" = "Electoral Democracy (Difference)",
+  "Polyarchy_z" = "Electoral Democracy (Difference)",
+  "plm::lag(Polyarchy_z, 1)" = "Electoral Democracy (t-1)",
+  "diff(Liberal_z, lag = 1)" = "Minoritarian Democracy (Difference)",
+  "Liberal_z" = "Minoritarian Democracy (Difference)",
+  "plm::lag(Liberal_z, 1)" = "Minoritarian Democracy (t-1)",
+  "diff(lnGDP_imp, lag = 1)" = "Log GDP Per Capita (Difference)",
+  "lnGDP_imp" = "Log GDP per capita (Difference)",
+  "plm::lag(lnGDP_imp, 1)" = "Log GDP (t-1)",
+  "diff(Corrup_TI_z, lag = 1)" = "Corruption (Difference)",
+  "Corrup_TI_z" = "Corruption (Difference)",
+  "plm::lag(Corrup_TI_z, 1)" = "Corruption (t-1)"
+)
+
+tb_dcpoAPSR <- format_resultAPSR(condition = "Uncertainty & DCPO",
+                                      input_data = expcor_cls_apsr[[1]])
+
+modelsummary(tb_dcpoAPSR, 
+             stars = FALSE,
+             coef_map = names_coef,
+             gof_map = names_gof,
+             output = "latex", 
+             title = "The Effect of Public Support on Democracy (Uncertainty \\& DCPO)") %>% 
+  kableExtra::kable_styling(font_size = 7) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+\elandscape
 
 # References  {-}
 
