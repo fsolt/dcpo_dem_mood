@@ -214,8 +214,8 @@ In light of this, recent studies measuring other latent variables have recommend
 Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in analysis models using our replication data.
 We conduct inferences from the distributive data via the technique known as the "method of composition" (MOC) [@Tanner1993, 52].
 MOC accounts for uncertainty from opinion estimates and analysis models through each modeling stage.
-In analysis stage, uncertainty is incorporated through simulation based on variance-covariance matrix of a given model, regardless of the structures of the given model.
-Therefore MOC can adapt any different types of models, including but not limited to different specifications for a Time-Series-Cross-Sectional approach [@caughey2018, A15-16], a Cox proportional hazards model [@Treier2008, 215], or individual level roll call voting model [@Kastellec2015, 791].^[For additional details on this technique, see Supplementary Information Appendix \@ref(moc).]
+In analysis stage, uncertainty is incorporated through simulation based on variance-covariance matrix of a given model, regardless of the structures or features of the given model.
+Therefore MOC can adapt any different types of models, including but not limited to different specifications for a Time-Series-Cross-Sectional approach for TSCS data [@caughey2018, A15-16], a Cox proportional hazards model [@Treier2008, 215], or individual level roll call voting model [@Kastellec2015, 791].^[For additional details on this technique, see Supplementary Information Appendix \@ref(moc).]
 
 ```{r compare_n}
 
