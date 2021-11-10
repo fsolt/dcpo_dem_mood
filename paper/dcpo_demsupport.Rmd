@@ -218,6 +218,15 @@ MOC accounts for uncertainty from opinion estimates and analysis models through 
 In analysis stage, uncertainty is incorporated through simulation based on variance-covariance matrix of a given model, regardless of the structures or features of the given model.
 Therefore MOC can adapt any different types of models, including but not limited to different specifications for a Time-Series-Cross-Sectional approach for TSCS data [@caughey2018, A15-16], a Cox proportional hazards model [@Treier2008, 215], or individual level roll call voting model [@Kastellec2015, 791].^[For additional details on this technique, see Supplementary Information Appendix \@ref(moc).]
 
+A simultaneous equation model which incorporates measurement model and structural links between variables together accounts for bias caused by simultaneity between variables and measurement models.
+However, we are reluctant to use a structural equation model (SEM) because SEM is a method to test the match between the model and the data.
+In other words, SEM tests whether the assumed model can be validated by the observed data, with the assumption is that the model is correct.
+Therefore, SEM is subject to confirmation bias due to the existing of competing theories which we have in the theory on democracy and public opinion, omitted variables, linear causal relationship assumption, the sensitivity to the estimator choice when both endogenous and  endogenous are contaminated by measurement errors [@Edith2019], among others [@Tomarken2005].
+
+More importantly, SEM becomes more complicated by increasing equations, demanding more from researchers on specific projects, but our main idea is to demonstrate the importance of incorporating uncertainty in a broader context but also provide a practical technique for scholars to deal with a model with multiple latent variables in both sides of the model.
+
+The advantage of MOC is that it can accommodate multiple layers of uncertainty in both opinion estimates and substantive models [@Kastellec2015, 792] and can be used very handily. 
+
 ```{r compare_n}
 
 # if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
