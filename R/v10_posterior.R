@@ -58,6 +58,7 @@ cntrl_ajps_error <- left_join(cntrl_ajps_postse,cntrl_ajps_poly_postse, by = c("
 cntrl_ajps_uncertainty <- left_join(cntrl_ajps_error,cntrl_ajps_se, by = c("country", "year")) %>%
   select(country, year, starts_with("Vdem"),everything())
 
+libdem_cntrl_list
 
 cntrl_ajps_uncertainty_region <- cntrl_ajps_uncertainty %>%
   group_by(country, iter_se) %>%
