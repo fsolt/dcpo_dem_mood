@@ -209,7 +209,7 @@ In the third step, we collect even more survey data---increasing these source da
 
 ## Incorporating Uncertainty {-}
 
-Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can both attenuate or exaggerate coefficient estimates as well as bias standard errors [see, e.g., @Blackwell2017, 318-319; @caughey2018, 254].
+Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are estimated with a quantifiable amount of measurement uncertainty, and ignoring that uncertainty in analyses can change the sign of coefficients[@Bound2001; @Saccenti2020], both attenuate or exaggerate coefficient estimates as well as bias standard errors [see, e.g., @Blackwell2017, 318-319; @caughey2018, 254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey2018, 254]. 
 
 Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in analysis models using our replication data.
@@ -221,7 +221,7 @@ Therefore MOC can adapt any different types of models, including but not limited
 A simultaneous equation model which incorporates measurement model and structural links between variables together accounts for bias caused by simultaneity between variables and measurement models.
 However, we are reluctant to use a structural equation model (SEM) because SEM is a method to test the match between the model and the data.
 In other words, SEM tests whether the assumed model can be validated by the observed data, with the assumption is that the model is correct.
-Therefore, SEM is subject to confirmation bias due to the existing of competing theories which we have in the theory on democracy and public opinion, omitted variables, linear causal relationship assumption, the sensitivity to the estimator choice when both endogenous and  endogenous are contaminated by measurement errors [@Edith2019], among others [@Tomarken2005].
+Therefore, SEM is subject to confirmation bias due to the existing of competing theories which we have in the theory on democracy and public opinion, omitted variables, linear causal relationship assumption, the sensitivity to the estimator choice when both endogenous and endogenous are contaminated by measurement errors [@Edith2019], among others [@Tomarken2005].
 
 More importantly, SEM becomes more complicated by increasing equations, demanding more from researchers on specific projects, but our main idea is to demonstrate the importance of incorporating uncertainty in a broader context but also provide a practical technique for scholars to deal with a model with multiple latent variables in both sides of the model.
 
@@ -298,6 +298,7 @@ The middle results introduce a single change: the uncertainty in the measurement
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
 The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
+
 
 ```{r pointAJPS}
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
@@ -703,8 +704,8 @@ names(mocresult_correctAPSR) <-
     )
 
 
-saveRDS(mocresult_correctAPSR,
-        file = here::here("ouput", "estimates_moc_correctAPSR.RDS"))
+saveRDS(mocresult_correctAPSR, file = here("ouput", "estimates_moc_correctAPSR.RDS"))
+
 ```
 
 ```{r mocResult-expAPSR, eval=FALSE}
