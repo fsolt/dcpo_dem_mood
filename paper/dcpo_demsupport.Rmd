@@ -371,7 +371,7 @@ ls_mod_ajpsCLS <- c(
 )
 ```
 
-```{r mocResult-pureAJPS}
+```{r mocResult-pureAJPS, eval=FALSE}
 df_correct_clsAjps <- purrr::map(1:900, function(anEntry) {
     correct_cls_ajps[[anEntry]] %>%
         plm::pdata.frame(index = c("country", "year"))
@@ -2173,6 +2173,5 @@ modelsummary(tb_dcpoAPSR,
 \elandscape
 
 # References  {-}
-
 
 <div id = 'refs_app'></div>

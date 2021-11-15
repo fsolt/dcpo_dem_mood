@@ -30,7 +30,7 @@ load(here("data","dcpo_theta.rda"))
 load(here("data","dcpo_sigma.rda"))
 load(here("data","dcpo_ajps_cntrl.rda"))
 load(here("data","dcpo_apsr_cntrl.rda"))
-cntrl_ajps_se <- readRDS(here("data","cntrl_ajps_se_1985.rds"))
+cntrl_ajps_se <- readRDS(here("data","cntrl_ajps_se_1985.rds")) ##created by v10_uncertainty
 load(here("data","country_regionUN.rda"))  ##this file can be used when we need region variables
 
 #cpi_post <- readRDS(here("data","cpi_post.rds")) created in R/cpi_error.R. 
