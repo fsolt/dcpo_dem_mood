@@ -198,7 +198,6 @@ mocresult_dcpoAJPS <-
     readRDS(here("output", "estimates_moc_dcpoAJPS.RDS"))
 ```
 
-
 # Method {-}
 
 We proceed in three steps.
@@ -217,6 +216,15 @@ We conduct inferences from the distributive data via the technique known as the 
 MOC accounts for uncertainty from opinion estimates and analysis models through each modeling stage.
 In analysis stage, uncertainty is incorporated through simulation based on variance-covariance matrix of a given model, regardless of the structures or features of the given model.
 Therefore MOC can adapt any different types of models, including but not limited to different specifications for a Time-Series-Cross-Sectional approach for TSCS data [@caughey2018, A15-16], a Cox proportional hazards model [@Treier2008, 215], or individual level roll call voting model [@Kastellec2015, 791].^[For additional details on this technique, see Supplementary Information Appendix \@ref(moc).]
+
+A simultaneous equation model which incorporates measurement model and structural links between variables together accounts for bias caused by simultaneity between variables and measurement models.
+However, we are reluctant to use a structural equation model (SEM) because SEM is a method to test the match between the model and the data.
+In other words, SEM tests whether the assumed model can be validated by the observed data, with the assumption is that the model is correct.
+Therefore, SEM is subject to confirmation bias due to the existing of competing theories which we have in the theory on democracy and public opinion, omitted variables, linear causal relationship assumption, the sensitivity to the estimator choice when both endogenous and  endogenous are contaminated by measurement errors [@Edith2019], among others [@Tomarken2005].
+
+More importantly, SEM becomes more complicated by increasing equations, demanding more from researchers on specific projects, but our main idea is to demonstrate the importance of incorporating uncertainty in a broader context but also provide a practical technique for scholars to deal with a model with multiple latent variables in both sides of the model.
+
+The advantage of MOC is that it can accommodate multiple layers of uncertainty in both opinion estimates and substantive models [@Kastellec2015, 792] and can be used very handily. 
 
 ```{r compare_n}
 
@@ -363,7 +371,7 @@ ls_mod_ajpsCLS <- c(
 )
 ```
 
-```{r mocResult-pureAJPS, eval=FALSE}
+```{r mocResult-pureAJPS}
 df_correct_clsAjps <- purrr::map(1:900, function(anEntry) {
     correct_cls_ajps[[anEntry]] %>%
         plm::pdata.frame(index = c("country", "year"))
@@ -695,7 +703,7 @@ names(mocresult_correctAPSR) <-
 
 
 saveRDS(mocresult_correctAPSR,
-        file = here::here("ouput", "estimates_moc_correctAPSR.RDS"))
+        file = here::here("output", "estimates_moc_correctAPSR.RDS"))
 ```
 
 ```{r mocResult-expAPSR, eval=FALSE}
@@ -1484,7 +1492,7 @@ In our analysis models, we have latent variables in both sides of the equations:
 Since measurement uncertainty associated with these latent variables can propagate into the inferences over coefficient parameters in models, we incorporate uncertainty by employing the "Method of Composition" [@Tanner1993, 52], which has often been applied in analyses with latent variables in political science [see, e.g., @Treier2008; @caughey2018; @Kastellec2015].
 
 As @caughey2018 [A-15] explained, the main idea of MOC is to estimate the marginal distribution of coefficient parameter vector $\beta$, integrating over the uncertainty in latent variables $\theta$.
-More explicitly, we wish to integrate the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
+More explicitly, MOC integrates the joint density of $\beta$ and $\theta$ over the distribution of $\theta$.
 
 \begin{equation}
 p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
@@ -1492,6 +1500,7 @@ p(\beta,\theta|w,y, Z) = p(\beta|\theta,w,y)p(\theta|Z).
 
 where $\theta$ is latent variables with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $\theta$, and $y$ is the outcome variable.
 In this way, we incorporate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
+
 To sample from the conditional density and the marginal density in the right side of the equation, we follow iterative Monte Carlo procedure described by @Treier2008, at iteration t,
 
 1. We sample $\theta^{t}$ from its posterior distribution $p(\theta|Z)$.
@@ -1500,27 +1509,16 @@ To sample from the conditional density and the marginal density in the right sid
 
 3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{t}$ and variance-covariance matrix $V^{t}$.
 
-In the step 3, the marginal distribution of a parameter vector $\beta$ was estimated, intergrating over $p(\theta|Z)$:
+In the step 3, the marginal distribution of a parameter vector $\beta$ was estimated, integrating over $p(\theta|Z)$:
 
 \begin{equation}
 p(\beta|w,y) = \int_{\theta} p(\beta|\theta,w,y)p(\theta|Z) \,d\theta
 \end{equation}
 
 In our re-analyses, we incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
-where $\theta$ is latent varibles with measurement errors conditional on data Z and a measurement model, $w$ is other predictors without errors, $Z$ is indicators for latent variables $X$, and $y$ is the outcome variable.
-In this way, we incorportate uncertainty in measuring predictor $\theta$, and uncertainty in the effects of latent variables $\theta$ and other variables $w$ on outcome variable $y$ [@Treier2008, 215].
-To sample from the conditional dentsity and the marginal density in the right side of the equation, we follow iterative Monte Carlo procdure described by @Treier2008, at iteration t,
-
-1. We sample $\theta^{s}$ from its posterior distribution $p(\theta|Z)$ and $y$ from $p(y|Z)$.
-
-2. For each analysis model, we run the model with $y$, $\theta$, and $w$, and save the coefficient estimates $\beta^{s}$ and variance-covariance matrix of $\beta^{s}$, $V^{s}$, both of which change due to the uncertainty in $\theta^{s}$ and $y^{s}$.
-
-3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta{s}$ and variance-covariace matrix $V^{s}$.
-
-We incorporate uncertainty for five variables, public support for democracy, liberal democracy, electoral democracy, the liberal component index, and the corruption perceptions index.
 For each of these five latent variables, we take 900 draws from its posterior distribution. We duplicate the dataset of variables “without” measurement error 900 times, and assign them to each a different random draw from the distributions of variables with measurement error, which yields 900 dataset.
-In next step, we run each of analysis models with these 900 datesets independently and save the resulting estimates of coefficients and the matrix of variance-covariance for each run.
-We then draw one sample from the mulitivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
+In next step, we run each of analysis models with these 900 datasets independently and save the resulting estimates of coefficients and the matrix of variance-covariance for each run.
+We then draw one sample from the multivariate normal distribution with the mean vector of coefficient estimates and variance-covariance matrix produced from each run.
 This procedure finally yields 900 samples of estimated coefficients drawn from the joint density of $\beta$ and $\theta$.
 We calculate point estimates and standard error based on these 900 samples.
 
