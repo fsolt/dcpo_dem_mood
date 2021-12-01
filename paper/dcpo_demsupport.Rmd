@@ -94,8 +94,12 @@ Without additional information on respondents' support for democracy relative to
 Our results also reinforce arguments that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short-term is instead best understood as an elite-driven phenomenon [see, e.g., @levitsky_how_2018; @Haggard2021].
 
 We draw two conclusions, one methodological and one substantive.
+Many constructs in social science are latent variables, including but not limited to corruption, polarization, public attitudes, policy preference, social norms, and economic behaviors. 
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into analyses.
-And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
+The technique and codes used in this study can be handily applied to empirical studies with latent variables and address the uncertainty for models with only one or multiple latent variables in both sides of the models without any further requirements for models. 
+This letter contributes to the recent methodological development in measurement models by emphasizing the necessity of incorporating uncertainty. 
+It highlights a necessary procedure and provides a practicable approach for examining theory generalization in comparative studies.
+And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015; @IDEA2021], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not support them.
 There is no room for complacency.
 
