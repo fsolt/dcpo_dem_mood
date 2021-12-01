@@ -296,7 +296,7 @@ Figure \@ref(fig:plot-fullAJPS) presents the reanalyses of the hypothesis that p
 The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (democracy and corruption), and they reproduce that article's findings.
 The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
-The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
+The darker, righth and results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
 
 ```{r pointAJPS}
@@ -1208,7 +1208,7 @@ modelsummary(tb_result_cls,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex", 
-             title = "The Effect of Democracy on Change in Public Support (Original Results)") %>%
+             title = "The Effect of Public Support on Democracy (Original Results)") %>%
   kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1286,7 +1286,7 @@ modelsummary(tb_pureAJPS,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex",
-             title = "The Effect of Democracy on Change in Public Support (With Uncertainty)") %>%
+             title = "The Effect of Public Support on Democracy (With Uncertainty)") %>%
     kableExtra::kable_styling(font_size = 8) %>%
     kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1299,7 +1299,7 @@ modelsummary(tb_expAJPS,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex", 
-             title = "The Effect of Democracy on Change in Public Support (Uncertainty \\& More Data)") %>%
+             title = "The Effect of Public Support on Democracy (Uncertainty \\& More Data)") %>%
   kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1344,7 +1344,7 @@ modelsummary(tb_result_clsAPSR,
              gof_map = names_gof, 
              coef_omit = "Int",
              output = "latex", 
-             title = "The Effect of Public Support on Democracy with Uncertainty (Original)") %>% 
+             title = "The Effect of Democracy on Change in Public Support (Original)") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1466,7 +1466,7 @@ modelsummary(tb_pureAPSR,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex", 
-             title = "The Effect of Public Support on Democracy (With Uncertainty)") %>% 
+             title = "The Effect of Democracy on Change in Public Support (With Uncertainty)") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -1480,7 +1480,7 @@ modelsummary(tb_expAPSR,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex", 
-             title = "The Effect of Public Support on Democracy (Uncertainty \\& More Data)") %>% 
+             title = "The Effect of Democracy on Change in Public Support (Uncertainty \\& More Data)") %>% 
   kableExtra::kable_styling(font_size = 7) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
