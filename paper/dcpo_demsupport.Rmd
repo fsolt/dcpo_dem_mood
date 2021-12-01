@@ -1100,6 +1100,7 @@ Taking uncertainty into account rendered both articles' conclusions without empi
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
 As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
+Since measurement uncertainty distorts both statistical and substantive inferences with unknown directions on the sign and size of coefficients [@Bound2001;@Blackwell2017; @caughey2018], it is not only a methodological concern but also has substantive implications [@juhl_measurement_2019].
 
 The null results reached in this letter have several substantive implications.
 They highlight theoretical arguments that maintain that levels of democratic support undergird democracy only over the long term and so lend indirect support to other explanations for short-run changes in regime.
