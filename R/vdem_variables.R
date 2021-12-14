@@ -16,8 +16,8 @@ set.seed(313)
 ###Input Data:  vdem8_posterior.dta from Vdem8
 ###             vdem10_1985.csv     from Vdem10
 ###             cpi_95_19_error.csv from Corruption Perception Index 
-###Output Data: vdem8_1985_post.rds
-###             vdem10_1985_se_cntry.rds
+###Output Data: vdem8_1985_post.rds       vdem8_regime.rda
+###             vdem10_1985_se_cntry.rds, vdem10_regime.rda
 ###             cls_libdem_list.rda       posterior distribution of V-Dem8 Liberal Democracy Index 
 ###             cls_poly_list.rda         posterior distribution of V-Dem8 electoral democracy index
 ###             cls_liberal_list.rda      posterior distribution of V-Dem8 liberal component index
@@ -25,7 +25,12 @@ set.seed(313)
 ###             poly_list.rda             posterior distribution of V-Dem10 electoral democracy index
 ###             lib_list.rda              posterior distribution of V-Dem10 liberal component index
 
-### loading vdem8 posterior distribution
+
+
+################################### Vdem8 variables #########################
+###################################loading vdem8 posterior distribution########
+########################################### ##################################
+
 vdem8_post <- read_dta(here("data","vdem8_posterior.dta"))
 vdem8_post <- vdem8_post  %>%
     mutate(vdem_polyarchy = as.numeric(vdem_polyarchy),
@@ -37,34 +42,8 @@ vdem8_post <- vdem8_post  %>%
 vdem8_na <- vdem8_post %>%
     filter_at(vars(starts_with("vdem_")),any_vars(is.na(.)))
 
-
-#### check missing and fill up former USSR countries values
-vdem8_na_unique <- tibble(unique(vdem8_na$country_name))
-colnames(vdem8_na_unique) <- "country"
-cls_missing_fillup <-  cls_vdem %>%
-    filter(Country %in% vdem8_na_unique$country)
-cls_missing_original <-  cls_vdem %>%
-    filter(Country %in% c("Serbia","Czech Republic"))
-cls_missing_check <- rbind(cls_missing_fillup,cls_missing_original)
-cls_missing_su <- cls_missing_check %>%
-    filter(Country %in% c("Armenia","Tajikistan","Russia","Azerbaijan", "Belarus","Kazakhstan",
-                          "Estonia","Georgia","Kyrgyzstan","Latvia","Lithuania","Moldova",
-                          "Ukraine","Uzbekistan","Turkmenistan"))
-cls_missing_serbia <- cls_missing_check %>%
-    filter(Country %in% c("Macedonia","Bosnia & Herzegovina","Croatia","Montenegro",
-                          "Slovenia","Kosovo","Serbia"))  %>%
-    arrange(Year)
-cls_missing_cr <- cls_missing_check %>%
-    filter(Country %in% c("Czech Republic","Slovakia"))  %>%
-    arrange(Year)
-
-################## fillup vdem posterior missing  vdem8_post
+################## check missing and fill up former USSR countries values
 ##For Armenia 1985-1989 from Russia
-
-vdem8_post %>% 
-    filter(country_name == "Armenia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year, vdem_libdem,vdem_polyarchy,vdem_liberal) %>%
-    arrange(year)
 
 Armenia <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -78,10 +57,6 @@ vdem8_post <- vdem8_post %>%
     mutate(cowcode = ifelse(country_name == "Armenia" & year == 1990,371,cowcode ))
 
 ##For Tajikistan 1985-1989 from Russia
-vdem8_1985 %>% 
-    filter(country_name == "Tajikistan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Tajikistan <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -96,10 +71,6 @@ vdem8_post <- vdem8_post %>%
 
 
 ##Azerbaijan 1985-1989 from Russia
-vdem8_post %>% 
-    filter(country_name == "Azerbaijan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Azerbaijan <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -112,10 +83,6 @@ vdem8_post <- rbind(vdem8_post,Azerbaijan)
 
 
 ##Belarus 1985-1989 from Russia
-vdem8_post %>% 
-    filter(country_name == "Belarus") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Belarus <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -129,10 +96,6 @@ vdem8_post <- vdem8_post %>%
     mutate(cowcode = ifelse(country_name == "Belarus" & year == 1990,370,cowcode ))
 
 ##Kazakhstan 1985-1990
-vdem8_post %>% 
-    filter(country_name == "Kazakhstan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Kazakhstan <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1990)) %>%
@@ -149,10 +112,6 @@ vdem8_post <- vdem8_post %>%
     filter(!(country_name == "Kazakhstan" & year == 1990 & is.na(vdem_libdem)))
 
 ##Estonia  1985-1989
-vdem8_post %>% 
-    filter(country_name == "Estonia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Estonia <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1990)) %>%
@@ -168,11 +127,6 @@ vdem8_post <- vdem8_post  %>%
 
 ##Georgia 1985-1989
 
-vdem8_post %>% 
-    filter(country_name == "Georgia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
-
 Georgia  <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
     mutate(country_name = "Georgia",
@@ -184,10 +138,6 @@ vdem8_post <- rbind(vdem8_post,Georgia )
 
 
 ##Kyrgyzstan 1985-1989
-vdem8_post %>% 
-    filter(country_name == "Kyrgyzstan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Kyrgyzstan  <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -199,10 +149,6 @@ Kyrgyzstan  <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Kyrgyzstan )
 
 ##Latvia 1985-1989
-vdem8_post %>% 
-    filter(country_name == "Latvia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Latvia  <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -214,12 +160,6 @@ Latvia  <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Latvia  )
 
 ## Lithuania 1985-1989
-vdem8_post %>% 
-    filter(country_name == "Lithuania") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
-
-
 Lithuania    <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
     mutate(country_name = "Lithuania",
@@ -230,10 +170,6 @@ Lithuania    <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Lithuania)
 
 ## Moldova 1985-1989
-vdem8_post %>% 
-    filter(country_name == "Moldova") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Moldova    <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -245,10 +181,6 @@ Moldova    <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Moldova)
 
 ## Ukraine  1985-1989
-vdem8_post %>% 
-    filter(country_name == "Ukraine") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Ukraine    <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
@@ -260,11 +192,6 @@ Ukraine    <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Ukraine)
 
 ##Uzbekistan 1985-1989
-vdem8_post %>% 
-    filter(country_name == "Uzbekistan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
-
 Uzbekistan    <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1989)) %>%
     mutate(country_name = "Uzbekistan",
@@ -275,10 +202,6 @@ Uzbekistan    <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Uzbekistan)
 
 ##	Turkmenistan 1985-1990 from	Russia  1990 no demo information
-vdem8_post %>% 
-    filter(country_name == "Turkmenistan") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Turkmenistan    <- vdem8_post %>%
     filter(country_name == "Russia" & year %in% c(1985:1990)) %>%
@@ -296,10 +219,6 @@ vdem8_post <- vdem8_post %>%
 ######add Turkmenistan
 
 #North Macedonia 1985-1990  from Serbia 
-vdem8_post %>% 
-    filter(country_name == "Macedonia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Macedonia    <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1993)) %>%
@@ -317,10 +236,6 @@ vdem8_post <- vdem8_post %>%
 
 ##Bosnia & Herzegovina 1985-1991  
 
-vdem8_post %>% 
-    filter(country_text_id == "BIH") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 BIH    <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1991)) %>%
@@ -336,10 +251,6 @@ vdem8_post <- vdem8_post %>%
 
 
 ##Croatia 1985-1990
-vdem8_post %>% 
-    filter(country_name == "Croatia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Croatia   <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1990)) %>%
@@ -351,10 +262,6 @@ Croatia   <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Croatia)
 
 ##Montenegro 1985-1998   
-vdem8_post %>% 
-    filter(country_name == "Montenegro") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Montenegro   <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1998)) %>%
@@ -370,10 +277,6 @@ vdem8_post <- vdem8_post %>%
 
 
 #Slovenia  1985-1988  
-vdem8_post %>% 
-    filter(country_name == "Slovenia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Slovenia   <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1988)) %>%
@@ -385,10 +288,6 @@ Slovenia   <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Slovenia)
 
 ##Kosovo 1985-1998
-vdem8_post %>% 
-    filter(country_name == "Kosovo") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
 
 Kosovo   <- vdem8_post %>%
     filter(country_name == "Serbia" & year %in% c(1985:1998)) %>%
@@ -400,11 +299,6 @@ Kosovo   <- vdem8_post %>%
 vdem8_post <- rbind(vdem8_post,Kosovo)
 
 ####	Slovakia 1985-1992 from	Czechia(Czech Republic)
-vdem8_post %>% 
-    filter(country_name == "Slovakia") %>%
-    select(country_text_id,country_name,country_id,cowcode,year) %>%
-    arrange(year)
-
 Slovakia   <- vdem8_post %>%
     filter(country_name == "Czech Republic" & year %in% c(1985:1993)) %>%
     mutate(country_name = "Slovakia",
@@ -425,27 +319,32 @@ vdem8_post_check <- vdem8_post %>%
            country_name = ifelse(country_text_id == "STP", "Sao Tome and Principe", country_name),
            ISO = ifelse( country_text_id == "STP", "STP",ISO)) %>%
     filter(!country_text_id=="PSG")  %>% # omit gaza
-    select(-country0)  %>%
-    select(country, country_text_id,country_name, ISO, year,everything()) 
+    dplyr::select(-country0)  %>%
+    dplyr::select(country, country_text_id,country_name, ISO, year,everything()) 
 
 saveRDS(vdem8_post_check, here("data","vdem8_1985_post.rds"))
+
+vdem8_regime <- readRDS(here("data","vdem8_1985_post.rds")) %>% 
+    dplyr::select(country, year, vdem_regime)
+save(vdem8_regime,file = here("data","vdem8_regime.rda"))
+
+
 
 #######################Create Vdem8 Related Variables 
 vdem8_1985_post <- readRDS(here("data","vdem8_1985_post.rds"))
 
-
 #Vdem_libdem
 long_libdem <- vdem8_1985_post %>% 
-    select(!starts_with("polyarchy_v"))  %>%
-    select(!starts_with("liberal_v")) %>%
-    gather(libdem_iter, libdem_post, libdem_v11:libdem_v900) %>%
-    select(country, year,starts_with("libdem")) %>%
+    dplyr::select(!starts_with("polyarchy_v"))   %>%
+    dplyr::select(!starts_with("liberal_v"))   %>%
+    gather(libdem_iter, libdem_post, libdem_v11:libdem_v900)  %>%
+    dplyr::select(country, year,starts_with("libdem")) %>%
     mutate(liter = as.numeric(str_replace(libdem_iter, "\\D+", ""))) %>%
     mutate(liter = liter -1 ) %>%
-    select(-libdem_iter) %>%
-    select(country, year, libdem_post, liter) %>% 
-    group_by(liter,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::select(-libdem_iter) %>%
+    dplyr::select(country, year, libdem_post, liter) %>% 
+    dplyr::group_by(liter,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 
 cls_libdem_list <- list()
@@ -462,16 +361,16 @@ save(cls_libdem_list,file = here("data","cls_libdem_list.rda"))
 
 #Vdem_polyarchy
 long_poly <- vdem8_1985_post %>% 
-    select(!starts_with("libdem_"))  %>%
-    select(!starts_with("liberal_v")) %>%
+    dplyr::select(!starts_with("libdem_"))  %>%
+    dplyr::select(!starts_with("liberal_v")) %>%
     gather(poly_iter, poly_post, polyarchy_v11:polyarchy_v900) %>%
-    select(country, year, starts_with("poly"),everything() ) %>%
+    dplyr::select(country, year, starts_with("poly"),everything() ) %>%
     mutate(piter = as.numeric(str_replace(poly_iter, "\\D+", ""))) %>%
     mutate(piter = piter -1 ) %>%
-    select(-poly_iter) %>%
-    select(country, year, poly_post, piter) %>% 
-    group_by(piter,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::select(-poly_iter) %>%
+    dplyr::select(country, year, poly_post, piter) %>% 
+    dplyr::group_by(piter,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 cls_poly_list <- list()
 for (i in 1:900) {
@@ -484,16 +383,16 @@ save(cls_poly_list,file = here("data","cls_poly_list.rda"))
 
 #Vdem_liberal
 long_liberal <- vdem8_1985_post %>% 
-    select(!starts_with("libdem_"))  %>%
-    select(!starts_with("polyarchy_v")) %>%
+    dplyr::select(!starts_with("libdem_"))  %>%
+    dplyr::select(!starts_with("polyarchy_v")) %>%
     gather(liter, liberal_post, liberal_v11:liberal_v900) %>%
-    select(country, year, starts_with("vdem"),everything() ) %>%
+    dplyr::select(country, year, starts_with("vdem"),everything() ) %>%
     mutate(iter = as.numeric(str_replace(liter, "\\D+", ""))) %>%
     mutate(iter = iter -1 ) %>%
-    select(-liter) %>%
-    select(country, year, liberal_post, iter) %>% 
-    group_by(iter,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::select(-liter) %>%
+    dplyr::select(country, year, liberal_post, iter) %>% 
+    dplyr::group_by(iter,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 
 cls_liberal_list <- list()
@@ -507,7 +406,9 @@ save(cls_liberal_list,file = here("data","cls_liberal_list.rda"))
 
 
 
-################### loading vdem10 with standard error
+################################### Vdem10 variables #########################
+################################### loading vdem10 with standard error########
+########################################### ##################################
 vdem10_1985 <- read.csv(here("data","vdem10_1985.csv"))
 
 ## fillup vdem missing
@@ -803,17 +704,19 @@ vdem10_1985_check <- vdem10_1985_cntry %>%
            country = countrycode::countrycode(country0, "country.name", "country.name")) %>%
     mutate(ISO = ifelse(country_text_id == "XKX", "XKX",ISO)) %>%
     filter(!country_text_id=="PSG")  %>% # omit gaza
-    select(-country0)
+    dplyr::select(-country0)
 
 saveRDS(vdem10_1985_check, here("data","vdem10_1985_se_cntry.rds"))
 
-#vdem10_1985_check <- readRDS(here("data","vdem10_1985_se_cntry.rds"))
 
+vdem10_regime <- readRDS(here("data","vdem10_1985_se_cntry.rds")) %>% 
+    dplyr::select(country, year, Vdem_regime)
+save(vdem10_regime,file = here("data","vdem10_regime.rda"))
 
 
 ########libdem_list
 pdist <- vdem10_1985_check %>%
-    select(Vdem_libdem,libdem_sd) %>%
+    dplyr::select(Vdem_libdem,libdem_sd) %>%
     pmap(function(Vdem_libdem,libdem_sd,...) rnorm(900, Vdem_libdem, libdem_sd))  #posterior distribution 900 draws
 
 pdist_df <- pdist %>% 
@@ -822,18 +725,18 @@ pdist_df <- pdist %>%
 pdist_df$iter_se <- rep(1:900, length.out=nrow(pdist_df)) 
 pdist_df <- data.frame(pdist_df)
 
-cntry_year <- vdem10_1985_check %>% group_by(country, year) %>% 
-    expand(iter_cn = 1:900)  %>%
-    group_by(country,year) %>% 
-    arrange(iter_cn,.by_group = TRUE)  #arrange by country year iter
+cntry_year <- vdem10_1985_check %>% dplyr::group_by(country, year) %>% 
+    tidyr::expand(iter_cn = 1:900)  %>%
+    dplyr::group_by(country,year) %>% 
+    dplyr::arrange(iter_cn,.by_group = TRUE)  #arrange by country year iter
 
 cntry_year_pdist <- data.frame(cntry_year)
 
 cntry_year_libdem <- cbind(cntry_year_pdist, pdist_df)
 
 data_temp <- cntry_year_libdem  %>% 
-    group_by(iter_cn,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::group_by(iter_cn,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 libdem_list <- list()
 for (i in 1:900) {
@@ -842,12 +745,10 @@ for (i in 1:900) {
 }
 
 save(libdem_list, file = here::here("data","libdem_list.rda"))
-load(here("data","libdem_list.rda"))
-
 
 ##############polyarchi_list
 pdist_poly <- vdem10_1985_check %>%
-    select(Vdem_polyarchy,polyarchy_sd) %>%
+    dplyr::select(Vdem_polyarchy,polyarchy_sd) %>%
     pmap(function(Vdem_polyarchy,polyarchy_sd,...) rnorm(900, Vdem_polyarchy,polyarchy_sd))  #posterior distribution 900 draws
 
 pdist_poly_df <- pdist_poly %>% 
@@ -863,8 +764,8 @@ cntrl_poly <- cntrl_poly %>%
     rename(Vdem_polyarchy_post = value)
 
 data_temp <- cntrl_poly %>% 
-    group_by(iter_cn,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::group_by(iter_cn,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 poly_list <- list()
 for (i in 1:900) {
@@ -877,7 +778,7 @@ save(poly_list, file = here::here("data","poly_list.rda"))
 
 ############liberal_ist
 libpdist <- vdem10_1985_check %>%
-    select(Vdem_liberal,liberal_sd) %>%
+    dplyr::select(Vdem_liberal,liberal_sd) %>%
     pmap(function(Vdem_liberal,liberal_sd,...) rnorm(900, Vdem_liberal, liberal_sd))  #posterior distribution 900 draws
 
 libpdist_df <- libpdist %>% 
@@ -891,8 +792,8 @@ cntrl_liberal <- cntrl_liberal %>%
     rename(Vdem_liberal_post = value)
 
 data_temp <- cntrl_liberal %>% 
-    group_by(iter_cn,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::group_by(iter_cn,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 lib_list <- list()
 for (i in 1:900) {
@@ -909,17 +810,17 @@ cpi_95_19_error <- read_csv(here("data","cpi_95_19_error.csv"))
 #create relative standard error for CPI. 
 cpi_95_19_error <- cpi_95_19_error %>%   
     mutate(relative_error = cpi_error/cpi_100) %>%
-    group_by(country) %>%
+    dplyr::group_by(country) %>%
     mutate(h_re = max(relative_error,na.rm = T),
            h_re = ifelse(h_re =="-Inf",NA,h_re)) %>%
     ungroup() %>%
     mutate(cpi_error = ifelse(is.na(cpi_error), cpi_100*h_re,cpi_error)) %>%
-    group_by(country) %>%
+    dplyr::group_by(country) %>%
     mutate(cpi_100_m1 = lag(cpi_100)) %>%
-    arrange(country,year)
+    dplyr::arrange(country,year)
 
 cpi_pdist <- cpi_95_19_error %>%
-    select(cpi_100,cpi_error) %>%
+    dplyr::select(cpi_100,cpi_error) %>%
     pmap(function(cpi_100,cpi_error,...) rnorm(900, cpi_100,cpi_error))  #posterior distribution 900 draws
 
 cpi_pdist_df <- cpi_pdist %>% 
@@ -927,10 +828,10 @@ cpi_pdist_df <- cpi_pdist %>%
 
 cpi_pdist_df$iter_se <- rep(1:900, length.out=nrow(cpi_pdist_df)) 
 
-cpi_95_19_error_900 <- cpi_95_19_error %>% group_by(country, year) %>% 
-    expand(iter_cn = 1:900)  %>%
-    group_by(country,year) %>% 
-    arrange(iter_cn,.by_group = TRUE)  #arrange by country year iter
+cpi_95_19_error_900 <- cpi_95_19_error %>% dplyr::group_by(country, year) %>% 
+    tidyr::expand(iter_cn = 1:900)  %>%
+    dplyr::group_by(country,year) %>% 
+    dplyr::arrange(iter_cn,.by_group = TRUE)  #arrange by country year iter
 
 cpi_95_19_error_900 <- data.frame(cpi_95_19_error_900)
 cpi_pdist_df <- data.frame(cpi_pdist_df)
@@ -943,23 +844,23 @@ cpi_se <- cpi_se %>%
 cpi <- left_join(cpi_se, cpi_95_19_error,by =c("country","year"))
 
 cpi_post <- cpi %>%
-    select(-h_re,-relative_error) %>%
+    dplyr::select(-h_re,-relative_error) %>%
     mutate(cpi_z = as.vector(scale(cpi_100*-1)), # reversed, positive--more corruption
            cpi_m1_z = as.vector(scale(cpi_100_m1*-1)), 
            cpi_post_z = as.vector(scale(cpi_post*-1))) %>%
-    group_by(country, iter_se) %>%
-    arrange(year, .by_group = TRUE) %>% 
+    dplyr::group_by(country, iter_se) %>%
+    dplyr::arrange(year, .by_group = TRUE) %>% 
     mutate(cpi_postm1 = lag(cpi_post),
            cpi_postm1_z = as.vector(scale(cpi_postm1)))
 
 saveRDS(cpi_post, file = here::here("data","cpi_post.rds"))
 
 cpi_post_z <- cpi_post %>%
-    select(country, year,iter_cn,iter_se,cpi_post,cpi_post_z)
+    dplyr::select(country, year,iter_cn,iter_se,cpi_post,cpi_post_z)
 
 data_temp <- cpi_post_z %>% 
-    group_by(iter_cn,country) %>%
-    arrange(year,.by_group = TRUE) 
+    dplyr::group_by(iter_cn,country) %>%
+    dplyr::arrange(year,.by_group = TRUE) 
 
 cpi_list <- list()
 for (i in 1:900) {
