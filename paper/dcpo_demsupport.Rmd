@@ -30,6 +30,7 @@ editor_options:
     wrap: sentence
 tables: true # enable longtable and booktabs
 citation_package: natbib
+citeproc: false
 fontsize: 12pt
 indent: true
 linestretch: 1.5 # double spacing using linestretch 1.5
@@ -542,8 +543,8 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     geom_hline(yintercept = 0,
                colour = "grey50",
                linetype = 2) +
-    scale_color_gb(
-        palette = "digitMixed",
+    scale_color_grey(
+        start = 0.8, end = 0.4, 
         name = "Replication",
         breaks = c(
             "Point Estimates Only",
@@ -1029,8 +1030,8 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     geom_hline(yintercept = 0,
                colour = "grey50",
                linetype = 2) +
-    scale_color_gb(
-        palette = "digitMixed",
+    scale_color_grey(
+        start = 0.8, end = 0.4, 
         name = "Replication",
         breaks = c(
             "Point Estimates Only",
@@ -1709,18 +1710,18 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     geom_hline(yintercept = 0,
                colour = "grey50",
                linetype = 2) +
-    scale_color_gb(
-        palette = "digitMixed",
+    scale_color_grey(
+        start = 0.8, end = 0.4, 
         name = "Replication",
         breaks = c(
             "Point Estimates Only",
-            "Uncertainty & More Data",
-            "Uncertainty & DCPO"
+            "With Uncertainty",
+            "Uncertainty & More Data"
         ),
         labels = c(
             "Point Estimates Only",
-            "Uncertainty & More Data",
-            "Uncertainty & DCPO"
+            "With Uncertainty",
+            "Uncertainty & More Data"
         )
     ) + 
     theme(
@@ -1769,7 +1770,7 @@ modelsummary(tb_dcpoAJPS,
              coef_map = names_coef,
              gof_map = names_gof,
              output = "latex", 
-             title = "The Effect of Democracy on Change in Public Support (Uncertainty \\& DCPO)") %>%
+             title = "The Effect of Public Support on Democracy (Uncertainty \\& DCPO)") %>%
   kableExtra::kable_styling(font_size = 8) %>% 
   kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
@@ -2098,20 +2099,20 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     geom_hline(yintercept = 0,
                colour = "grey50",
                linetype = 2) +
-    scale_color_gb(
-        palette = "digitMixed",
+    scale_color_grey(
+        start = 0.8, end = 0.4, 
         name = "Replication",
         breaks = c(
             "Point Estimates Only",
-            "Uncertainty & More Data",
-            "Uncertainty & DCPO"
+            "With Uncertainty",
+            "Uncertainty & More Data"
         ),
         labels = c(
             "Point Estimates Only",
-            "Uncertainty & More Data",
-            "Uncertainty & DCPO"
+            "With Uncertainty",
+            "Uncertainty & More Data"
         )
-    ) +
+    ) + 
     theme(
         axis.text.x  = element_text(angle = 90, hjust = .5),
         strip.text.y.left = element_text(angle = 0),
