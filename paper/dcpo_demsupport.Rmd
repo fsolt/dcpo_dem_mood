@@ -177,9 +177,9 @@ body(small_multiple)[[19]] <- substitute(
 ```{r data-input, include=FALSE, cache=TRUE, cache.extra = tools::md5sum(here::here("output", "estimates_moc_correctAJPS.RDS"))}
 ## Replication data
 load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
-load(here("data", "correct_cls_apsr.rda")) # https://osf.io/2hwqg/download
-load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/wfm3c/download
-load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/rvc92/download
+load(here("data", "correct_cls_apsr.rda")) # https://osf.io/cws59/download
+load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/cgxjd/download
+load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/uka5g/download
 load(here("data", "exp_claassen_input.rda")) # Source???
 
 ## Preloading chunk-produced results to speed up the compiling
