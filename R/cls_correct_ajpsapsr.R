@@ -9,6 +9,7 @@ p_load(
     rstan,
     osfr
 ) 
+
 #osf_retrieve_file("kg7z4") %>%
 #     osf_download(here::here("data"))  ##pure corrected
 
@@ -57,9 +58,10 @@ correct_cls_theta_list <- purrr::map(1:900, function(anEntry) {
 #year 30, country 137
 save(correct_cls_theta_list,file = here("data","correct_cls_theta_list.rda"))
 
+
 ################################################################
 ######## Create lists for elements in analysis data  ###########
-########### AJPS: cls_libdem_ajps_list,correct_cls_ajps ############
+########### AJPS: cls_libdem_ajps_list,correct_cls_ajps ########
 ################################################################
 
 load(here("data","cls_libdem_list.rda"))  #vdem8 libdem list
@@ -108,10 +110,13 @@ correct_cls_ajps <- purrr::map(1:900, function(anEntry) {
 }) 
 #merge with correct_cls_theta and create trim variables. 
 save(correct_cls_ajps, file = here("data","correct_cls_ajps.rda"))
+
+
 ################################################################
 ######## Create lists for elements in analysis data  ###########
-########### APSR: cls_libdem_apsr_list,correct_cls_apsr  ###########
+########### APSR: cls_libdem_apsr_list,correct_cls_apsr  #######
 ################################################################
+
 load(here("data","cls_libdem_list.rda"))  #vdem8 libdem list
 load(here("data","cls_apsr_cntrl.rda"))
 load(here("data","cls_poly_list.rda"))
@@ -179,9 +184,13 @@ demsup <- osf_retrieve_node("tnp2a")
 osf_upload(demsup, c(here("data","correct_cls_ajps.rda")),conflicts = "overwrite")
 osf_upload(demsup, c(here("data","correct_cls_apsr.rda")),conflicts = "overwrite")
 
-###############Expanded_Claassen and Analysis Data##################
-###############Input:  exp_claassen_m5_3k_07-23-10-50.rda ############################
-##############Output: expcor_cls_theta_list ############################
+
+################################################################
+###############Expanded_Claassen and Analysis Data##############
+###############Input:  exp_claassen_m5_3k_07-23-10-50.rda ######
+##############Output: expcor_cls_theta_list ####################
+################################################################
+
 load(here("data", "exp_claassen_m5_3k_07-23-10-50.rda")) 
 load(here("data","exp_claassen_input.rda"))
 load(here("data","dcpo_ajps_cntrl.rda"))
@@ -207,11 +216,14 @@ expcor_cls_theta_list <- purrr::map(1:900, function(anEntry) {
 )
 #year 33, country 145
 save(expcor_cls_theta_list,file = here("data","expcor_cls_theta_list.rda"))
-################################################################
-######## Create lists for elements in analysis data  ###########
+
+
+################################################################################
+######## Create lists for elements in analysis data  ###########################
 ########### dcpo_ajps_cntrl,libdem_cntrl_list,expcor_cls_theta_list ############
-########### AJPS:expcor_cls_ajps ############
-################################################################
+########### AJPS:expcor_cls_ajps ###############################################
+################################################################################
+
 load(here("data","dcpo_ajps_cntrl.rda"))  ##
 load(here("data","libdem_cntrl_list.rda")) ## created in dcpo_ajps_apsr_un.R 
 #note: need to clean all R. files again later. 
@@ -250,10 +262,13 @@ expcor_cls_ajps <- purrr::map(1:900, function(anEntry) {
                Libdem_regUN_m1 = Region_libdem_m1,) 
 })  ##adjust names to be consistent with correct_cls_ajps
 save(expcor_cls_ajps, file = here::here("data","expcor_cls_ajps.rda"))
+
+
 ################################################################
 ######## Create lists for elements in analysis data  ###########
-########### APSR: expcor_cls_apsr  ###########
+########### APSR: expcor_cls_apsr  #############################
 ################################################################
+
 load(here("data","libdem_list.rda"))  ##created from dcpo_ajps_apsr_uncertainty
 load(here("data","poly_list.rda"))
 load(here("data","lib_list.rda"))
