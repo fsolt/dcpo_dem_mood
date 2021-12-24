@@ -291,8 +291,8 @@ Figure \@ref(fig:plot-fullAJPS) presents the reanalyses of the hypothesis that p
 The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (democracy and corruption), and they reproduce that article's findings.
 The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
-The darker, righth and results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
-Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero; the hypothesis remains unsupported.
+The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
+Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis remains unsupported.
 
 ```{r pointAJPS}
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
