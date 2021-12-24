@@ -1099,10 +1099,10 @@ We demonstrated the importance of incorporating measurement uncertainty in analy
 Taking uncertainty into account rendered both articles' conclusions without empirical support, even when we added a considerable quantity of additional data.
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
-As the use of latent variables grows more common in political science, both researchers and readers should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
-Since measurement uncertainty distorts both statistical and substantive inferences with unknown directions on the sign and size of coefficients [@Bound2001;@Blackwell2017; @caughey2018], it is not only a methodological concern but also has substantive implications [@juhl_measurement_2019].
+As the use of latent variables grows more common, political scientists should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
+Recent cross-national time-series measures of, for example, European policy ideology [developed in @Caughey2019], immigration mood and immigration concern [presented in @Claassen2022], and public gender egalitarianism [introduced in @Woo2022], make possible a host of previously infeasible analyses, but the resulting research cannot be considered robust if it does not also incorporate these measures' quantified uncertainty.
 
-The null results reached in this letter have several substantive implications.
+The results reached in this letter also have several substantive implications.
 They highlight theoretical arguments that maintain that levels of democratic support undergird democracy only over the long term and so lend indirect support to other explanations for short-run changes in regime.
 They also draw attention to the conditional nature of the classic argument on democracy and democratic support as well as to challenges in measuring the concept of democratic support that remain unmet by existing time-series cross-sectional latent-variable models.
 Most importantly, the sanguine assessment that readers may draw from Claassen [-@Claassen2020a; -@Claassen2020b]---that the fate of democracies depend on public support, and when eroded, their publics will rally to them---is not supported by the current evidence.
