@@ -97,7 +97,7 @@ Our results also reinforce arguments that relationships between democracy and pu
 We draw two conclusions, one methodological and one substantive.
 Many constructs in social science---from democracy to corruption to public opinion---are latent variables, and recent advances have made estimating them much more practicable.
 As latent variable measurement models become more commonly used, it is absolutely necessary for researchers employing them to incorporate the associated uncertainty into their analyses.
-As demonstrated here, this can be done straightforwardly using the method of composition [see @Tanner1993, 52; @Treier2008, 215], without requiring any further change in model specification. 
+As demonstrated here, this can be done straightforwardly using the method of composition [see @Tanner1993, 52; @Treier2008, 215] without requiring any further change in model specification. 
 
 And, at a time when democracy is seen as under threat around the world [e.g., @Diamond2015], taken together, Claassen [-@Claassen2020a; -@Claassen2020b] send what is ultimately a reassuring message: the fate of democracy rests with us, the public, and when democratic institutions are undermined, we will swing to their support and constitute "an obstacle to democratic backsliding" [@Claassen2020b, 51].
 Both of these assertions may well be true, but the evidence we have, properly assessed, does not support them.
@@ -214,12 +214,12 @@ We attempted to make fuller use of the available survey data by employing the DC
 
 ## Incorporating Uncertainty {-}
 
-Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019], latent variables are always estimated with a quantifiable amount of measurement error, and ignoring measurement error in analyses can attenuate, exaggerate, or even reverse coefficient estimates as well as bias standard errors [see, e.g., @Bound2001, 3709; @caughey2018, 254; @Saccenti2020, 8].
+Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion [see, in addition to the works examined here, @OGrady2019; @Claassen2022], latent variables are always estimated with a quantifiable amount of measurement error, and ignoring measurement error in analyses can attenuate, exaggerate, or even reverse coefficient estimates as well as bias standard errors [see, e.g., @Bound2001, 3709; @caughey2018, 254; @Saccenti2020, 8].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey2018, 254]. 
-Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in analysis models using our replication data.
+Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in the articles' models using our replicated data.
 We conduct inferences from the distributive data via the technique known as the "method of composition"  [MOC, @Tanner1993, 52].
 MOC accounts for uncertainty from opinion estimates and analysis models through each modeling stage.
-In analysis stage, uncertainty is incorporated through simulation based on the variance-covariance matrix of a model without requiring any change to its specification.
+In the analysis stage, uncertainty is incorporated through simulation based on the variance-covariance matrix of a model without requiring any change to its specification.
 This allows MOC to adapt to many different types of models, including but not limited to many different time-series-cross-sectional specifications [@caughey2018, A15-16], Cox proportional hazards models [@Treier2008, 215], or models of individual-level roll call voting [@Kastellec2015, 791].^[For additional details on the MOC technique, see Supplementary Information Appendix \@ref(moc).]
 
 ```{r compare_n}
