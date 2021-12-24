@@ -1499,9 +1499,9 @@ To sample from the conditional density and the marginal density in the right sid
 
 1. We sample $\theta^{t}$ from its posterior distribution $p(\theta|Z)$.
 
-2. For each analysis model, we run the model with $\theta^{t}$, and $w$, and save the coefficient estimates $\beta^{t}$ and variance-covariance matrix of $\hat{\beta^{t}}$, $\hat{V^{t}}$, both of which change due to the uncertainty in $\theta$.
+2. For each analysis model, we run the model with $\theta^{t}$, and $w$, and save the coefficient estimates $\hat{\beta^{t}}$ and variance-covariance matrix of $\hat{\beta^{t}}$, $\hat{V^{t}}$, both of which change due to the uncertainty in $\theta$.
 
-3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\beta^{t}$ and variance-covariance matrix $V^{t}$.
+3. We sample $\tilde{\beta^{t}}$ from the multivariate normal density with mean vector $\hat{\beta^{t}}$ and variance-covariance matrix $\hat{V^{t}}$.
 
 In the step 3, the marginal distribution of a parameter vector $\beta$ was estimated, integrating over $p(\theta|Z)$:
 
