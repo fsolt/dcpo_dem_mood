@@ -1525,7 +1525,7 @@ We calculate point estimates and standard errors based on these 900 samples.
 
 To make fuller use of the available survey data, we also replicated the tests of the classic arguments on democracy and public support using the DCPO model put forward in @Solt2020a on our expanded data set.
 The DCPO model has several advantages over the @Claassen2019 model used in Claassen [-@Claassen2020a; -@Claassen2020b].
-First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by 50 of the 52 survey items employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, p.5].
+First, while the @Claassen2019 model dichotomizes responses and so discards some information provided by the 50 ordinal survey items (of 52 total) employed in Claassen [-@Claassen2020a; -@Claassen2020b], the DCPO model makes use of all of the information available from these ordinal items [@Solt2020a, p.5].
 Second, as the DCPO model includes both parameters for the dispersion of each survey item and for the standard deviation of aggregate public opinion in each country-year, it is a complete population-level item-response model and so, unlike the @Claassen2019 model, is explicitly derived from an individual-level model of survey responses [@Solt2020a, pp.3-4; see also @McGann2014].
 Third, to produce more sensible estimates of uncertainty for observations at the extremes of the scale [see @Linzer2015, 229], the DCPO model places bounds on its estimates of public opinion [@Solt2020a, 8].
 Further commending the DCPO model to us---and demonstrating that its advantages make a difference---the validation tests in @Solt2020a [pp.10-12] reveal that it fits survey data on democratic support better than the @Claassen2019 model does.
@@ -1534,7 +1534,7 @@ We employ the superior DCPO model to our expanded dataset using the `DCPO` packa
 We then use the estimated public support from the DCPO model to replicate all of the analyses presented in the text.
 Figures \@ref(fig:plot-dcpoAJPS) and Figures \@ref(fig:plot-dcpoAPSR) display these results as the righthand set of results, with the replication of the articles' original results based only on point estimates on the left and our extension with uncertainty and more data, but the articles' original, @Claassen2019, model in the middle for comparison.
 
-Even with the advantages of the DCPO model, there is no evidence to support the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support sustains democratic regimes or public support responds thermostatically to changes in democracy.
+Even with the advantages of the DCPO model, there is no evidence to support the conclusions of Claassen [-@Claassen2020a; -@Claassen2020b] that public support sustains democratic regimes or that public support responds thermostatically to changes in democracy.
 
 
 ```{r dcpo-AJPS, eval=FALSE}
