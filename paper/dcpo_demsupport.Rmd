@@ -92,7 +92,7 @@ On the one side, the effect of democracy on public support may depend not on its
 On the other, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance [see @Qi2011].
 Similarly, the results presented here are further evidence that the survey items commonly employed to measure democratic support are inadequate to the task.
 Because these questions contain no information on respondents' support for democracy relative to other values with which it may come into conflict, such as their partisanship [see, e.g., @Carey2020; @McCoy2020]---or on whether respondents even understand the meaning of the democracy they are claiming to support [see, e.g., @Kirsch2019; @Wuttke2020]---these questions appear to miss capturing the true extent of the support among the public that democracy will actually find when public support is in fact most needed.
-Our results also reinforce arguments that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short term is instead best understood as an elite-driven phenomenon [see, e.g., @levitsky_how_2018; @Haggard2021].
+Our results also reinforce arguments that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short term is instead best understood as an elite-driven phenomenon [see, e.g., @Haggard2021].
 
 We draw two conclusions, one methodological and one substantive.
 Many constructs in social science---from democracy to corruption to public opinion---are latent variables, and recent advances have made estimating them much more practicable.
@@ -1078,11 +1078,11 @@ In other words, the survey items employed by Claassen [-@Claassen2020a; -@Claass
 One possibility is that only those who profess to prefer democracy to its alternatives _and also_ value freedom of expression, freedom of association, and pluralism of opinion will take appropriate action when democracy is threatened [see, e.g., @Schedler2007].
 Another is that respondents' other values, such as their policy preferences or partisanship, may weigh more heavily than their support for democracy: there is growing evidence that, at least in the United States, there are many for whom these other considerations excuse substantial transgressions against democracy [see @Carey2020; @graham_democracy_2020; @McCoy2020].
 Yet another is that the answers to the above items reflect actual support for democracy only when respondents also either hold a robust understanding of what liberal democracy means or anchor their support in emancipative values of universal freedoms.
-If they do not, their positive responses to these items indicate support for autocracy instead [see, e.g., @Brunkert2019; @Kirsch2019; @Wuttke2021].
+If they do not, their positive responses to these items indicate support for autocracy instead [see, e.g., @Kirsch2019; @Wuttke2021].
 Taking any or all of these into account requires considering the _combination_ of attitudes: even the inclusion of additional questions in a unidimensional public opinion model such as that provided by @Claassen2019 will not be sufficient [see, e.g., @Wuttke2020].
 
 Finally, by failing to provide evidence for a short-term relationship between democratic support and democracy, these null findings can be seen to lend additional support to other theories of regime change.
-There are compelling arguments that episodes of democratic transition [see, e.g., @ODonnell1986a; @Karl1987] and backsliding [see, e.g., @levitsky_how_2018; @Haggard2021] are best understood as products of elite decision making.
+There are compelling arguments that episodes of democratic transition [see, e.g., @ODonnell1986a] and backsliding [see, e.g., @Haggard2021] are best understood as products of elite decision making.
 With regard to the latter, critics have charged that these claims overlook the extent of demand for authoritarian rule among the public [see, e.g., @Norris2021].
 The null results reported here, by finding that year-to-year changes in democratic support bear little relationship to changes in democracy, highlight that levels of public support appear to relate to regime only over the long run [see also @Welzel2017], leaving elite decisions as a powerful explanation for when and how short-term developments unfold.
 
