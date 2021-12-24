@@ -78,17 +78,17 @@ source(here::here("R", "uiowa_palette.R"))
 
 
 Thank you for your helpful comments, as well as your enthusiasm for this piece.
-We set out a list of the specific points raised in the reviews and our responses to them below, roughly in the order they appear in the text:
+We set out a list of the specific points raised in the reviews and by the editor with our responses to them below, roughly in the order they appear in the text:
 
 1. **Abstract** The editor pointed out that, in responding to R4's desire for more discussion of our substantive point, we had allowed the balance of our attention toward our substantive and methodological contributions to become skewed too far toward the former. She suggested revising the abstract to "emphasize more clearly the contribution" on the methods side.  We revised the abstract to better highlight our methodological point.  (At her suggestion, we carried this thought through to the conclusion as well.)
 
-1. **Introduction** The sentence flagged for revision for clarity on page 2 was split in two, and the one on page 3 was rewritten.
+1. **Introduction** The sentence the editor flagged for revision for clarity on page 2 was split in two, and the one on page 3 was rewritten.
 
 1. **Method** R1 asked for a justification of the method of composition (MOC) approach in the TSCS context.  We include citations to the literature establishing the broad applicability of MOC, including specifically to TSCS, at page 5.
 
 1. **Method** R1 again raises the question of structural equation models as an alternative approach.  While SEM is a potentially appropriate technique for the examination of these questions, it has the distinct disadvantage of requiring a change in model specification to test both hypotheses simultaneously, as demonstrated by the working paper/response that R1 referenced.  (Had we pursued this approach from the outset, we surmise, R1 would have justifiably considered the altered specification to be a point of concern.)  While not specifically addressing SEM, we now stress throughout the piece the advantage of MOC in allowing us to incorporate measurement uncertainty without changing at all the original articles' model specifications.
 
-1. **Method** R1 again raises the point that many of the estimates in Figure 2 are near zero.  As we pointed out in our previous memo, that is not particularly surprising: it merely suggests that the change in Claassen's estimates of democratic support---some 56% of which are simply random walks---is very poorly predicted by the democracy variables.  We note that the GDP and corruption variables are not particularly near zero in the figure, and that, of course, none of the estimated coefficients are really "exactly zero" as R1 claims (see Tables A.5 and A.6).  R1's reference to ADL specifications is puzzling (surely they know that "the ECM and ADL specifications are interchangeable," @Claassen2020b, 46).  If they meant to refer to the FD specifications, our point still stands: the dependent variable is the _change_ in Claassen's estimates of democratic support, which is---when uncertainty is taken into account---more often than not just random.
+1. **Method** R1 again raises the point that many of the estimates in Figure 2 are near zero.  As we pointed out in our previous memo, that is not particularly surprising: it merely suggests that the change in Claassen's estimates of democratic support---some 56% of which are simply random walks---is very poorly predicted by the democracy variables.  We note that the GDP and corruption variables are not particularly near zero in the figure, and that, of course, none of the estimated coefficients are really "exactly zero" as R1 suggests (see Tables A.5 and A.6).  R1's reference to ADL specifications is puzzling [surely they know that "the ECM and ADL specifications are interchangeable," @Claassen2020b, 46].  If they meant to refer to the FD first-difference specifications, our point still stands: the dependent variable is the _change_ in Claassen's estimates of democratic support, which is---when uncertainty is taken into account---more often than not just random.
 
 1. **Conclusion** The editor pointed out the conclusion was "a bit repetitive."  We cut down this section to minimize repeating ourselves.
 
@@ -99,6 +99,6 @@ We set out a list of the specific points raised in the reviews and our responses
 Thank you once more for the opportunity to make revisions.
 We think the paper is much stronger as a result of your comments and hope you agree.
 
-# References
+# References {-}
 
 <div id="refs"></div>
