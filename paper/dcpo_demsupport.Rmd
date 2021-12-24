@@ -222,11 +222,6 @@ MOC accounts for uncertainty from opinion estimates and analysis models through 
 In analysis stage, uncertainty is incorporated through simulation based on the variance-covariance matrix of a given model, regardless of its structure or features.
 This allows MOC to adapt to many different types of models, including but not limited to different time-series-cross-sectional specifications [@caughey2018, A15-16], Cox proportional hazards models [@Treier2008, 215], or models of individual-level roll call voting [@Kastellec2015, 791].^[For additional details on the MOC technique, see Supplementary Information Appendix \@ref(moc).]
 
-As an alternative way, a structural equation model (SEM) which incorporates measurement model and structural links between variables together can also account for bias caused by simultaneity between variables and measurement models.
-However, SEM is a method to test the match between the model and the data, subject to confirmation bias due to the existing of competing theories which we have in the theory on democracy and public opinion, omitted variables, linear causal relationship assumption, the sensitivity to the estimator choice when both endogenous and endogenous are contaminated by measurement errors, among others [@Tomarken2005].
-
-In contrast, MOC is flexible to accommodate not only various models but also multiple layers of uncertainty in both opinion estimates and substantive models [@Kastellec2015, 792] where the model and joint distribution of the error and all the variables in the model determine the bias introduced by measurement errors [@Bound2001, 3708].
-
 ```{r compare_n}
 
 # if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
@@ -1100,7 +1095,7 @@ Taking uncertainty into account rendered both articles' conclusions without empi
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
 As the use of latent variables grows more common, political scientists should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
-Recent cross-national time-series measures of, for example, policy ideology in Europe [developed in @Caughey2019], immigration attitudes across Europe [presented in @Claassen2022], and public gender egalitarianism worldwide [introduced in @Woo2022], make possible a host of previously infeasible analyses, but the resulting research cannot be considered robust if it does not also incorporate these measures' quantified uncertainty.
+Recent cross-national time-series measures of, for example, policy ideology across Europe [developed in @Caughey2019], immigration attitudes in Europe [presented in @Claassen2022], and public gender egalitarianism worldwide [introduced in @Woo2022], make possible a host of previously infeasible analyses, but the resulting research cannot be considered robust if it does not also incorporate these measures' quantified uncertainty.
 
 The results reached in this letter also have several substantive implications.
 They highlight theoretical arguments that maintain that levels of democratic support undergird democracy only over the long term and so lend indirect support to other explanations for short-run changes in regime.
@@ -1159,7 +1154,7 @@ In Appendix \@ref(moc), we illustrate how we employed these simulated distributi
 ## Numeric Results for Figure \@ref(fig:plot-fullAJPS) and Figure \@ref(fig:plot-fullAPSR)
 
 During the replications of @Claassen2020a;@Claassen2020b, we found several miscoding across the original data.
-For example, in @Claassen2020b that the author coded the option "Necesitamos un líder fuerte que no tenga que ser elegid" as "strong_lapop_2" for the question:
+For example, in @Claassen2020b that the author coded the option "necesitamos un líder fuerte que no tenga que ser eligido" as "strong_lapop_2" for the question:
 
 > Hay gente que dice que necesitamos un líder fuerte que no tenga que ser elegido a través del voto. AUT1 Otros dicen que aunque las cosas no funcionen, la democracia electoral, o sea el voto popular, es siempre
 lo mejor. ¿Qué piensa usted? [Leer alternativas]
