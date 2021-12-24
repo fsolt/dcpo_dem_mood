@@ -1129,7 +1129,7 @@ We describe this process for the latent variables here.
 ## Democratic Support {-}
 
 First, for each item used in the two articles' measure of democratic support, we identified the original variable names and corresponding values in each survey dataset. 
-We then used the `dcpo_setup` and `format_claassen` functions of the `DCPOtools` R package to automate the process of generating a dataset of survey marginals.
+We then used the `dcpo_setup` and `format_claassen` functions of the `DCPOtools` R package [@Solt2019] to automate the process of generating a dataset of survey marginals.
 These survey marginals were then used to generate estimates of democratic support in Stan using the `supdem.stan.mod5.stan` script from the @Claassen2020a Dataverse materials.
 Draws from the posterior distribution quantify the uncertainty in the estimates.
 
@@ -1139,33 +1139,32 @@ The democracy variables in the two articles are drawn from Version 8 of the V-De
 This version of the dataset includes draws from the posterior distribution of the estimates to quantify their uncertainty.
 In our extension (the rightmost replication of each model in our Figures 1 and 2), we are able to extend the time series beyond the last year of Version 8, 2017, so we use the updated Version 10 instead.
 Version 10, however, does not include posterior draws of the estimates, but rather standard errors.
-For the purposes of incorporating this uncertainty into our analyses, we assumed a normal distribution around the point estimates.
+For the purposes of incorporating this uncertainty into our analyses, we assumed these errors were normally distributed around the point estimates.
 
 ## Corruption {-}
 
 The corruption variable used in @Claassen2020b is the Corruption Perceptions Index, which provides point estimates and standard errors for the years from 2012 to 2018.
-For country-years beyond that range, we estimated standard errors for by first identifying the country's maximum relative standard error (standard error/point estimate) during 2012-2018 and then multiplying this quantity by the country-year's point estimate.
+For country-years beyond that range, we conservatively estimated standard errors by first identifying the country's maximum relative standard error (standard error/point estimate) during 2012-2018 and then multiplying this quantity by the country-year's point estimate.
 For the purposes of incorporating this uncertainty into our analyses, we again assumed a normal distribution around the point estimates.
 
-In Appendix \@ref(moc), we illustrate how we employed these simulated distributions to take uncertainty into account in our analysis models.
+In Appendix \@ref(moc), we illustrate how we employed these simulated distributions to take uncertainty into account in the models replicating the analyses of [@Claassen2020a; @Claassen2020b].
 
 \pagebreak
 
-## Numeric Results for Figure \@ref(fig:plot-fullAJPS) and Figure \@ref(fig:plot-fullAPSR)
+## Numeric Results for Figure \@ref(fig:plot-fullAJPS) and Figure \@ref(fig:plot-fullAPSR) {-}
 
-During the replications of @Claassen2020a;@Claassen2020b, we found several miscoding across the original data.
-For example, in @Claassen2020b that the author coded the option "necesitamos un líder fuerte que no tenga que ser eligido" as "strong_lapop_2" for the question:
+During the replications of [@Claassen2020a;@Claassen2020b], we encountered a number of miscodings in the original data that we corrected.
+For example, the item "necesitamos un líder fuerte que no tenga que ser eligido" was coded as `strong_lapop_2`, although according to the AmericasBarometer codebooks, this question and that coded as `strong_lapop_1` employed the identical language:
 
 > Hay gente que dice que necesitamos un líder fuerte que no tenga que ser elegido a través del voto. AUT1 Otros dicen que aunque las cosas no funcionen, la democracia electoral, o sea el voto popular, es siempre
 lo mejor. ¿Qué piensa usted? [Leer alternativas]
 
-But according to the description of the question, this ought to be "strong_amb_1."
-Another example involves a miscount of the midpoint of its three-point scale as a positive, democracy-supporting response, when the original work coded "evdemoc_asiab" in the Asian Barometer.
-In a separate ongoing research project, we will identify the main types of miscoding and evaluate the extent to which they affect on the inferences.
-In this work, we use the corrected data for the replications with uncertainty to ensure that the data quality would not distort the results.
+We therefore coded both as `strong_lapop_1`.
+Other examples include inconsistent coding regarding what constitutes a "democracy-supporting" response and the inconsistent application of the stated rule regarding "don't know" and other nonresponses.
+Here we use the corrected data for the replications with uncertainty to ensure that issues of data quality did not distort the results presented.
 
-Moreover, for the GMM models, the original publication presented the observation number based on the trimmed data, i.e., "2435", while the tabulating function in the replication file (line 86) uses the full used-observation number, "4735." 
-We follow the replication file in the following tables.
+Finally, for the GMM models, the original publication presented the observation number based on the trimmed data, i.e., "2435", while the tabulating function in the replication file (line 86) uses the full used-observation number, "4735." 
+We follow the replication file in the tables below.
 
 ```{r num-labelAJPS}
 names_coef <- c(
