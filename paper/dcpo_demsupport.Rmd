@@ -21,7 +21,7 @@ title: |
 # - name: Frederick Solt
 #   affiliation: University of Iowa
   
-abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. Such approaches come with concomitant measurement uncertainty that should be taken into account, however, and neither study incorporated this uncertainty into its analyses. Correcting this oversight reveals that there is no support for either study's conclusion. Efforts to minimize the uncertainty by incorporating additional data still fail to yield evidence in support of either hypothesis. These results underscore the need both for more nuanced analyses of the relationships between public support and democracy and for taking measurement uncertainty into account when working with latent variables. [150/150 words]"
+abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. Both studies, however, used only the point estimates of democratic support; we show that incorporating the concomitant measurement uncertainty into these analyses reveals that there is no support for either study's conclusion. Efforts to minimize the uncertainty by incorporating additional survey data still fail to yield evidence in support of either hypothesis. These results underscore the need both for more nuanced analyses of the relationships between public support and democracy and for taking measurement uncertainty into account when working with latent variables. [147/150 words]"
 keywords: "Democratization, public support, regime survival, measurement uncertainty, latent variables."
 
 date: " "
@@ -68,7 +68,7 @@ header-includes:
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
 Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, 251-254] and just the opposite [@Fails2010, 182-183].
-Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183; @Wuttke2020a, 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Foa2017].
+Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Foa2017].
 
 One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
 Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
@@ -91,7 +91,7 @@ They point to a need for closer attention to the conditional aspects of the clas
 On the one side, the effect of democracy on public support may depend not on its mere existence but on its effectiveness [see @Magalhaes2014] and particularly with regard to redistribution [see @Krieckhaus2014].
 On the other, the impact of public support on democracy may depend on the extent to which those who support democracy are also dissatisfied with the current regime's performance [see @Qi2011].
 Similarly, the results presented here are further evidence that the survey items commonly employed to measure democratic support are inadequate to the task.
-Because these questions contain no information on respondents' support for democracy relative to other values with which it may come into conflict, such as their partisanship [see, e.g., @graham_democracy_2020; @McCoy2020]---or on whether respondents even understand the meaning of the democracy they are claiming to support [see, e.g., @Kirsch2019; @Wuttke2020]---these questions appear to miss capturing the true extent of the support among the public that democracy will actually find when public support is in fact most needed.
+Because these questions contain no information on respondents' support for democracy relative to other values with which it may come into conflict [see, e.g., @graham_democracy_2020; @McCoy2020] or on whether respondents even understand the meaning of the democracy they are claiming to support [see, e.g., @Kirsch2019; @Wuttke2020], these questions appear to miss capturing the true extent of the support among the public that democracy will actually find when public support is in fact most needed.
 Our results also reinforce arguments that relationships between democracy and public support unfold only over the long term [see, e.g., @Welzel2017] and that democratic change in the short term is instead best understood as an elite-driven phenomenon [see, e.g., @Haggard2021].
 
 We draw two conclusions, one methodological and one substantive.
@@ -215,12 +215,14 @@ We attempted to make fuller use of the available survey data by employing the DC
 
 ## Incorporating Uncertainty {-}
 
-Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion, latent variables are always estimated with a quantifiable amount of measurement error, and ignoring measurement error in analyses can attenuate, exaggerate, or even reverse coefficient estimates as well as bias standard errors [see, e.g., @Bound2001, 3709; @caughey2018, 254; @Saccenti2020, 8].
+Although measurement uncertainty has not yet attracted attention in the field of comparative public opinion, latent variables are always estimated with a quantifiable amount of measurement error, and ignoring measurement error in analyses can attenuate, exaggerate, or even reverse coefficient estimates as well as bias standard errors [see, e.g., @Bound2001, 3709; @caughey2018, 254].
 In light of this, recent studies measuring other latent variables have recommended incorporating their measurement uncertainty in analyses [see @solis_measuring_2020, 18; @Gandhi2020, 1553], and research examining the consequences of public opinion in the United States has done so [see, e.g., @Kastellec2015, 791-792; @caughey2018, 254]. 
 Therefore, after replicating the original analyses that use only the point estimates for public support and the other variables included in the model, we perform the analyses again only this time incorporating uncertainty in the articles' models using our replicated data.
 We conduct inferences from the distributive data via the technique known as the "method of composition"  [MOC, @Tanner1993, 52].
 MOC accounts for uncertainty from opinion estimates and analysis models through each modeling stage.
 In the analysis stage, uncertainty is incorporated through simulation based on the variance-covariance matrix of a model without requiring any change to its specification.
+This allows MOC to be broadly applicable adapt to many different types of models, including time-series-cross-sectional models [@caughey2018, A15-16], Cox proportional hazards models [@Treier2008, 215], or models of individual-level roll call voting [@Kastellec2015, 791].^[For additional details on the MOC technique, see Supplementary Information Appendix \@ref(moc).]
+
 
 ```{r compare_n}
 
@@ -290,8 +292,8 @@ These figures represent the survey data actually used in estimating public suppo
 # Results {-}
 
 Figure \@ref(fig:plot-fullAJPS) presents the reanalyses of the hypothesis that public support influences the level of democracy [@Claassen2020a, Table 1, 128].
-The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (democracy and corruption), and they reproduce that article's findings.
-The middle results introduce a single change: the uncertainty in the measurement of public support is taken into account.
+The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (i.e., democracy and corruption), and they reproduce that article's findings.
+The middle results introduce a single change: the uncertainty in the measurement of public support and these other variables is taken into account.
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
 The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis remains unsupported.
