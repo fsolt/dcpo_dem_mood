@@ -1100,7 +1100,7 @@ Taking uncertainty into account rendered both articles' conclusions without empi
 
 This points to the absolute necessity of incorporating measurement uncertainty into analyses that include latent variables.
 As the use of latent variables grows more common, political scientists should be aware that these variables' concomitant measurement uncertainty cannot be neglected.
-Recent cross-national time-series measures of, for example, European policy ideology [developed in @Caughey2019], immigration mood and immigration concern [presented in @Claassen2022], and public gender egalitarianism [introduced in @Woo2022], make possible a host of previously infeasible analyses, but the resulting research cannot be considered robust if it does not also incorporate these measures' quantified uncertainty.
+Recent cross-national time-series measures of, for example, policy ideology in Europe [developed in @Caughey2019], immigration attitudes across Europe [presented in @Claassen2022], and public gender egalitarianism worldwide [introduced in @Woo2022], make possible a host of previously infeasible analyses, but the resulting research cannot be considered robust if it does not also incorporate these measures' quantified uncertainty.
 
 The results reached in this letter also have several substantive implications.
 They highlight theoretical arguments that maintain that levels of democratic support undergird democracy only over the long term and so lend indirect support to other explanations for short-run changes in regime.
