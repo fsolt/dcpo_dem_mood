@@ -63,12 +63,12 @@ header-includes:
       - \titleformat*{\subsection}{\normalsize\itshape}
 ---
 
-(Word count: 3888)
+(Word count: 3973)
 
 It has long been argued that democratic regimes and public support for them are mutually reinforcing: that high levels of public support ensure democracies remain strong, and that experience with democratic governance generates robust public support [see, e.g., @lipset_social_1959; @Easton1965].
 But the evidence for either part of this claim has been decidedly mixed.
 Countries with greater democratic support have been found to become stronger and more stable democracies [e.g., @Inglehart2005, 251-254] and just the opposite [@Fails2010, 182-183].
-Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Foa2017].
+Similarly, studies have alternately found that more experience with democracy yields more democratic support [e.g., @Fails2010, 183; @Wuttke2020a, 5-6] or instead that long-established democracies are suffering from democratic fatigue [e.g., @Foa2017].
 
 One important reason for these mixed results is the difficulty in measuring democratic support over time and across many countries.
 Public support for democracy cannot be directly observed, and its incorrect measurement will limit inferences about the relationships between public opinion and institutional development.
