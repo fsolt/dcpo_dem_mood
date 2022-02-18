@@ -26,8 +26,8 @@ paper/*cache/
 # data/kfold/*/*fold*
 # data/*.csv
 # data/*.qs
-data/
-reference/
+data/*
+reference/*
 paper/submission
 
 
