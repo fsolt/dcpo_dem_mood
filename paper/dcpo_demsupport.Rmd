@@ -218,7 +218,7 @@ Therefore, after replicating the original analyses that use only the point estim
 We conduct inferences from the distributive data via the technique known as the "method of composition"  [MOC, @Tanner1993, 52].
 MOC accounts for uncertainty from opinion estimates and analysis models through each modeling stage.
 In the analysis stage, uncertainty is incorporated through simulation based on the variance-covariance matrix of a model without requiring any change to its specification.
-This allows MOC to be broadly applicable adapt to many different types of models, including time-series-cross-sectional models [@CaugheyWarshaw2018a, A15-16], Cox proportional hazards models [@TreierJackman2008, 215], or models of individual-level roll call voting [@KastellecEtAl2015, 791].^[For additional details on the MOC technique, see  OSM \@ref(moc).]
+This allows MOC to be broadly applicable to many different types of models, including time-series-cross-sectional models [@CaugheyWarshaw2018a, A15-16], Cox proportional hazards models [@TreierJackman2008, 215], or models of individual-level roll call voting [@KastellecEtAl2015, 791].^[For additional details on the MOC technique, see  OSM \@ref(moc).]
 
 
 ```{r compare_n}
