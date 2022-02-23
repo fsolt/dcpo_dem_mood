@@ -6,7 +6,7 @@ download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/dcpo_input
 
 load("data/dcpo_input.rda")
 
-iter <- 3000
+iter <- 2000
 
 dcpo_output <- dcpo(dcpo_input,
                     iter = iter,
