@@ -1,6 +1,24 @@
+
+#### R version 4.1.1 (2021-08-10)
+###  Input Data:claassen_m5_3k_07-27-15-40.rda, claassen_replication_input
+###             cls_libdem_list.rda,  cls_poly_list.rda,cls_liberal_list.rda   
+###             cls_cntrl.rda
+###             exp_claassen_m5_3k_07-23-10-50.rda, exp_claassen_input.rda
+###             libdem_list.rda, poly_list.rda, lib_list.rda 
+###             exp_cntrl.rda      
+###             dcpo_cntrl.rda
+###             vdem8_regime.rda,vdem10_regime.rda
+###             country_regionUN.rda
+###             cpi_list
+###  Output Data:     
+###             correct_cls_theta_list,    correct_cls_ajps.rda,correct_cls_apsr.rda
+###             expcor_cls_theta_list.rda, expcor_cls_ajps.rda, expcor_cls_apsr.rda 
+###             dcpo_theta_list.rda, dcpo_ajps.rda, dcpo_apsr.rda
+                         
+
+###Load packages
 if (!require(pacman)) install.packages("pacman")
 library(pacman)
-# load all the packages you will use below 
 p_load(
     here,
     purrr,
@@ -10,12 +28,7 @@ p_load(
     osfr
 )
 
-osf_retrieve_file("uvn4g") %>%
-    osf_download(here::here("data"))  ##claassen_m5_3k_07-27-15-40.rda
-
-
-# Functions preload
-set.seed(313)
+###Load Function
 reformat_dcpo_output <- function(x, parameter_name) {
     df_temp <- x %>% 
         as_tibble(.name_repair = ~ls_country) %>% 
@@ -28,13 +41,17 @@ reformat_dcpo_output <- function(x, parameter_name) {
 }
 
 
+set.seed(313)
+
+
 ####################################################
 ################Creating Correct Data ##############
 ####################################################
 
 
 ######Creating Correct_theta_list################
-
+osf_retrieve_file("uvn4g") %>%
+    osf_download(here::here("data"))  ##claassen_m5_3k_07-27-15-40.rda
 load(here("data", "claassen_m5_3k_07-27-15-40.rda")) 
 load(here::here("data","claassen_replication_input.rda"))
 claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")  ##137*30 
@@ -306,3 +323,147 @@ expcor_cls_apsr <- purrr::map(1:900, function(anEntry) {
 
 save(expcor_cls_apsr, file = here::here("data","expcor_cls_apsr.rda"))
 
+
+
+
+##################################################################
+################Creating DCPO Expanded Correct Data ##############
+##################################################################
+
+###########Creating DCPO Expanded Correct Theta_list##############
+osf_retrieve_file("XXX") %>%
+    osf_download(here::here("data"))  #xxxx.rda
+
+load(here("data", "xxxx.rda")) 
+load(here("data","dcpo_input_update22.rda"))
+
+dcpo_theta <- rstan::extract(xxxxx, pars = "theta")
+ls_year <- 1988:2020
+ls_country <- dcpo_input_update22$data$country %>% unique() #
+first_year <- min(dcpo_input_update22$data$year) #
+
+dcpo_theta_list <- purrr::map(1:900, function(anEntry) {
+    xxxxxxx_theta$theta[anEntry,,] %>%   #######update name
+        reformat_dcpo_output("theta") 
+}
+)
+#year , country 
+save(dcpo_theta_list,file = here("data","dcpo_theta_list.rda"))
+
+
+
+
+#######Create DCPO Expanded Correct Analysis Data for Models in AJPS ###########
+
+#load(here("data","dcpo_theta_list.rda"))
+load(here("data","libdem_list.rda"))
+load(here("data","dcpo_cntrl.rda")) 
+load(here("data","vdem10_regime.rda")) 
+load(here("data","country_regionUN.rda"))
+
+#merge variables  
+dcpo_ajps_cntrl_list <-  purrr::map(1:900, function(anEntry) {
+    libdem_list[[anEntry]] %>% 
+        rename(Vdem_libdem = value) %>%
+        mutate(Libdem_VD = Vdem_libdem*100) %>%    
+        left_join(country_regionUN, by=c("country")) %>% 
+        group_by(country) %>% 
+        mutate(Libdem_m1 = dplyr::lag(Libdem_VD,n =1, order_by = year),
+               Libdem_m2 = dplyr::lag(Libdem_VD,n=2,order_by = year )) %>%
+        ungroup() %>%
+        mutate(ChgDem = Libdem_VD - Libdem_m1,
+               UpChgDem = ifelse(ChgDem > 0, ChgDem,0),
+               DwnChgDem = ifelse(ChgDem < 0, ChgDem*(-1),0)) %>%
+        ungroup() %>%
+        dplyr::group_by(Region_UN,year) %>%
+        mutate(Libdem_regUN = mean(Libdem_VD, na.rm=TRUE)) %>%
+        ungroup() %>%
+        dplyr::group_by(country) %>%
+        mutate(Libdem_regUN_m1 = dplyr::lag(Libdem_regUN,n =1, order_by = year )) %>%
+        ungroup() %>%
+        left_join(dcpo_cntrl[[anEntry]],by = c("year", "country", "Region_UN")) %>% 
+        filter(year > 1986) %>% 
+        filter(country %in% dcpo_theta_list[[1]]$country)
+}) 
+
+
+#create trimmed variables. 
+dcpo_ajps <- purrr::map(1:900, function(anEntry) {
+    dcpo_ajps_cntrl_list[[anEntry]] %>% 
+        left_join(dcpo_cls_theta_list[[anEntry]],by = c("year", "country"))  %>% 
+        left_join(vdem10_regime %>%  rename(Regime_VD = Vdem_regime), by = c("country","year")) %>%
+        mutate(SupDem_trim = ifelse(year < firstyear, NA, theta),
+               theta_dem_trim = ifelse(is.na(SupDem_trim),NA,
+                                       ifelse(Regime_VD > 1 & !is.na(SupDem_trim), theta, 0)),
+               theta_aut_trim = ifelse(is.na(SupDem_trim),NA,
+                                       ifelse(Regime_VD < 2 & !is.na(SupDem_trim), theta, 0))) %>%
+        select(country, year, theta, contains("trim"), everything())
+})  
+save(dcpo_ajps, file = here::here("data","dcpo_ajps.rda"))
+
+
+######## Create DCPO Expanded Correct Analysis Data for Models in APSR  ###########
+
+load(here("data","libdem_list.rda"))  
+load(here("data","poly_list.rda"))
+load(here("data","lib_list.rda"))
+load(here("data","cpi_list.rda"))
+
+## Standardize Vdem_libdem Vdem_libdem_z
+libdem_list_z <- libdem_list %>%
+    map(~.x %>%
+            rename(Vdem_libdem = value) %>%
+            mutate(Vdem_libdem_z = as.vector(scale(Vdem_libdem)) 
+            ))
+## Standardize Vdem_polyarchy_z  Vdem_liberal_z
+polyarchy_list_z <- poly_list %>%
+    map(~.x %>%
+            rename(Vdem_polyarchy = Vdem_polyarchy_post) %>%
+            mutate(Vdem_polyarchy_z = as.vector(scale(Vdem_polyarchy))
+            ))
+## Standardize Vdem_liberal_z
+lib_list_z <- lib_list %>%
+    map(~.x %>%
+            rename(Vdem_liberal = Vdem_liberal_post) %>%
+            mutate(Vdem_liberal_z = as.vector(scale(Vdem_liberal))
+            ))
+## corruption_z
+cpi_list_z <- cpi_list %>%
+    map(~.x %>%
+            rename(corruption_z = cpi_post_z) %>%
+            select(-cpi_post)
+    )
+
+
+# merge variables  
+dcpo_apsr_cntrl_list <- purrr::map(1:900, function(anEntry) {
+    libdem_list_z[[anEntry]] %>% 
+        group_by(country) %>% 
+        mutate(Libdem_m1 = dplyr::lag(Vdem_libdem_z, 1, order_by =  year)) %>%
+        ungroup() %>%
+        mutate(ChgDem = Vdem_libdem_z - Libdem_m1) %>%
+        left_join(polyarchy_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>% 
+        left_join(lib_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>% 
+        left_join(cpi_list_z[[anEntry]],by = c("year", "country","iter_cn","iter_se")) %>%
+        select(-Vdem_libdem, -Vdem_polyarchy,-Vdem_liberal,-iter_se) %>%
+        left_join(dcpo_cntrl[[anEntry]],by = c("year", "country")) %>% 
+        filter(year > 1986) %>% 
+        filter(country %in% dcpo_theta_list[[1]]$country) %>%
+        rename( Libdem_z = Vdem_libdem_z,
+                Polyarchy_z = Vdem_polyarchy_z,
+                Liberal_z = Vdem_liberal_z,
+                Corrup_TI_z = corruption_z)  
+}) 
+
+
+# create trimmed data
+dcpo_apsr <- purrr::map(1:900, function(anEntry) {
+    dcpo_apsr_cntrl_list[[anEntry]] %>% 
+        left_join(dcpo_theta_list[[anEntry]],by = c("year", "country"))  %>% 
+        mutate(SupDem_trim = ifelse(year< firstyear, NA, theta)) %>%
+        select(country, year, firstyear,theta, SupDem_trim,contains("z"),everything())
+    
+})  
+
+
+save(dcpo_apsr, file = here::here("data","dcpo_apsr.rda"))
