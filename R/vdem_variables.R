@@ -1,22 +1,9 @@
-if (!require(pacman)) install.packages("pacman")
-library(pacman)
-# load all the packages you will use below 
-p_load(
-    here,
-    purrr,
-    countrycode,
-    tidyverse,
-    stringr,
-    haven
-    
-) 
 
-set.seed(313)
-
-###Input Data:  vdem8_posterior.dta from Vdem8
-###             vdem10_1985.csv     from Vdem10
-###             cpi_95_19_error.csv from Corruption Perception Index 
-###Output Data: vdem8_1985_post.rds       vdem8_regime.rda
+#### R version 4.1.1 (2021-08-10)
+###  Input Data:vdem8_posterior.dta       from Vdem8
+###             vdem10_1985.csv           from Vdem10
+###             cpi_95_19_error.csv       from Corruption Perception Index 
+###  Output Data:vdem8_1985_post.rds      vdem8_regime.rda
 ###             vdem10_1985_se_cntry.rds, vdem10_regime.rda
 ###             cls_libdem_list.rda       posterior distribution of V-Dem8 Liberal Democracy Index 
 ###             cls_poly_list.rda         posterior distribution of V-Dem8 electoral democracy index
@@ -24,6 +11,20 @@ set.seed(313)
 ###             libdem_list.rda           posterior distribution of V-Dem10 Liberal Democracy Index 
 ###             poly_list.rda             posterior distribution of V-Dem10 electoral democracy index
 ###             lib_list.rda              posterior distribution of V-Dem10 liberal component index
+
+###Load packages
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+p_load(
+    here,
+    purrr,
+    countrycode,
+    tidyverse,
+    stringr,
+    haven
+) 
+
+set.seed(313)
 
 
 

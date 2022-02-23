@@ -2,11 +2,12 @@ library(tidyverse)
 if (!require("DCPO")) install.packages("DCPO", repos = "https://cloud.r-project.org/"); library(DCPO)
 
 
-download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/dcpo_input.rda", "data/dcpo_input.rda")
+download.file("https://github.com/fsolt/dcpo_dem_mood/raw/master/data/dcpo_input_update22.rda", "data/dcpo_input.rda")
 
 load("data/dcpo_input.rda")
+dcpo_input <- dcpo_input_update22
 
-iter <- 3000
+iter <- 2000
 
 dcpo_output <- dcpo(dcpo_input,
                     iter = iter,

@@ -57,7 +57,7 @@ header-includes:
 
 # Authors {-}
 
-- Yuehong 'Cassandra' Tai, Ph.D. Candidate, Department of Political Science, University of Iowa, yuehong-tai@uiowa.edu.
+- Yuehong 'Cassandra' Tai, ORCID: https://orcid.org/0000-0001-7303-7443, Ph.D. Candidate, Department of Political Science, University of Iowa, yuehong-tai@uiowa.edu.
 - Yue Hu, corresponding author, ORCID: https://orcid.org/0000-0002-2829-3971, Associate Professor, Department of Political Science, Tsinghua University, yuehu@tsinghua.edu.cn
 - Frederick Solt, ORCID: https://orcid.org/0000-0002-3154-6132, Associate Professor, Department of Political Science, University of Iowa, frederick-solt@uiowa.edu."
 

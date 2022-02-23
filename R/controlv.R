@@ -1,18 +1,29 @@
-####
-#### Input: Muslims Population muslism_prop_2010.csv  http://globalreligiousfutures.org/
-####        Dependence on natural resource revenues from WDI (WDIData.csv) and Haber_Menaldo(2011) (Haber_Menaldo_2011_APSR_Dataset.xls)
-####        GDP:WDI2020(WDIData.csv ),IMF(WEOApr2020all.csv) and World Table Penn World Table Version.10 (pwt100.dta)
-####        claassen_replication_input.rda
-####        exp_claassen_input.rda
-####        dcpo_input_raw.csv
+####R version 4.1.1 (2021-08-10)
+
+#### Input: Muslims Population: muslism_prop_2010.csv from http://globalreligiousfutures.org/
+####        Dependence on natural resource: WDIData.csv from WDI
+####                                        Haber_Menaldo_2011_APSR_Dataset.xls from Haber_Menaldo(2011) 
+####        GDP Data: WDIData.csv from WDI2020,
+####                  WEOApr2020all.csv from IMF 
+####                  pwt100.dta from World Table Penn World Table Version.10 
+####        Measures of Public Support: claassen_replication_input.rda  
+####                                    exp_claassen_input.rda
+####                                    dcpo_input_raw.csv
 #### Output:control_variable.csv, cls_cntrl.rda,exp_cntrl.rda, dcpo_cntrl.rda
 
-library(tidyverse)
-library(countrycode)
-library(readxl)
-library(mi)
-library(mitools)
-library(here)
+###Load packages
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+p_load(
+  tidyverse,
+  countrycode,
+  readxl,
+  here,
+  mi,
+  mitools
+) 
+
+set.seed(313)
 
 
 #Get Muslim Population data
@@ -230,16 +241,20 @@ save(exp_cntrl,file = here("data","exp_cntrl.rda"))
 
 #####DCPO first year and control
 dcpo_input_raw <- read_csv(here("data","dcpo_input_raw.csv"))
+
 ##dcpo_input_raw includes Bahrain 2009 2014. 
 min(dcpo_input_raw$year) #1988
 max(dcpo_input_raw$year) #2020
 length(unique(dcpo_input_raw$country))   #158
-dcpo_cntry_firstyr <- dcpo_input_raw %>%
-  distinct(country, year) %>%
+
+dcpo_cntry_firstyr <- dcpo_input_update22[["data"]] %>%
+  select(c("country","year")) %>%
+  unique()  %>% 
   group_by(country) %>%
   transmute(country = country,
             firstyear = min(year)) %>%
-  unique() #158
+  unique() 
+
 
 dcpo_cntrl <-  purrr::map(1:900, function(anEntry) {
   mdf_mi_list[["imputations"]][[anEntry]] %>% 
