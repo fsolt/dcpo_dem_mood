@@ -1,18 +1,29 @@
-####
-#### Input: Muslims Population muslism_prop_2010.csv  http://globalreligiousfutures.org/
-####        Dependence on natural resource revenues from WDI (WDIData.csv) and Haber_Menaldo(2011) (Haber_Menaldo_2011_APSR_Dataset.xls)
-####        GDP:WDI2020(WDIData.csv ),IMF(WEOApr2020all.csv) and World Table Penn World Table Version.10 (pwt100.dta)
-####        claassen_replication_input.rda
-####        exp_claassen_input.rda
-####        dcpo_input_raw.csv
+####R version 4.1.1 (2021-08-10)
+
+#### Input: Muslims Population: muslism_prop_2010.csv from http://globalreligiousfutures.org/
+####        Dependence on natural resource: WDIData.csv from WDI
+####                                        Haber_Menaldo_2011_APSR_Dataset.xls from Haber_Menaldo(2011) 
+####        GDP Data: WDIData.csv from WDI2020,
+####                  WEOApr2020all.csv from IMF 
+####                  pwt100.dta from World Table Penn World Table Version.10 
+####        Measures of Public Support: claassen_replication_input.rda  
+####                                    exp_claassen_input.rda
+####                                    dcpo_input_raw.csv
 #### Output:control_variable.csv, cls_cntrl.rda,exp_cntrl.rda, dcpo_cntrl.rda
 
-library(tidyverse)
-library(countrycode)
-library(readxl)
-library(mi)
-library(mitools)
-library(here)
+###Load packages
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+p_load(
+  tidyverse,
+  countrycode,
+  readxl,
+  here,
+  mi,
+  mitools
+) 
+
+set.seed(313)
 
 
 #Get Muslim Population data
