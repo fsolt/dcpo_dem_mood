@@ -241,16 +241,20 @@ save(exp_cntrl,file = here("data","exp_cntrl.rda"))
 
 #####DCPO first year and control
 dcpo_input_raw <- read_csv(here("data","dcpo_input_raw.csv"))
+
 ##dcpo_input_raw includes Bahrain 2009 2014. 
 min(dcpo_input_raw$year) #1988
 max(dcpo_input_raw$year) #2020
 length(unique(dcpo_input_raw$country))   #158
-dcpo_cntry_firstyr <- dcpo_input_raw %>%
-  distinct(country, year) %>%
+
+dcpo_cntry_firstyr <- dcpo_input_update22[["data"]] %>%
+  select(c("country","year")) %>%
+  unique()  %>% 
   group_by(country) %>%
   transmute(country = country,
             firstyear = min(year)) %>%
-  unique() #158
+  unique() 
+
 
 dcpo_cntrl <-  purrr::map(1:900, function(anEntry) {
   mdf_mi_list[["imputations"]][[anEntry]] %>% 
