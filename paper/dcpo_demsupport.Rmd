@@ -1563,27 +1563,28 @@ Figures \@ref(fig:plot-dcpoAJPS) and Figures \@ref(fig:plot-dcpoAPSR) display th
 Even with the advantages of the DCPO model, there is no evidence to support the conclusions of Claassen [-@Claassen2020a; -@Claassen2020] that public support sustains democratic regimes or that public support responds thermostatically to changes in democracy.
 
 
+
+```{r dcpodata-input, include=FALSE}
+## Replication data
+load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xxxx/download
+load(here("data", "dcpo_apsr.rda"))  # https://osf.io/xxxx/download
+load(here("data", "dcpo_input_update22.rda"))  # https://osf.io/xxxx/download
+
+## Preloading chunk-produced results to speed up the compiling
+## One can find how they were created by locating the corresponding chunks
+
+mocdcpo_APSR <- readRDS(here("output", "estimates_moc_dcpoAPSR.RDS"))
+mocresult_dcpoAJPS <-
+    readRDS(here("output", "estimates_moc_dcpoAJPS.RDS"))
+```
+
+
+
+
 ```{r dcpo-AJPS, eval=FALSE}
 dcpo_Ajps <- purrr::map(1:900, function(anEntry) {
     dcpo_ajps[[anEntry]] %>%
-        plm::pdata.frame(index = c("country", "year")) %>%
-        rename(
-            SupDem_trim = theta_trim,
-            Regime_VD = Vdem_regime,
-            Pr_Muslim = muslism_prop_2010,
-            Res_cp_WDI_di = dependence_pc_di,
-            lnGDP_imp = lg_imp_mdpgdp,
-            GDP_imp_grth = mdprgdp_grwth,
-            firstyear = first_year,
-            Libdem_VD = Vdem_libdem,
-            Libdem_m1 = Vdem_libdem_m1,
-            Libdem_m2 = Vdem_libdem_m2,
-            ChgDem = Chgdem,
-            UpChgDem = upchgdem,
-            DwnChgDem = downchgdem,
-            Libdem_regUN = Region_libdem,
-            Libdem_regUN_m1 = Region_libdem_m1
-        )
+        plm::pdata.frame(index = c("country", "year")) 
 })
 
 result_dcpoUncertain  <- map(ls_mod_ajpsCLS[1:2], function(aMod) {
@@ -1798,16 +1799,7 @@ modelsummary(tb_dcpoAJPS,
 ```{r dcpo-APSR, eval=FALSE}
 dcpo_APSR <- purrr::map(1:900, function(anEntry) {
     dcpo_apsr[[anEntry]] %>%
-        plm::pdata.frame(index = c("country", "year")) %>%
-        rename(
-            SupDem_trim = theta_trim,
-            First_yr = first_year,
-            Libdem_z = Vdem_libdem_z,
-            Polyarchy_z = Vdem_polyarchy_z,
-            Liberal_z = Vdem_liberal_z,
-            Corrup_TI_z = corruption_z,
-            lnGDP_imp = lg_imp_mdpgdp
-        )
+        plm::pdata.frame(index = c("country", "year")) 
 })
 
 mocdcpo_APSR  <- map(ls_mod_apsrCLS, function(aMod) {
