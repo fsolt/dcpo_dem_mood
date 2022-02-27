@@ -2,13 +2,13 @@
 #### Input Data: raw_data_controls.RData which includes 
 ####             vdem8_post            Vdem8 with posterior distribution from The Varieties of Democracy Project
 ####             vdem10_1985           Vdem10 with standard errors from The Varieties of Democracy Project
-####             cpi_95_19_error       from Corruption Perception Index 
+####             cpi_95_19_error       from Corruption Perceptions Index - CPI transparency 
 ####             muslism_prop_2010     from http://globalreligiousfutures.org/
 ####             WDIData               from World Development Indicators 
 ####             resource_dep          from Haber and Menaldo (2011) 
 ####             WEOApr2020all         from IMF 
 ####             pwt100                from World Table Penn World Table Version.10. 
-####             country_regionUN      
+####             country_regionUN      based on UN region code https://unstats.un.org/unsd/methodology/m49/  
 
 ####             Data for Measures of Public Support: 
 ####             claassen_replication_input.rda  
