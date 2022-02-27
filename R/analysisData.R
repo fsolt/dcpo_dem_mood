@@ -78,6 +78,13 @@ load(here("data", "exp_claassen_output.rda"))
 load(here("data","exp_dcpo_input.rda"))
 load(here("data", "exp_dcpo_output.rda")) 
 
+
+# The following files will be created by codes in this file. 
+# Loading these files, you can skip data clean part and 
+# create final analysis data, which includes
+# correct_cls_ajps.rda,correct_cls_apsr.rda expcor_cls_ajps.rda, 
+# expcor_cls_apsr.rda, dcpo_ajps.rda, and dcpo_apsr, directly. 
+
 #load(here("data","correct_cls_theta_list.rda"))
 #load(here("data","expcor_cls_theta_list.rda"))
 #load(here("data","dcpo_theta_list.rda"))
