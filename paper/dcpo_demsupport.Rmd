@@ -198,7 +198,7 @@ load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
 load(here("data", "correct_cls_apsr.rda")) # https://osf.io/cws59/download
 load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/cgxjd/download
 load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/uka5g/download
-load(here("data", "exp_claassen_input.rda")) # Source???
+load(here("data", "exp_claassen_input.rda")) # https://osf.io/fcyn3/download
 
 ## Preloading chunk-produced results to speed up the compiling
 ## One can find how they were created by locating the corresponding chunks
@@ -1566,9 +1566,9 @@ Even with the advantages of the DCPO model, there is no evidence to support the 
 
 ```{r dcpodata-input, include=FALSE}
 ## Replication data
-load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xxxx/download
-load(here("data", "dcpo_apsr.rda"))  # https://osf.io/xxxx/download
-load(here("data", "dcpo_input_update22.rda"))  # https://osf.io/xxxx/download
+load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xw9fr/download
+load(here("data", "dcpo_apsr.rda"))  # https://osf.io/j7kn3/download
+load(here("data", "exp_dcpo_input.rda"))  # https://osf.io/r2pe8/download
 
 ## Preloading chunk-produced results to speed up the compiling
 ## One can find how they were created by locating the corresponding chunks
