@@ -84,12 +84,12 @@ load(here("data", "exp_dcpo_output.rda"))
 #load(here("data","cls_libdem_list.rda"))  
 #load(here("data","cls_liberal_list.rda"))
 #load(here("data","cls_poly_list.rda"))
-#load(here("data","cls_cntrl.rda")) 
 #load(here("data","libdem_list.rda"))  
 #load(here("data","poly_list.rda"))
 #load(here("data","lib_list.rda"))
-#load(here("data","exp_cntrl.rda")) 
 #load(here("data","cpi_list.rda"))
+#load(here("data","cls_cntrl.rda")) 
+#load(here("data","exp_cntrl.rda")) 
 #load(here("data","dcpo_cntrl.rda")) 
 
 ################################### Vdem8 variables ##########################
@@ -1143,11 +1143,11 @@ save(exp_cntrl,file = here("data","exp_cntrl.rda"))
 
 #### DCPO Expanded Data
 
-min(dcpo_input_update22[["data"]]$year) #1988
-max(dcpo_input_update22[["data"]]$year) #2020
-length(unique(dcpo_input_update22[["data"]]$country))   #148
+min(exp_dcpo_input[["data"]]$year) #1988
+max(exp_dcpo_input[["data"]]$year) #2020
+length(unique(exp_dcpo_input[["data"]]$country))   #148
 
-dcpo_cntry_firstyr <- dcpo_input_update22[["data"]] %>%
+dcpo_cntry_firstyr <- exp_dcpo_input[["data"]] %>%
     select(c("country","year")) %>%
     unique()  %>% 
     group_by(country) %>%
@@ -1320,7 +1320,7 @@ save(correct_cls_apsr, file = here("data","correct_cls_apsr.rda"))
 
 #### Creating Expanded Correct theta list ####
 
-exp_claassen_m5_theta <- rstan::extract(claassen_m5, pars = "theta")
+exp_claassen_m5_theta <- rstan::extract(exp_claassen_m5, pars = "theta")
 ls_year <- 1988:2020
 ls_country <- exp_claassen_input$data$country %>% unique() #145
 first_year <- min(exp_claassen_input$data$year) #1988
