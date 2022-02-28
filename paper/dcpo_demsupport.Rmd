@@ -94,16 +94,18 @@ if (!require(pacman))
     install.packages("pacman")
 library(pacman)
 
-p_install(janitor, force = FALSE)
-p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
+if(!require(janitor)) p_install(janitor, force = FALSE)
+if(!require(gesisdata)) remotes::install_github("fsolt/gesisdata") # dependent package for DCPOtools
+if(!require(DCPOtools)) remotes::install_github("fsolt/DCPOtools")
 
 # load all the packages you will use below
 p_load(
     # data
-    dataverse,
+    # dataverse,
     
     # analysis
     plm,
+    DCPOtools,
     
     # presentation
     gridExtra,
@@ -125,6 +127,7 @@ p_load(
     bookdown)
 
 Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
+# Sys.setenv("DATAVERSE_KEY" = "your_keys") # replace your_keys with true API keys
 
 # Functions preload
 set.seed(313)
@@ -284,11 +287,12 @@ This allows MOC to be broadly applicable to many different types of models, incl
 
 
 ```{r compare_n}
-if (!file.exists(here("data", "supdem raw survey marginals.tab"))) {
-  dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>%
-    read_csv(col_types = "cdcddcdc") %>%
-    write_csv("data/supdem raw survey marginals.tab")
-}
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "supdem raw survey marginals.tab"))) {
+#   dataverse::get_file("supdem raw survey marginals.tab", "10.7910/DVN/HWLW0J") %>%
+#     read_csv(col_types = "cdcddcdc") %>%
+#     write_csv("data/supdem raw survey marginals.tab")
+# }
 
 supdem <- read_csv(here("data", "supdem raw survey marginals.tab"),
                    col_types = "cdcddcdc") %>% 
@@ -357,11 +361,12 @@ The darker, righthand results also incorporate uncertainty but additionally repl
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis remains unsupported.
 
 ```{r pointAJPS}
-if (!file.exists(here("data", "Support_democracy_ajps.csv"))) {
-  get_file_by_doi(filedoi = "10.7910/DVN/HWLW0J/MVXNFC") %>%
-    read_csv(col_types = "cdcddcdc") %>%
-    write_csv(here("data", "Support_democracy_ajps.csv"))
-}
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "Support_democracy_ajps.csv"))) {
+#   get_file_by_doi(filedoi = "10.7910/DVN/HWLW0J/MVXNFC") %>%
+#     read_csv(col_types = "cdcddcdc") %>%
+#     write_csv(here("data", "Support_democracy_ajps.csv"))
+# }
 
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
@@ -652,10 +657,11 @@ In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020] that dem
 
 ```{r pointAPSR}
 # Reusing the sd.plm object, thus input data here rather than earlier
-if (!file.exists(here("data", "dem_mood_apsr.RData"))) {
-  get_dataframe_by_doi(filedoi = "10.7910/DVN/FECIO3/ACMGQG") %>%
-    save(file = here("data", "dem_mood_apsr.RData"))
-}
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "dem_mood_apsr.RData"))) {
+#   get_dataframe_by_doi(filedoi = "10.7910/DVN/FECIO3/ACMGQG") %>%
+#     save(file = here("data", "dem_mood_apsr.RData"))
+# }
 
 
 load(here("data", "dem_mood_apsr.RData"))
