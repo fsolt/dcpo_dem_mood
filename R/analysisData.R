@@ -934,7 +934,7 @@ pwt100_gdp <- pwt100 %>%
 
 #### Clean Dependence Data from Haberand Menaldo (2011)
 
-resource_dep %>%
+resource_dep <- resource_dep %>%
     mutate( cnamehabmen = ifelse(cnamehabmen == "Pakisan", "Pakistan",cnamehabmen),
             country = countrycode(cnamehabmen, origin = 'country.name', destination = 'country.name'),) %>%
     select("country", "year", "Total_Resources_Income_PC") %>%
