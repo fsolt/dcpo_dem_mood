@@ -70,8 +70,8 @@ set.seed(313)
 
 #Load input data
 
-load(here::here("data","raw_data_controls.RData"))
-load(here::here("data","claassen_replication_input.rda"))
+load(here("data","raw_data_controls.RData"))
+load(here("data","claassen_replication_input.rda"))
 load(here("data", "claassen_replication_output.rda")) 
 load(here("data","exp_claassen_input.rda"))
 load(here("data", "exp_claassen_output.rda")) 
@@ -934,7 +934,7 @@ pwt100_gdp <- pwt100 %>%
 
 #### Clean Dependence Data from Haberand Menaldo (2011)
 
-resource_dep %>% resource_dep
+resource_dep %>%
     mutate( cnamehabmen = ifelse(cnamehabmen == "Pakisan", "Pakistan",cnamehabmen),
             country = countrycode(cnamehabmen, origin = 'country.name', destination = 'country.name'),) %>%
     select("country", "year", "Total_Resources_Income_PC") %>%

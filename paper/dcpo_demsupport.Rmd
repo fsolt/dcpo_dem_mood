@@ -67,7 +67,7 @@ The three authors contributed equally to this work.
 We thank the editors and anonymous reviewers for their helpful comments.
 All errors remain our own.
 Replication files are available at the American Political
-Science Review Dataverse: https://doi.org/XXXX.
+Science Review Dataverse: https://doi.org/10.7910/DVN/YM67QE.
 
 # Funding {-}
 Yue Hu acknowledges the support from the National Natural Science Foundation of China (Grant No. 72004109).
@@ -115,14 +115,21 @@ p_load(
     here,
     broom,
     tidyverse,
-    glue)
+    glue,
+    janitor,
+    purrr,
+    tibble,
+    
+    # compiling
+    rmarkdown,
+    bookdown)
 
 Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
 
 # Functions preload
 set.seed(313)
 
-source(here("R", "customFunctions.R")) ## analyzing and presenting functions
+source(here("customFunctions.R")) ## analyzing and presenting functions
 
 theme_set(theme_bw())
 
@@ -193,7 +200,40 @@ There is no room for complacency.
 
 
 ```{r data-input, include=FALSE}
-## Replication data
+## Data relocation
+
+if(!dir.exists("data")) {
+    dir.create("data")
+    file.copy(
+        c(
+            "correct_cls_ajps.rda",
+            "correct_cls_apsr.rda",
+            "expcor_cls_ajps.rda",
+            "expcor_cls_apsr.rda",
+            "exp_claassen_input.rda"
+        ),
+        "data"
+    )
+}
+
+if (!dir.exists("output")) {
+    dir.create("output")
+    file.copy(
+        c(
+            "estimates_clsMeanAPSR.RDS",
+            "estimates_clsMeanAJPS.RDS",
+            "estimates_moc_correctAJPS.RDS",
+            "estimates_moc_expcorAJPS.RDS",
+            "estimates_moc_correctAPSR.RDS",
+            "estimates_moc_expcorAPSR.RDS",
+            "estimates_moc_dcpoAPSR.RDS",
+            "estimates_moc_dcpoAJPS.RDS"
+        ),
+        "output"
+    )
+}
+
+## Loading replication data
 load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
 load(here("data", "correct_cls_apsr.rda")) # https://osf.io/cws59/download
 load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/cgxjd/download
@@ -371,7 +411,7 @@ names(result_clsAJPS) <-
     c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
 saveRDS(result_clsAJPS,
-        file = here::here("output", "estimates_clsMeanAJPS.RDS"))  
+        file = here("output", "estimates_clsMeanAJPS.RDS"))  
 ```
 
 ```{r model-AJPS}
@@ -618,7 +658,7 @@ if (!file.exists(here("data", "dem_mood_apsr.RData"))) {
 }
 
 
-load(here::here("data", "dem_mood_apsr.RData"))
+load(here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year"))
 
 ls_ivECM <- c(
@@ -732,7 +772,7 @@ names(mocresult_correctAPSR) <-
 
 
 saveRDS(mocresult_correctAPSR,
-        file = here::here("output", "estimates_moc_correctAPSR.RDS"))
+        file = here("output", "estimates_moc_correctAPSR.RDS"))
 ```
 
 ```{r mocResult-expAPSR, eval=FALSE}
@@ -758,7 +798,7 @@ names(mocresult_expAPSR) <-
     )
 
 saveRDS(mocresult_expAPSR,
-        file = here::here("output", "estimates_moc_expcorAPSR.RDS"))
+        file = here("output", "estimates_moc_expcorAPSR.RDS"))
 ```
 
 ```{r mocFormatResult-APSR}
@@ -1565,6 +1605,23 @@ Even with the advantages of the DCPO model, there is no evidence to support the 
 
 
 ```{r dcpodata-input, include=FALSE}
+file.copy(
+        c(
+            "dcpo_ajps.rda",
+            "dcpo_apsr.rda",
+            "exp_dcpo_input.rda"
+        ),
+        "data"
+    )
+
+file.copy(
+        c(
+            "estimates_moc_dcpoAPSR.RDS",
+            "estimates_moc_dcpoAJPS.RDS"
+        ),
+        "output"
+    )
+
 ## Replication data
 load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xw9fr/download
 load(here("data", "dcpo_apsr.rda"))  # https://osf.io/j7kn3/download
@@ -1819,7 +1876,7 @@ names(mocdcpo_APSR) <-
     )
 
 saveRDS(mocdcpo_APSR,
-        file = here::here("output", "estimates_moc_dcpoAPSR.RDS"))
+        file = here("output", "estimates_moc_dcpoAPSR.RDS"))
 ```
 
 ```{r dcpoFormatResult-APSR}
@@ -2202,4 +2259,4 @@ The authors affirm this research did not involve human subjects.
 The authors declare no ethical issues or conflicts of interest in this research.
 Yue Hu was funded by the National Natural Science Foundation of China (Grant No. 72004109).
 
-Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at https://doi.org/XXXX.
+Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at https://doi.org/10.7910/DVN/YM67QE.
