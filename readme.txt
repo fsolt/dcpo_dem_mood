@@ -1,12 +1,69 @@
 Replication Files for Yuehong Cassandra Tai, Yue Hu, & Frederick Solt, "Democracy, Public Support, and Measurement Uncertainty", APSR
 
-The `dcpo_demsupport.Rmd` file permits replication of the reanalyses reported by Tai, Hu, and Solt.
+The `dcpo_demsupport.Rmd` file reproduces all the results in the main text and online supplementary materials.
+To smoothly compile the file requires the followng environment:
+
+- R version >= 4.1.2
+- Pandoc 2.16.2
+- R packages
+    - rlang_1.0.1 # Very important
+    - rmarkdown_2.11
  
-Here are the data files called by `dcpo_demsupport.Rmd`: 
+`dcpo_demsupport.Rmd` requires the following files to produce results:
+
+- customFunctions.R
+
+- Files to compile the PDF (saving them at the same directory as the rmd file)
+    - multiple-bibligraphies.lua
+    - dcpo_demsupport_text.bib
+    - dcpo_demsupport_app.bib
+    - apsr.bst
+
+- data/
+    - Support_democracy_ajps.csv
+    - supdem raw survey marginals.tab
+    - dem_mood_apsr.RData
+    
+    - correct_cls_ajps.rda
+    - correct_cls_apsr.rda
+    - expcor_cls_ajps.rda
+    - expcor_cls_apsr.rda
+    - exp_claassen_input.rda
+    
+    - dcpo_ajps.rda
+    - dcpo_apsr.rda
+    - exp_dcpo_input.rda
+
+- output/
+    - estimates_clsMeanAPSR.RDS
+    - estimates_clsMeanAJPS.RDS
+    - estimates_moc_correctAJPS.RDS
+    - estimates_moc_expcorAJPS.RDS
+    - estimates_moc_correctAPSR.RDS
+    - estimates_moc_expcorAPSR.RDS
+    - estimates_moc_dcpoAPSR.RDS
+    - estimates_moc_dcpoAJPS.RDS
+    - estimates_moc_dcpoAPSR.RDS
+    - estimates_moc_dcpoAJPS.RDS
+
+Note: 
+
+the codes for creating the files in output/ are available in the rmd file. 
+Readers can recreate them based on the needs by turning the code chunks with `eval = FALSE` options to `eval = TRUE`. 
+We provide the established files just for speeding the compiling process up.
+
+To make the analysis fully transparent, we also provide codes to recreate the files in data/, although they are not needed to compile the rmd file and produce the figures and tables in the paper.
+Within the files in data/, three of them can be downloaded from Claassen 2020 & 2020a at https://doi.org/10.7910/DVN/FECIO3 and https://doi.org/10.7910/DVN/HWLW0J.
+We include the codes to automatically download them with the `dataverse` package, but one needs to have an API key from the dataverse website first.
+The rest files can be reproduced by "analysisData.R".
+Warning that it may take a relatively long time.
+
+If readers want to go even further to recreate the source-data files called by `analysisData.R`, here is a list of the files and the codes and sources how we get them:
+
 - `mood_dem.csv`: the raw data to measure democratic support.  
 
-- `exp_claassen_input.rda`: the expanded data that used in measuring democratic support
-    - Codes: `exp_claassen_m5.R` with `mood_dem.csv`. Note that to setup input raw data, one needs raw survey datasets. See https://github.com/fsolt/DCPOtools for more information.
+- `exp_claassen_input.rda`: the expanded data used in measuring democratic support
+    - Codes: `exp_claassen_m5.R` with `mood_dem.csv`. Note that to set up input raw data, one needs raw survey datasets. See https://github.com/fsolt/DCPOtools for more information.
 
 - `correct_cls_ajps.rda` and `correct_cls_apsr.rda`: data for replicating original data with uncertainty.
     - Codes: 
@@ -36,18 +93,12 @@ Here are the data files called by `dcpo_demsupport.Rmd`:
         - `exp_dcpo_outpu.rda`
 
 
-
-Note: 
-
-The estimations of the public support of democracy also requires the file `supdem.stan.mod5.stan` and each of them usually need a couple of days to converge. 
-Replicators are recommanded to use high-performance computing cluster.
+The estimations of the measurements for the public support of democracy also require the file `supdem.stan.mod5.stan` and each run usually needs a couple of days to converge. 
+Replicators are recommended to use high-performance computing clusters.
 	
 Basic working environment:
-- R version >= 3.5.1, 
+- R version >= 4.1.2, 
 - `Rcpp` 1.0.0, 
 - `DCPOtools` 0.1.0.9000,
 - `rstan` 2.18.2.
--  `DCPO`(Optional, needed only when estimating the DCPO estimates used in the online supplementary materials)
-
-
-
+- `DCPO`(Optional, needed only when estimating the DCPO estimates used in the online supplementary materials)

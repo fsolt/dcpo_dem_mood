@@ -101,7 +101,7 @@ if(!require(DCPOtools)) remotes::install_github("fsolt/DCPOtools")
 # load all the packages you will use below
 p_load(
     # data
-    # dataverse,
+    dataverse,
     
     # analysis
     plm,
