@@ -1,13 +1,80 @@
 Replication Files for Yuehong Cassandra Tai, Yue Hu, & Frederick Solt, "Democracy, Public Support, and Measurement Uncertainty", APSR
 
+
 The `dcpo_demsupport.Rmd` file reproduces all the results in the main text and online supplementary materials.
+
+
+# Setup
+
 First of all, please set the working directory to where the rmd file is located, e.g., 
 
 ```r
 setwd(~/THE ACTUAL PATH/dataverse_files)
 ```
+To smoothly compile the file also requires the followng software environment:
 
-Then one can render the file through the following command in R: 
+- R version >= 4.1.2
+- Pandoc 2.16.2
+- R packages
+    - rlang_1.0.1 # Very important
+    - rmarkdown_2.11
+
+Then extract the `renv.zip` in the current directory as a folder of renv/.
+Make sure you have the directory structure as below to process the following steps:
+
+    ~/
+    |   analysisData.R
+    |   apsr.bst
+    |   claassen_m5_rep.R
+    |   customFunctions.R
+    |   dcpo_demsupport.Rmd
+    |   dcpo_demsupport_app.bib
+    |   dcpo_demsupport_text.bib
+    |   exp_claassen_m5.R
+    |   exp_dcpo.R
+    |   multiple-bibliographies.lua
+    |   readme.txt
+    |   renv.lock
+    |   supdem.stan.mod5.stan
+    |   
+    +---data
+    |       claassen_input_raw.csv
+    |       claassen_replication_output.rda
+    |       correct_cls_ajps.rda
+    |       correct_cls_apsr.rda
+    |       dcpo_ajps.rda
+    |       dcpo_apsr.rda
+    |       dcpo_input_raw.csv
+    |       dem_mood_apsr.RData
+    |       expcor_cls_ajps.rda
+    |       expcor_cls_apsr.rda
+    |       exp_claassen_input.rda
+    |       exp_claassen_output.rda
+    |       exp_dcpo_input.rda
+    |       exp_dcpo_output.rda
+    |       raw_data_controls.RData
+    |       supdem raw survey marginals.tab
+    |       Support_democracy_ajps.csv
+    |       
+    +---output
+    |       estimates_clsMeanAJPS.RDS
+    |       estimates_clsMeanAPSR.RDS
+    |       estimates_moc_correctAJPS.RDS
+    |       estimates_moc_correctAPSR.RDS
+    |       estimates_moc_dcpoAJPS.RDS
+    |       estimates_moc_dcpoAPSR.RDS
+    |       estimates_moc_expcorAJPS.RDS
+    |       estimates_moc_expcorAPSR.RDS
+    |       
+    \---renv
+        |   .gitignore
+        |   activate.R
+        |   settings.dcf
+        |   
+        \---library
+            \*
+        
+Based on the above setting, one can render the file through the following command in R: 
 
 ```r
 if(!require(renv)) install.packages("renv")
@@ -17,13 +84,8 @@ rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
 ```
 
 
-To smoothly compile the file requires the followng environment:
 
-- R version >= 4.1.2
-- Pandoc 2.16.2
-- R packages
-    - rlang_1.0.1 # Very important
-    - rmarkdown_2.11
+# Replicating the results in the manuscript and supplementary materials
  
 `dcpo_demsupport.Rmd` requires the following files to produce results:
 
@@ -67,6 +129,11 @@ Note:
 the codes for creating the files in output/ are available in the rmd file. 
 Readers can recreate them based on the needs by turning the code chunks with `eval = FALSE` options to `eval = TRUE`. 
 We provide the established files just for speeding the compiling process up.
+
+
+
+
+# Recreating the source files
 
 To make the analysis fully transparent, we also provide codes to recreate the files in data/, although they are not needed to compile the rmd file and produce the figures and tables in the paper.
 Within the files in data/, three of them can be downloaded from Claassen 2020 & 2020a at https://doi.org/10.7910/DVN/FECIO3 and https://doi.org/10.7910/DVN/HWLW0J.
