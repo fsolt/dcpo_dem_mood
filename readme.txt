@@ -1,6 +1,13 @@
 Replication Files for Yuehong Cassandra Tai, Yue Hu, & Frederick Solt, "Democracy, Public Support, and Measurement Uncertainty", APSR
 
 The `dcpo_demsupport.Rmd` file reproduces all the results in the main text and online supplementary materials.
+One can render the file through the following command in R: 
+
+```r
+rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
+```
+
+
 To smoothly compile the file requires the followng environment:
 
 - R version >= 4.1.2
