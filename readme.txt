@@ -78,12 +78,8 @@ Based on the above setting, one can render the file through the following comman
 
 ```r
 if(!require(renv)) install.packages("renv")
-renv::restore()
-
-rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
+renv::restore() # Choosing "yes" for the user-input question
 ```
-
-
 
 # Replicating the results in the manuscript and supplementary materials
  
@@ -124,9 +120,15 @@ rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
     - estimates_moc_dcpoAPSR.RDS
     - estimates_moc_dcpoAJPS.RDS
 
+To produce the pdf file with all the results, run the following code:
+
+```r
+rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
+```
+
 Note: 
 
-the codes for creating the files in output/ are available in the rmd file. 
+The codes for creating the files in output/ are available in the rmd file. 
 Readers can recreate them based on the needs by turning the code chunks with `eval = FALSE` options to `eval = TRUE`. 
 We provide the established files just for speeding the compiling process up.
 
@@ -135,11 +137,11 @@ We provide the established files just for speeding the compiling process up.
 
 # Recreating the source files
 
-To make the analysis fully transparent, we also provide codes to recreate the files in data/, although they are not needed to compile the rmd file and produce the figures and tables in the paper.
+To make the analysis fully transparent, we also provide codes to recreate the files in data/, although they are unnecessary for compiling the rmd file and produce the figures and tables in the paper.
 Within the files in data/, three of them can be downloaded from Claassen 2020 & 2020a at https://doi.org/10.7910/DVN/FECIO3 and https://doi.org/10.7910/DVN/HWLW0J.
 We include the codes to automatically download them with the `dataverse` package, but one needs to have an API key from the dataverse website first.
-The rest files can be reproduced by "analysisData.R".
-Warning that it may take a relatively long time.
+The rest files can be reproduced by codes in "analysisData.R".
+(Note that it may take a relatively long moment to run through all the steps.)
 
 If readers want to go even further to recreate the source-data files called by `analysisData.R`, here is a list of the files and the codes and sources how we get them:
 
