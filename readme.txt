@@ -13,14 +13,17 @@ setwd(~/THE ACTUAL PATH/dataverse_files)
 ```
 To smoothly compile the file also requires the followng software environment:
 
-- R version >= 4.1.2
+- R version >= 4.1.1
 - Pandoc 2.16.2
 - R packages
     - rlang_1.0.1 # Very important
     - rmarkdown_2.11
+    - bookdown_0.24
+    - tinytex_0.37 (or similar laTex typesetting system, such as MikTex)
 
-Then extract the `renv.zip` in the current directory as a folder of renv/.
-Make sure you have the directory structure as below to process the following steps:
+Replicators can utilize the `renv` package to gain a more specific software environment for the replication.
+To do so requires extracting the `renv.zip` in the current directory as a separate folder, renv/.
+The directory structure is like this:
 
     ~/
     |   analysisData.R
@@ -73,17 +76,21 @@ Make sure you have the directory structure as below to process the following ste
         |   
         \---library
             \*
-        
-Based on the above setting, one can render the file through the following command in R: 
+
+Then one can restore the software environment by the following code:
 
 ```r
 if(!require(renv)) install.packages("renv")
-renv::restore() # Choosing "yes" for the user-input question
+renv::restore() # Choosing "yes" for the prompt questions
 ```
+
+The default R version is 4.1.1.
+If some packages have a R-version restriction, one can try excluding them during the restoring process. See details in `?renv:restore()`.
+
 
 # Replicating the results in the manuscript and supplementary materials
  
-`dcpo_demsupport.Rmd` requires the following files to produce results:
+`dcpo_demsupport.Rmd` requires the following files to compile:
 
 - customFunctions.R
 
