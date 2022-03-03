@@ -66,7 +66,7 @@ The three authors contributed equally to this work.
 We thank the editors and anonymous reviewers for their helpful comments.
 All errors remain our own.
 Replication files are available at the American Political
-Science Review Dataverse: https://doi.org/10.7910/DVN/YM67QE.
+Science Review Dataverse: https://doi.org/10.7910/DVN/XAUF3H.
 
 # Funding {-}
 Yue Hu acknowledges the support from the National Natural Science Foundation of China (Grant No. 72004109).
@@ -265,7 +265,7 @@ mocresult_dcpoAJPS <-
 
 # Method {-}
 
-We proceed in three steps.
+We proceed in three steps.^[The replication files are available at @TaiEtAl2022a.]
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.^[
 Additional details on this data replication process are found in the Online Supplementary Materials (OSM) \@ref(dgp).]
@@ -2266,4 +2266,4 @@ The authors affirm this research did not involve human subjects.
 The authors declare no ethical issues or conflicts of interest in this research.
 Yue Hu was funded by the National Natural Science Foundation of China (Grant No. 72004109).
 
-Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at https://doi.org/10.7910/DVN/YM67QE.
+Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at https://doi.org/10.7910/DVN/XAUF3H.

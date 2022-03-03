@@ -13,17 +13,14 @@ setwd(~/THE ACTUAL PATH/dataverse_files)
 ```
 To smoothly compile the file also requires the followng software environment:
 
-- R version >= 4.1.1
+- R version >= 4.1.2
 - Pandoc 2.16.2
 - R packages
     - rlang_1.0.1 # Very important
     - rmarkdown_2.11
-    - bookdown_0.24
-    - tinytex_0.37 (or similar laTex typesetting system, such as MikTex)
 
-Replicators can utilize the `renv` package to gain a more specific software environment for the replication.
-To do so requires extracting the `renv.zip` in the current directory as a separate folder, renv/.
-The directory structure is like this:
+Then extract the `renv.zip` in the current directory as a folder of renv/.
+Make sure you have the directory structure as below to process the following steps:
 
     ~/
     |   analysisData.R
@@ -76,21 +73,21 @@ The directory structure is like this:
         |   
         \---library
             \*
-
-Then one can restore the software environment by the following code:
+        
+Based on the above setting, one can render the file through the following command in R: 
 
 ```r
 if(!require(renv)) install.packages("renv")
-renv::restore() # Choosing "yes" for the prompt questions
+renv::restore()
+
+rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
 ```
 
-The default R version is 4.1.1.
-If some packages have a R-version restriction, one can try excluding them during the restoring process. See details in `?renv:restore()`.
 
 
 # Replicating the results in the manuscript and supplementary materials
  
-`dcpo_demsupport.Rmd` requires the following files to compile:
+`dcpo_demsupport.Rmd` requires the following files to produce results:
 
 - customFunctions.R
 
@@ -127,15 +124,9 @@ If some packages have a R-version restriction, one can try excluding them during
     - estimates_moc_dcpoAPSR.RDS
     - estimates_moc_dcpoAJPS.RDS
 
-To produce the pdf file with all the results, run the following code:
-
-```r
-rmarkdown::render('dcpo_demsupport.Rmd',  encoding = 'UTF-8')
-```
-
 Note: 
 
-The codes for creating the files in output/ are available in the rmd file. 
+the codes for creating the files in output/ are available in the rmd file. 
 Readers can recreate them based on the needs by turning the code chunks with `eval = FALSE` options to `eval = TRUE`. 
 We provide the established files just for speeding the compiling process up.
 
@@ -144,11 +135,11 @@ We provide the established files just for speeding the compiling process up.
 
 # Recreating the source files
 
-To make the analysis fully transparent, we also provide codes to recreate the files in data/, although they are unnecessary for compiling the rmd file and produce the figures and tables in the paper.
+To make the analysis fully transparent, we also provide codes to recreate the files in data/, although you do not have to go through them for compiling the rmd file and produce the figures and tables in the paper.
 Within the files in data/, three of them can be downloaded from Claassen 2020 & 2020a at https://doi.org/10.7910/DVN/FECIO3 and https://doi.org/10.7910/DVN/HWLW0J.
 We include the codes to automatically download them with the `dataverse` package, but one needs to have an API key from the dataverse website first.
-The rest files can be reproduced by codes in "analysisData.R".
-(Note that it may take a relatively long moment to run through all the steps.)
+The rest files can be reproduced by "analysisData.R".
+Warning that it may take a relatively long time.
 
 If readers want to go even further to recreate the source-data files called by `analysisData.R`, here is a list of the files and the codes and sources how we get them:
 
