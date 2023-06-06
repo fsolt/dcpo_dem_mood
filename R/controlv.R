@@ -8,7 +8,7 @@
 ####                  pwt100.dta from World Table Penn World Table Version.10 
 ####        Measures of Public Support: claassen_replication_input.rda  
 ####                                    exp_claassen_input.rda
-####                                    dcpo_input_raw.csv
+####                                    dcpo_input_update22.rda
 #### Output:control_variable.csv, cls_cntrl.rda,exp_cntrl.rda, dcpo_cntrl.rda
 
 ###Load packages
@@ -130,7 +130,9 @@ control_variable <- left_join(cntry_year,country_regionUN, by=c("country")) %>%
 
 write.csv(control_variable,here("data","control_variable.csv"),fileEncoding = "UTF-8",row.names=FALSE)
 
-control_variable <- read.csv(here("data","control_variable.csv"))
+
+######Impute GDP and dependence data
+#control_variable <- read.csv(here("data","control_variable.csv"))
 
 mdf <-  control_variable %>% 
   filter(year > 1985) %>%
@@ -240,12 +242,12 @@ save(exp_cntrl,file = here("data","exp_cntrl.rda"))
 
 
 #####DCPO first year and control
-dcpo_input_raw <- read_csv(here("data","dcpo_input_raw.csv"))
+load(here("data","dcpo_input_update22.rda"))
 
-##dcpo_input_raw includes Bahrain 2009 2014. 
-min(dcpo_input_raw$year) #1988
-max(dcpo_input_raw$year) #2020
-length(unique(dcpo_input_raw$country))   #158
+
+min(dcpo_input_update22[["data"]]$year) #1988
+max(dcpo_input_update22[["data"]]$year) #2020
+length(unique(dcpo_input_update22[["data"]]$country))   #148
 
 dcpo_cntry_firstyr <- dcpo_input_update22[["data"]] %>%
   select(c("country","year")) %>%

@@ -1,0 +1,36 @@
+---
+output: 
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: yes
+    toc: no
+    number_sections: yes
+    latex_engine: xelatex
+title: |
+    | Democracy, Public Support, and Measurement Uncertainty
+    | Formatting Notes
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+fontsize: 11pt
+spacing: single
+citecolor: black
+linkcolor: black
+endnote: no
+header-includes:
+      - \usepackage{array}
+      - \usepackage{caption}
+      - \usepackage{graphicx}
+      - \usepackage{siunitx}
+      - \usepackage{colortbl}
+      - \usepackage{multirow}
+      - \usepackage{hhline}
+      - \usepackage{calc}
+      - \usepackage{tabularx}
+      - \usepackage{threeparttable}
+      - \usepackage{wrapfig}
+---
+
+In this version, we format the manuscript according to the conditional-accepance email and the journal guide. 
+The replication data is also ready and uploaded to the APSR Dataverse. 
+Please see more details in the revision.
+
+Thank you again for accepting our paper, and let us know if there are any questions or anything we can further help.

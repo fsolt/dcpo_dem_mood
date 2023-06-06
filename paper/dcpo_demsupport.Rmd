@@ -16,7 +16,6 @@ title: |
 # abstract: "Do democratic regimes depend on public support to avoid backsliding? Does public support, in turn, respond thermostatically to changes in democracy? Two prominent recent studies (Claassen 2020a, 2020b) reinvigorated the classic hypothesis on the positive relationship between public support for democracy and regime survival---and challenged its reciprocal counterpart---by using a latent variable approach to measure mass democratic support from cross-national survey data. Both studies, however, used only the point estimates of democratic support; we show that incorporating the concomitant measurement uncertainty into these analyses reveals that there is no support for either study's conclusion. Efforts to minimize the uncertainty by incorporating additional survey data still fail to yield evidence in support of either hypothesis. These results underscore the need both for more nuanced analyses of the relationships between public support and democracy and for taking measurement uncertainty into account when working with latent variables. [147/150 words]"
 # keywords: "Democratization, public support, regime survival, measurement uncertainty, latent variables."
 
-date: " "
 editor_options: 
   markdown: 
     wrap: sentence
@@ -59,13 +58,15 @@ header-includes:
 
 - Yuehong 'Cassandra' Tai, ORCID: https://orcid.org/0000-0001-7303-7443, Ph.D. Candidate, Department of Political Science, University of Iowa, yuehong-tai@uiowa.edu.
 - Yue Hu, corresponding author, ORCID: https://orcid.org/0000-0002-2829-3971, Associate Professor, Department of Political Science, Tsinghua University, yuehu@tsinghua.edu.cn
-- Frederick Solt, ORCID: https://orcid.org/0000-0002-3154-6132, Associate Professor, Department of Political Science, University of Iowa, frederick-solt@uiowa.edu."
+- Frederick Solt, ORCID: https://orcid.org/0000-0002-3154-6132, Associate Professor, Department of Political Science, University of Iowa, frederick-solt@uiowa.edu.
 
 # Acknowledgement {-}
 
 The three authors contributed equally to this work. 
-We thank the editors and anonymous reviewers for their helpful comments. 
+We thank the editors and anonymous reviewers for their helpful comments.
 All errors remain our own.
+Replication files are available at the American Political
+Science Review Dataverse: https://doi.org/10.7910/DVN/XAUF3H.
 
 # Funding {-}
 Yue Hu acknowledges the support from the National Natural Science Foundation of China (Grant No. 72004109).
@@ -92,13 +93,18 @@ if (!require(pacman))
     install.packages("pacman")
 library(pacman)
 
-p_install(janitor, force = FALSE)
-p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
+if(!require(janitor)) p_install(janitor, force = FALSE)
+if(!require(gesisdata)) remotes::install_github("fsolt/gesisdata") # dependent package for DCPOtools
+if(!require(DCPOtools)) remotes::install_github("fsolt/DCPOtools")
 
 # load all the packages you will use below
 p_load(
+    # data
+    dataverse,
+    
     # analysis
     plm,
+    DCPOtools,
     
     # presentation
     gridExtra,
@@ -106,16 +112,26 @@ p_load(
     dotwhisker,
     latex2exp,
     
-    # data wrangling
+    # wrangling
     here,
     broom,
     tidyverse,
-    glue)
+    glue,
+    janitor,
+    purrr,
+    tibble,
+    
+    # compiling
+    rmarkdown,
+    bookdown)
+
+Sys.setenv("DATAVERSE_SERVER" = "dataverse.harvard.edu")
+# Sys.setenv("DATAVERSE_KEY" = "your_keys") # replace your_keys with true API keys
 
 # Functions preload
 set.seed(313)
 
-source(here("R", "customFunctions.R")) ## analyzing and presenting functions
+source(here("customFunctions.R")) ## analyzing and presenting functions
 
 theme_set(theme_bw())
 
@@ -186,12 +202,45 @@ There is no room for complacency.
 
 
 ```{r data-input, include=FALSE}
-## Replication data
+## Data relocation
+
+if(!dir.exists("data")) {
+    dir.create("data")
+    file.copy(
+        c(
+            "correct_cls_ajps.rda",
+            "correct_cls_apsr.rda",
+            "expcor_cls_ajps.rda",
+            "expcor_cls_apsr.rda",
+            "exp_claassen_input.rda"
+        ),
+        "data"
+    )
+}
+
+if (!dir.exists("output")) {
+    dir.create("output")
+    file.copy(
+        c(
+            "estimates_clsMeanAPSR.RDS",
+            "estimates_clsMeanAJPS.RDS",
+            "estimates_moc_correctAJPS.RDS",
+            "estimates_moc_expcorAJPS.RDS",
+            "estimates_moc_correctAPSR.RDS",
+            "estimates_moc_expcorAPSR.RDS",
+            "estimates_moc_dcpoAPSR.RDS",
+            "estimates_moc_dcpoAJPS.RDS"
+        ),
+        "output"
+    )
+}
+
+## Loading replication data
 load(here("data", "correct_cls_ajps.rda")) # https://osf.io/52u7n/download
 load(here("data", "correct_cls_apsr.rda")) # https://osf.io/cws59/download
 load(here("data", "expcor_cls_ajps.rda"))  # https://osf.io/cgxjd/download
 load(here("data", "expcor_cls_apsr.rda"))  # https://osf.io/uka5g/download
-load(here("data", "exp_claassen_input.rda")) # Source???
+load(here("data", "exp_claassen_input.rda")) # https://osf.io/fcyn3/download
 
 ## Preloading chunk-produced results to speed up the compiling
 ## One can find how they were created by locating the corresponding chunks
@@ -216,7 +265,7 @@ mocresult_dcpoAJPS <-
 
 # Method {-}
 
-We proceed in three steps.
+We proceed in three steps.^[The replication files are available at @TaiEtAl2022a.]
 First, we reproduce the original analyses of Claassen [-@Claassen2020a; -@Claassen2020], which included only the point estimates of the latent variable of democratic support and so exclude its measurement uncertainty.
 Second, we collect the original cross-national survey data, replicate the latent variable measure of democratic support used in the two articles, and conduct the articles' analyses again, this time maintaining the entire distribution of estimates of democratic support in each country-year.^[
 Additional details on this data replication process are found in the Online Supplementary Materials (OSM) \@ref(dgp).]
@@ -237,14 +286,14 @@ This allows MOC to be broadly applicable to many different types of models, incl
 
 
 ```{r compare_n}
-
-# if (!file.exists(here::here("data", "supdem raw survey marginals.tab"))) {
-#   dataverse::get_file("supdem raw survey marginals.tab", "doi:10.7910/DVN/HWLW0J") %>% 
-#     read_csv(col_types = "cdcddcdc") %>% 
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "supdem raw survey marginals.tab"))) {
+#   dataverse::get_file("supdem raw survey marginals.tab", "10.7910/DVN/HWLW0J") %>%
+#     read_csv(col_types = "cdcddcdc") %>%
 #     write_csv("data/supdem raw survey marginals.tab")
 # }
 
-supdem <- read_csv(here::here("data", "supdem raw survey marginals.tab"),
+supdem <- read_csv(here("data", "supdem raw survey marginals.tab"),
                    col_types = "cdcddcdc") %>% 
   janitor::clean_names() %>% 
   DCPOtools::with_min_yrs(2)
@@ -311,6 +360,13 @@ The darker, righthand results also incorporate uncertainty but additionally repl
 Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis remains unsupported.
 
 ```{r pointAJPS}
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "Support_democracy_ajps.csv"))) {
+#   get_file_by_doi(filedoi = "10.7910/DVN/HWLW0J/MVXNFC") %>%
+#     read_csv(col_types = "cdcddcdc") %>%
+#     write_csv(here("data", "Support_democracy_ajps.csv"))
+# }
+
 supdem <- read.csv(here("data", "Support_democracy_ajps.csv"))
 sd.plm <- pdata.frame(supdem, index = c("Country", "Year"))
 
@@ -359,7 +415,7 @@ names(result_clsAJPS) <-
     c("pooled", "pooled-regime", "gmm", "gmm-regime")
 
 saveRDS(result_clsAJPS,
-        file = here::here("output", "estimates_clsMeanAJPS.RDS"))  
+        file = here("output", "estimates_clsMeanAJPS.RDS"))  
 ```
 
 ```{r model-AJPS}
@@ -600,8 +656,14 @@ In short, the conclusions of Claassen [-@Claassen2020a; -@Claassen2020] that dem
 
 ```{r pointAPSR}
 # Reusing the sd.plm object, thus input data here rather than earlier
+# One can download the original data of the AJPS paper with the following codes AFTER set Sys.setenv("DATAVERSE_KEY" = "your_keys")
+# if (!file.exists(here("data", "dem_mood_apsr.RData"))) {
+#   get_dataframe_by_doi(filedoi = "10.7910/DVN/FECIO3/ACMGQG") %>%
+#     save(file = here("data", "dem_mood_apsr.RData"))
+# }
 
-load(here::here("data", "dem_mood_apsr.RData"))
+
+load(here("data", "dem_mood_apsr.RData"))
 sd.plm <- pdata.frame(x, index = c("Country", "Year"))
 
 ls_ivECM <- c(
@@ -715,7 +777,7 @@ names(mocresult_correctAPSR) <-
 
 
 saveRDS(mocresult_correctAPSR,
-        file = here::here("output", "estimates_moc_correctAPSR.RDS"))
+        file = here("output", "estimates_moc_correctAPSR.RDS"))
 ```
 
 ```{r mocResult-expAPSR, eval=FALSE}
@@ -741,7 +803,7 @@ names(mocresult_expAPSR) <-
     )
 
 saveRDS(mocresult_expAPSR,
-        file = here::here("output", "estimates_moc_expcorAPSR.RDS"))
+        file = here("output", "estimates_moc_expcorAPSR.RDS"))
 ```
 
 ```{r mocFormatResult-APSR}
@@ -1132,6 +1194,8 @@ Those who would defend democracy have no grounds to be complacent.
 \renewcommand{\thefigure}{A.\arabic{figure}}
 \setcounter{table}{0}
 \renewcommand{\thetable}{A.\arabic{table}}
+
+Yuehong 'Cassandra' Tai, Yue Hu, and Frederick Solt, "Democracy, Public Support, and Measurement Uncertainty," American Political Science Review.
 
 # Replication Notes {#dgp}
 
@@ -1548,10 +1612,27 @@ Even with the advantages of the DCPO model, there is no evidence to support the 
 
 
 ```{r dcpodata-input, include=FALSE}
+file.copy(
+        c(
+            "dcpo_ajps.rda",
+            "dcpo_apsr.rda",
+            "exp_dcpo_input.rda"
+        ),
+        "data"
+    )
+
+file.copy(
+        c(
+            "estimates_moc_dcpoAPSR.RDS",
+            "estimates_moc_dcpoAJPS.RDS"
+        ),
+        "output"
+    )
+
 ## Replication data
-load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xxxx/download
-load(here("data", "dcpo_apsr.rda"))  # https://osf.io/xxxx/download
-load(here("data", "dcpo_input_update22.rda"))  # https://osf.io/xxxx/download
+load(here("data", "dcpo_ajps.rda"))  # https://osf.io/xw9fr/download
+load(here("data", "dcpo_apsr.rda"))  # https://osf.io/j7kn3/download
+load(here("data", "exp_dcpo_input.rda"))  # https://osf.io/r2pe8/download
 
 ## Preloading chunk-produced results to speed up the compiling
 ## One can find how they were created by locating the corresponding chunks
@@ -1802,7 +1883,7 @@ names(mocdcpo_APSR) <-
     )
 
 saveRDS(mocdcpo_APSR,
-        file = here::here("output", "estimates_moc_dcpoAPSR.RDS"))
+        file = here("output", "estimates_moc_dcpoAPSR.RDS"))
 ```
 
 ```{r dcpoFormatResult-APSR}
@@ -2185,4 +2266,4 @@ The authors affirm this research did not involve human subjects.
 The authors declare no ethical issues or conflicts of interest in this research.
 Yue Hu was funded by the National Natural Science Foundation of China (Grant No. 72004109).
 
-Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at [DOI].
+Research documentation and data that support the findings of this study are openly available in the APSR Dataverse at https://doi.org/10.7910/DVN/XAUF3H.
