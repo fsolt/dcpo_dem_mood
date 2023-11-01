@@ -2,7 +2,6 @@
 output: 
   bookdown::pdf_document2:
     fig_caption: yes
-    keep_tex: yes
     toc: no
     number_sections: yes
     latex_engine: xelatex
@@ -260,7 +259,7 @@ if (!file.exists(here("data",
         osf_download(here("data"))
 }
 if (!file.exists(here("data",
-                      "exp_claassen_input.rds"))) { 
+                      "exp_claassen_input.rda"))) { 
     osf_retrieve_file("rfamx") %>% 
         osf_download(here("data"))
 }
@@ -280,7 +279,7 @@ load(here("data", "correct_cls_ajps.rda"))
 load(here("data", "correct_cls_apsr.rda"))
 load(here("data", "expcor_cls_ajps.rda")) 
 load(here("data", "expcor_cls_apsr.rda")) 
-exp_claassen_input <- rio::import(here("data", "exp_claassen_input.rds")) 
+load(here("data", "exp_claassen_input.rda")) 
 load(here("data", "dcpo_ajps.rda"))
 load(here("data", "dcpo_apsr.rda"))
 
@@ -396,12 +395,12 @@ supdem_ncyi <- supdem %>%
   distinct() %>% 
   nrow()
 
-dcpo_input_nc <- exp_claassen_input$mar$data %>% 
+dcpo_input_nc <- exp_claassen_input$data %>% 
   dplyr::select(country) %>% 
   distinct() %>% 
   nrow()
 
-dcpo_input_surv <- exp_claassen_input$mar$data %>%
+dcpo_input_surv <- exp_claassen_input$data %>%
   dplyr::select(country, year, survey) %>%
   distinct() %>%
   separate(survey, c("surv1", "surv2"), sep=",", fill = "left") %>%
@@ -409,12 +408,12 @@ dcpo_input_surv <- exp_claassen_input$mar$data %>%
   filter(!is.na(value)) %>% 
   nrow()
 
-dcpo_input_ncy <- exp_claassen_input$mar$data %>% 
+dcpo_input_ncy <- exp_claassen_input$data %>% 
   dplyr::select(country, year) %>% 
   distinct() %>% 
   nrow()
 
-dcpo_input_ncyi <- exp_claassen_input$mar$data %>% 
+dcpo_input_ncyi <- exp_claassen_input$data %>% 
   dplyr::select(country, year, item, survey) %>% 
   distinct() %>% 
   separate(survey, c("surv1", "surv2"), sep=",", fill = "left") %>%
@@ -731,6 +730,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     ggtitle("Outcome Variable: Level of Democracy") +
     labs(caption = ajps_caption)
 
+ggsave(here("output","plot_fullAJPS.png"))
 ```
 
 In Figure \@ref(fig:plot-fullAPSR), we examine the thermostatic model of democratic support per @Claassen2020 [p. 47, Table 1, 49, Table 2].
@@ -1224,6 +1224,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     ggtitle("Outcome Variable: Change in Public Democratic Support") +
     labs(caption = apsr_caption)
 
+ggsave(here("output","plot_fullAPSR.png"))
 ```
 
 # Discussion {-}
