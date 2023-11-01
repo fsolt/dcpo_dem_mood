@@ -106,7 +106,7 @@ The lighter, lefthand set of results replicate the analysis of @Claassen2020a, i
 The middle results introduce a single change: the uncertainty in the measurement of public support and these other variables is taken into account.
 In all four models, the positive coefficients for democratic support are no longer statistically significant.
 The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
-Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis remains unsupported.
+Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis git.
 
 ![The Effect of Public Support on Democracy with Uncertainty](../../output/plot_fullAJPS.png){#fig-fullAJPS fig-align="center" height=num}
 
@@ -117,6 +117,6 @@ And again, the righthand results reveal that the additional data of our extensio
 
 ![The Effect of Democracy on Change in Public Support with Uncertainty](../../output/plot_fullAPSR.png){#fig-fullAPSR fig-align="center" height=num}
 
-
+The associated supplementary materials and replication data are already updated in the Dataverse [@TaiEtAl2022].
 
 # References

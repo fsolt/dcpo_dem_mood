@@ -1336,7 +1336,7 @@ For the purposes of incorporating this uncertainty into our analyses, we again a
 
 \pagebreak
 
-# Numeric Results for Figures \@ref(fig:plot-fullAJPS) and \@ref(fig:plot-fullAPSR) {#tables_not_plots}
+# Numeric Results for Figures \@ref(fig:plot-fullAJPS) and \@ref(fig:plot-fullAPSR) {#tables_not_plots} (CORRECTED)
 
 ```{r num-labelAJPS}
 names_coef <- c(
