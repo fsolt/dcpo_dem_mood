@@ -2,7 +2,7 @@
 output: 
   bookdown::pdf_document2:
     fig_caption: yes
-    keep_tex: yes
+    keep_md: yes
     toc: no
     number_sections: yes
     latex_engine: xelatex
@@ -668,6 +668,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     ggtitle("Outcome Variable: Level of Democracy") +
     labs(caption = ajps_caption)
 
+ggsave(here("output","plot_fullAJPS.png"))
 ```
 
 In Figure \@ref(fig:plot-fullAPSR), we examine the thermostatic model of democratic support per @Claassen2020 [p. 47, Table 1, 49, Table 2].
@@ -1161,6 +1162,7 @@ small_multiple(df_plot, dot_args = list(size = .9, fatten = 1)) +
     ggtitle("Outcome Variable: Change in Public Democratic Support") +
     labs(caption = apsr_caption)
 
+ggsave(here("output","plot_fullAPSR.png"))
 ```
 
 # Discussion {-}

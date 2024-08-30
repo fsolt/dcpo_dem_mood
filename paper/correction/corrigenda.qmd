@@ -1,0 +1,122 @@
+---
+format:
+  pdf:
+    number-sections: true
+    keep-tex: true
+    papersize: a4
+crossref:
+  sec-prefix: OSM
+  sec-labels: alpha A
+    
+author:
+  - name: Yuehong 'Cassandra' Tai
+    affiliations:
+      - ref: ui
+    orcid: 0000-0001-7303-7443
+    email: yuehong-tai@uiowa.edu
+    equal-contributor: true
+  - name: Yue Hu
+    affiliations:
+      - ref: tsu
+    orcid: 0000-0002-2829-3971
+    email: yuehu@tsinghua.edu.cn
+    url: https://sammo3182.github.io
+    equal-contributor: true
+    corresponding: true
+  - name: Frederick Solt
+    affiliations:
+      - ref: ui
+    orcid: 0000-0002-3154-6132
+    email: frederick-solt@uiowa.edu
+    url: https://fsolt.org/
+    equal-contributor: true
+affiliations:
+  - id: ui
+    name: Department of Political Science, University of Iowa, Iowa, U.S.A.
+  - id: tsu
+    name: Department of Political Science, Tsinghua University, Beijing, China.
+filters:
+    - authors-block
+tables: true # enable longtable and booktabs
+fontsize: 12pt
+indent: true
+geometry: margin=1in
+linestretch: 1.5 # double spacing using linestretch 1.5
+colorlinks: true
+bibliography: p_dcpo_demsupport_corrigenda.bib
+citation_package: natbib
+link-citations: true
+execute:
+  echo: false
+  message: false
+  warning: false
+  dpi: 300
+    
+title: "Corrigendum"
+subtitle: |
+  | Democracy, Public Support, and Measurement Uncertainty--CORRIGENDUM     
+  | doi:10.1017/S0003055422000429. Published in *American Political Science Review*: First View.
+editor_options: 
+  chunk_output_type: console
+---
+
+\hfill \break
+\hfill \break
+
+The authors regret that three operations raise controversies, and thus make the following updates:
+
+# Nonrepresentative Surveys
+
+In the 2002 and 2005 Pew Global Attitudes Surveys, the codebooks identify a total of nineteen national surveys with samples that are biased toward urban areas.
+We included all of these national surveys in our expanded sample.
+Data from these nineteen national surveys---including the two that were included in the sample used in Claassen [-@Claassen2020a; -@Claassen2020]---are now excluded from our data.
+
+
+# Non-Responses
+
+In Claassen [-@Claassen2020a; -@Claassen2020], all respondents who did not respond to a survey item are assumed to not support democracy and an undemocratic response is usually (but not always) singly imputed to them.
+In the original paper, we treated these non-responses as 'missing at random'---that is, that the distribution of attitudes among those who did not respond was similar to that among those who did---and applied listwise deletion, excluding the non-responses from the sample.
+
+In some cases (for example, the Americas Barometer survey of Canada in 2010; see @HuEtAl2022a at 5), non-responses are the result of split samples, where many respondents were not even presented with the survey item in question.
+In such cases, they are missing at random---respondents were explicitly randomly assigned to the split samples that excluded the relevant item---and so listwise deletion is appropriate.
+We therefore continue to exclude from the sample those respondents who were not even asked the relevant question.
+These cases are rare, though; most non-responses in these surveys are the result of refusal, 'don't know', and other non-responsive answers.
+
+For these remaining cases, we now incorporate the measurement uncertainty due to non-response as follows.
+The number of democracy-supporting responses and the total sample size was imputed four times---that is, using in turn each of these four assumptions about the distribution of non-responses described above---for each country-year-item in the source survey data.
+The latent variable was then estimated using each of these imputations, and the resulting draws combined as in model-based multiple imputation.
+The result is a distribution of draws that reflects the measurement uncertainty in the latent variable, avoiding the strong assumptions of either single imputation or listwise deletion.
+
+
+# Survey Weights
+
+Claassen [-@Claassen2020a; -@Claassen2020] again usually but not always use the unweighted survey data.
+In our data collection, we employ each survey's weights, but did not appreciate that some surveys' weights are not standardized; that is, applying them caused (occasionally dramatic) changes in the sample size.
+As the sample size is an important input in the latent variable model---smaller samples yield larger uncertainty in the population mean, which then propagates into the estimate of democratic support---this is undesirable.
+We now standardize survey weights to have a mean of one before applying them and so ensure that these weights preserve the sample size.
+
+
+# Results after the operation updates
+
+@fig-fullAJPS and @fig-fullAPSR represent the results of the main analysis of the article with the corrected data.
+Applying these corrections *does not* yield substantive differences in the results of our analyses and so does not affect the conclusions reached.
+
+In particular, @fig-fullAJPS presents the reanalyses of the hypothesis that public support influences the level of democracy [@Claassen2020a, Table 1].
+The lighter, lefthand set of results replicate the analysis of @Claassen2020a, including its exclusion of measurement uncertainty by using only the point estimates of public democratic support and the other variables measured with quantified error (i.e., democracy and corruption), and they reproduce that article's findings.
+The middle results introduce a single change: the uncertainty in the measurement of public support and these other variables is taken into account.
+In all four models, the positive coefficients for democratic support are no longer statistically significant.
+The darker, righthand results also incorporate uncertainty but additionally replace the estimates of democratic support with those based on our expanded dataset; this change works to increase the number of observations analyzed as well.
+Although the confidence intervals shrink considerably, the coefficient estimates move much closer to zero: the hypothesis git.
+
+![The Effect of Public Support on Democracy with Uncertainty](../../output/plot_fullAJPS.png){#fig-fullAJPS fig-align="center" height=num}
+
+@fig-fullAPSR examine the thermostatic model of democratic support per @Claassen2020 [p. 47, Table 1, 49, Table 2].
+The negative coefficient estimates for change in liberal democracy in the lefthand set of results, which do not take uncertainty into account, imply that the immediate effect of a increase in the level of democracy is a decline in public support for democracy and of a decrease in democracy an expansion of support---that democratic support indeed does respond thermostatically to democracy. 
+However, the middle results demonstrate that this thermostatic effect, too, does not  hold after the measurement uncertainty is accounted for. 
+And again, the righthand results reveal that the additional data of our extension do not provide support for the original conclusion.
+
+![The Effect of Democracy on Change in Public Support with Uncertainty](../../output/plot_fullAPSR.png){#fig-fullAPSR fig-align="center" height=num}
+
+The associated supplementary materials and replication data are already updated in the Dataverse [@TaiEtAl2022].
+
+# References
