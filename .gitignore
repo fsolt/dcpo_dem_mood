@@ -27,6 +27,7 @@ paper/*cache/
 # data/*.csv
 # data/*.qs
 data/*
+output/*
 reference/*
 paper/submission
 
